@@ -1,0 +1,32 @@
+{
+  "name": "ShapesApp",
+  "version": "1.0.0",
+  "private": true,
+  "scripts": {
+    "android": "react-native run-android",
+    "ios": "react-native run-ios",
+    "start": "react-native start",
+    "test": "jest",
+    "lint": "eslint .",
+    "install-approov-config": "func() { if [ -e \"approov-initial.config\" ]; then cp approov-initial.config android/app/src/main/assets/ && cp approov-initial.config ios/ShapesApp/; else echo \"approov-initial.config doesn't exists in project root directory\"; fi; }; func",
+    "create-ipa": "rm -rf Payload Payload.zip && mkdir Payload && cp -r ios/build/ShapesApp/Build/Products/Debug-iphoneos/ShapesApp.app Payload/ && zip -9 -r Payload.zip Payload && mv Payload.zip Payload.ipa && rm -rf Payload"
+  },
+  "dependencies": {
+    "react": "16.11.0",
+    "react-native": "0.61.3",
+    "react-native-approov": "../react-native-approov/"
+  },
+  "devDependencies": {
+    "@babel/core": "^7.6.4",
+    "@babel/runtime": "^7.6.3",
+    "@react-native-community/eslint-config": "^0.0.5",
+    "babel-jest": "^24.9.0",
+    "eslint": "^6.5.1",
+    "jest": "^24.9.0",
+    "metro-react-native-babel-preset": "^0.57.0",
+    "react-test-renderer": "16.11.0"
+  },
+  "jest": {
+    "preset": "react-native"
+  }
+}

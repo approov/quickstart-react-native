@@ -1,0 +1,546 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B3E7B58A1CC2AC0600A0062D /* RNApproov.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNApproov.m */; };
+		D61E592223FBFE3F002030B5 /* Approov.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6EB38CA236E202300AEEECD /* Approov.framework */; };
+		D6D630332386126D003A158B /* TSKBackgroundReporter.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D62FFB2386126D003A158B /* TSKBackgroundReporter.m */; };
+		D6D630342386126D003A158B /* TSKPinFailureReport.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D62FFD2386126D003A158B /* TSKPinFailureReport.m */; };
+		D6D630352386126D003A158B /* vendor_identifier.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D62FFF2386126D003A158B /* vendor_identifier.m */; };
+		D6D630362386126D003A158B /* TSKReportsRateLimiter.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D630012386126D003A158B /* TSKReportsRateLimiter.m */; };
+		D6D630372386126D003A158B /* reporting_utils.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D630032386126D003A158B /* reporting_utils.m */; };
+		D6D630382386126D003A158B /* configuration_utils.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D630092386126D003A158B /* configuration_utils.m */; };
+		D6D630392386126D003A158B /* trie_search.c in Sources */ = {isa = PBXBuildFile; fileRef = D6D630102386126D003A158B /* trie_search.c */; };
+		D6D6303A2386126D003A158B /* tsk_assert.c in Sources */ = {isa = PBXBuildFile; fileRef = D6D630142386126D003A158B /* tsk_assert.c */; };
+		D6D6303B2386126D003A158B /* registry_search.c in Sources */ = {isa = PBXBuildFile; fileRef = D6D630162386126D003A158B /* registry_search.c */; };
+		D6D6303C2386126D003A158B /* init_registry_tables.c in Sources */ = {isa = PBXBuildFile; fileRef = D6D630172386126D003A158B /* init_registry_tables.c */; };
+		D6D6303D2386126D003A158B /* RSSwizzle.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D6301B2386126D003A158B /* RSSwizzle.m */; settings = {COMPILER_FLAGS = "-Wno-sign-conversion -Wno-sign-compare"; }; };
+		D6D6303E2386126D003A158B /* parse_configuration.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D6301D2386126D003A158B /* parse_configuration.m */; };
+		D6D6303F2386126D003A158B /* TSKTrustKitConfig.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D630202386126D003A158B /* TSKTrustKitConfig.m */; };
+		D6D630402386126D003A158B /* TSKNSURLSessionDelegateProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D630242386126D003A158B /* TSKNSURLSessionDelegateProxy.m */; };
+		D6D630412386126D003A158B /* TSKNSURLConnectionDelegateProxy.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D630252386126D003A158B /* TSKNSURLConnectionDelegateProxy.m */; };
+		D6D630422386126D003A158B /* TSKPinningValidatorResult.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D630262386126D003A158B /* TSKPinningValidatorResult.m */; };
+		D6D630432386126D003A158B /* ssl_pin_verifier.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D6302B2386126D003A158B /* ssl_pin_verifier.m */; };
+		D6D630442386126D003A158B /* TSKSPKIHashCache.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D6302D2386126D003A158B /* TSKSPKIHashCache.m */; };
+		D6D630452386126D003A158B /* TSKPinningValidator.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D630302386126D003A158B /* TSKPinningValidator.m */; };
+		D6D630462386126D003A158B /* TrustKit.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D630312386126D003A158B /* TrustKit.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXCopyFilesBuildPhase section */
+		58B511D91A9E6C8500147676 /* CopyFiles */ = {
+			isa = PBXCopyFilesBuildPhase;
+			buildActionMask = 2147483647;
+			dstPath = "include/$(PRODUCT_NAME)";
+			dstSubfolderSpec = 16;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXCopyFilesBuildPhase section */
+
+/* Begin PBXFileReference section */
+		134814201AA4EA6300B7C361 /* libApproov.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libApproov.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		B3E7B5881CC2AC0600A0062D /* RNApproov.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNApproov.h; sourceTree = "<group>"; };
+		B3E7B5891CC2AC0600A0062D /* RNApproov.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNApproov.m; sourceTree = "<group>"; };
+		D6D62FF82386126D003A158B /* TSKTrustKitConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSKTrustKitConfig.h; sourceTree = "<group>"; };
+		D6D62FFA2386126D003A158B /* vendor_identifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = vendor_identifier.h; sourceTree = "<group>"; };
+		D6D62FFB2386126D003A158B /* TSKBackgroundReporter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSKBackgroundReporter.m; sourceTree = "<group>"; };
+		D6D62FFC2386126D003A158B /* TSKReportsRateLimiter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSKReportsRateLimiter.h; sourceTree = "<group>"; };
+		D6D62FFD2386126D003A158B /* TSKPinFailureReport.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSKPinFailureReport.m; sourceTree = "<group>"; };
+		D6D62FFE2386126D003A158B /* reporting_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = reporting_utils.h; sourceTree = "<group>"; };
+		D6D62FFF2386126D003A158B /* vendor_identifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = vendor_identifier.m; sourceTree = "<group>"; };
+		D6D630002386126D003A158B /* TSKPinFailureReport.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSKPinFailureReport.h; sourceTree = "<group>"; };
+		D6D630012386126D003A158B /* TSKReportsRateLimiter.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSKReportsRateLimiter.m; sourceTree = "<group>"; };
+		D6D630022386126D003A158B /* TSKBackgroundReporter.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSKBackgroundReporter.h; sourceTree = "<group>"; };
+		D6D630032386126D003A158B /* reporting_utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = reporting_utils.m; sourceTree = "<group>"; };
+		D6D630042386126D003A158B /* TSKTrustDecision.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSKTrustDecision.h; sourceTree = "<group>"; };
+		D6D630052386126D003A158B /* TSKPinningValidatorResult.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSKPinningValidatorResult.h; sourceTree = "<group>"; };
+		D6D630072386126D003A158B /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		D6D630082386126D003A158B /* TSKLog.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSKLog.h; sourceTree = "<group>"; };
+		D6D630092386126D003A158B /* configuration_utils.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = configuration_utils.m; sourceTree = "<group>"; };
+		D6D6300C2386126D003A158B /* domain_registry.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = domain_registry.h; sourceTree = "<group>"; };
+		D6D6300E2386126D003A158B /* registry_tables.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = registry_tables.h; sourceTree = "<group>"; };
+		D6D630102386126D003A158B /* trie_search.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = trie_search.c; sourceTree = "<group>"; };
+		D6D630112386126D003A158B /* tsk_assert.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = tsk_assert.h; sourceTree = "<group>"; };
+		D6D630122386126D003A158B /* string_util.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = string_util.h; sourceTree = "<group>"; };
+		D6D630132386126D003A158B /* trie_search.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trie_search.h; sourceTree = "<group>"; };
+		D6D630142386126D003A158B /* tsk_assert.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = tsk_assert.c; sourceTree = "<group>"; };
+		D6D630152386126D003A158B /* registry_types.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = registry_types.h; sourceTree = "<group>"; };
+		D6D630162386126D003A158B /* registry_search.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = registry_search.c; sourceTree = "<group>"; };
+		D6D630172386126D003A158B /* init_registry_tables.c */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.c; path = init_registry_tables.c; sourceTree = "<group>"; };
+		D6D630182386126D003A158B /* trie_node.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = trie_node.h; sourceTree = "<group>"; };
+		D6D6301A2386126D003A158B /* RSSwizzle.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RSSwizzle.h; sourceTree = "<group>"; };
+		D6D6301B2386126D003A158B /* RSSwizzle.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RSSwizzle.m; sourceTree = "<group>"; };
+		D6D6301C2386126D003A158B /* README.md */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = net.daringfireball.markdown; path = README.md; sourceTree = "<group>"; };
+		D6D6301D2386126D003A158B /* parse_configuration.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = parse_configuration.m; sourceTree = "<group>"; };
+		D6D6301E2386126D003A158B /* TrustKit.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TrustKit.h; sourceTree = "<group>"; };
+		D6D6301F2386126D003A158B /* TSKPinningValidator.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSKPinningValidator.h; sourceTree = "<group>"; };
+		D6D630202386126D003A158B /* TSKTrustKitConfig.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSKTrustKitConfig.m; sourceTree = "<group>"; };
+		D6D630222386126D003A158B /* TSKNSURLSessionDelegateProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSKNSURLSessionDelegateProxy.h; sourceTree = "<group>"; };
+		D6D630232386126D003A158B /* TSKNSURLConnectionDelegateProxy.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSKNSURLConnectionDelegateProxy.h; sourceTree = "<group>"; };
+		D6D630242386126D003A158B /* TSKNSURLSessionDelegateProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSKNSURLSessionDelegateProxy.m; sourceTree = "<group>"; };
+		D6D630252386126D003A158B /* TSKNSURLConnectionDelegateProxy.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSKNSURLConnectionDelegateProxy.m; sourceTree = "<group>"; };
+		D6D630262386126D003A158B /* TSKPinningValidatorResult.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSKPinningValidatorResult.m; sourceTree = "<group>"; };
+		D6D630272386126D003A158B /* TSKPinningValidator_Private.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSKPinningValidator_Private.h; sourceTree = "<group>"; };
+		D6D630292386126D003A158B /* TSKPublicKeyAlgorithm.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSKPublicKeyAlgorithm.h; sourceTree = "<group>"; };
+		D6D6302A2386126D003A158B /* TSKSPKIHashCache.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSKSPKIHashCache.h; sourceTree = "<group>"; };
+		D6D6302B2386126D003A158B /* ssl_pin_verifier.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ssl_pin_verifier.m; sourceTree = "<group>"; };
+		D6D6302C2386126D003A158B /* ssl_pin_verifier.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ssl_pin_verifier.h; sourceTree = "<group>"; };
+		D6D6302D2386126D003A158B /* TSKSPKIHashCache.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSKSPKIHashCache.m; sourceTree = "<group>"; };
+		D6D6302E2386126D003A158B /* configuration_utils.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = configuration_utils.h; sourceTree = "<group>"; };
+		D6D6302F2386126D003A158B /* TSKPinningValidatorCallback.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSKPinningValidatorCallback.h; sourceTree = "<group>"; };
+		D6D630302386126D003A158B /* TSKPinningValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSKPinningValidator.m; sourceTree = "<group>"; };
+		D6D630312386126D003A158B /* TrustKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrustKit.m; sourceTree = "<group>"; };
+		D6D630322386126D003A158B /* parse_configuration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parse_configuration.h; sourceTree = "<group>"; };
+		D6EB38CA236E202300AEEECD /* Approov.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Approov.framework; sourceTree = SOURCE_ROOT; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		58B511D81A9E6C8500147676 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D61E592223FBFE3F002030B5 /* Approov.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		134814211AA4EA7D00B7C361 /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				134814201AA4EA6300B7C361 /* libApproov.a */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		58B511D21A9E6C8500147676 = {
+			isa = PBXGroup;
+			children = (
+				D6D62FF72386126D003A158B /* TrustKit */,
+				D6EB38CA236E202300AEEECD /* Approov.framework */,
+				B3E7B5881CC2AC0600A0062D /* RNApproov.h */,
+				B3E7B5891CC2AC0600A0062D /* RNApproov.m */,
+				134814211AA4EA7D00B7C361 /* Products */,
+				D61E592123FBFE3F002030B5 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		D61E592123FBFE3F002030B5 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		D6D62FF72386126D003A158B /* TrustKit */ = {
+			isa = PBXGroup;
+			children = (
+				D6D6302E2386126D003A158B /* configuration_utils.h */,
+				D6D630322386126D003A158B /* parse_configuration.h */,
+				D6D6301E2386126D003A158B /* TrustKit.h */,
+				D6D630082386126D003A158B /* TSKLog.h */,
+				D6D630272386126D003A158B /* TSKPinningValidator_Private.h */,
+				D6D6301F2386126D003A158B /* TSKPinningValidator.h */,
+				D6D6302F2386126D003A158B /* TSKPinningValidatorCallback.h */,
+				D6D630052386126D003A158B /* TSKPinningValidatorResult.h */,
+				D6D630042386126D003A158B /* TSKTrustDecision.h */,
+				D6D62FF82386126D003A158B /* TSKTrustKitConfig.h */,
+				D6D630092386126D003A158B /* configuration_utils.m */,
+				D6D6301D2386126D003A158B /* parse_configuration.m */,
+				D6D630312386126D003A158B /* TrustKit.m */,
+				D6D630302386126D003A158B /* TSKPinningValidator.m */,
+				D6D630262386126D003A158B /* TSKPinningValidatorResult.m */,
+				D6D630202386126D003A158B /* TSKTrustKitConfig.m */,
+				D6D6300A2386126D003A158B /* Dependencies */,
+				D6D630062386126D003A158B /* Framework */,
+				D6D630282386126D003A158B /* Pinning */,
+				D6D62FF92386126D003A158B /* Reporting */,
+				D6D630212386126D003A158B /* Swizzling */,
+			);
+			path = TrustKit;
+			sourceTree = "<group>";
+		};
+		D6D62FF92386126D003A158B /* Reporting */ = {
+			isa = PBXGroup;
+			children = (
+				D6D62FFA2386126D003A158B /* vendor_identifier.h */,
+				D6D62FFB2386126D003A158B /* TSKBackgroundReporter.m */,
+				D6D62FFC2386126D003A158B /* TSKReportsRateLimiter.h */,
+				D6D62FFD2386126D003A158B /* TSKPinFailureReport.m */,
+				D6D62FFE2386126D003A158B /* reporting_utils.h */,
+				D6D62FFF2386126D003A158B /* vendor_identifier.m */,
+				D6D630002386126D003A158B /* TSKPinFailureReport.h */,
+				D6D630012386126D003A158B /* TSKReportsRateLimiter.m */,
+				D6D630022386126D003A158B /* TSKBackgroundReporter.h */,
+				D6D630032386126D003A158B /* reporting_utils.m */,
+			);
+			path = Reporting;
+			sourceTree = "<group>";
+		};
+		D6D630062386126D003A158B /* Framework */ = {
+			isa = PBXGroup;
+			children = (
+				D6D630072386126D003A158B /* Info.plist */,
+			);
+			path = Framework;
+			sourceTree = "<group>";
+		};
+		D6D6300A2386126D003A158B /* Dependencies */ = {
+			isa = PBXGroup;
+			children = (
+				D6D6300B2386126D003A158B /* domain_registry */,
+				D6D630192386126D003A158B /* RSSwizzle */,
+				D6D6301C2386126D003A158B /* README.md */,
+			);
+			path = Dependencies;
+			sourceTree = "<group>";
+		};
+		D6D6300B2386126D003A158B /* domain_registry */ = {
+			isa = PBXGroup;
+			children = (
+				D6D6300C2386126D003A158B /* domain_registry.h */,
+				D6D6300D2386126D003A158B /* registry_tables_genfiles */,
+				D6D6300F2386126D003A158B /* private */,
+			);
+			path = domain_registry;
+			sourceTree = "<group>";
+		};
+		D6D6300D2386126D003A158B /* registry_tables_genfiles */ = {
+			isa = PBXGroup;
+			children = (
+				D6D6300E2386126D003A158B /* registry_tables.h */,
+			);
+			path = registry_tables_genfiles;
+			sourceTree = "<group>";
+		};
+		D6D6300F2386126D003A158B /* private */ = {
+			isa = PBXGroup;
+			children = (
+				D6D630102386126D003A158B /* trie_search.c */,
+				D6D630112386126D003A158B /* tsk_assert.h */,
+				D6D630122386126D003A158B /* string_util.h */,
+				D6D630132386126D003A158B /* trie_search.h */,
+				D6D630142386126D003A158B /* tsk_assert.c */,
+				D6D630152386126D003A158B /* registry_types.h */,
+				D6D630162386126D003A158B /* registry_search.c */,
+				D6D630172386126D003A158B /* init_registry_tables.c */,
+				D6D630182386126D003A158B /* trie_node.h */,
+			);
+			path = private;
+			sourceTree = "<group>";
+		};
+		D6D630192386126D003A158B /* RSSwizzle */ = {
+			isa = PBXGroup;
+			children = (
+				D6D6301A2386126D003A158B /* RSSwizzle.h */,
+				D6D6301B2386126D003A158B /* RSSwizzle.m */,
+			);
+			path = RSSwizzle;
+			sourceTree = "<group>";
+		};
+		D6D630212386126D003A158B /* Swizzling */ = {
+			isa = PBXGroup;
+			children = (
+				D6D630222386126D003A158B /* TSKNSURLSessionDelegateProxy.h */,
+				D6D630232386126D003A158B /* TSKNSURLConnectionDelegateProxy.h */,
+				D6D630242386126D003A158B /* TSKNSURLSessionDelegateProxy.m */,
+				D6D630252386126D003A158B /* TSKNSURLConnectionDelegateProxy.m */,
+			);
+			path = Swizzling;
+			sourceTree = "<group>";
+		};
+		D6D630282386126D003A158B /* Pinning */ = {
+			isa = PBXGroup;
+			children = (
+				D6D630292386126D003A158B /* TSKPublicKeyAlgorithm.h */,
+				D6D6302A2386126D003A158B /* TSKSPKIHashCache.h */,
+				D6D6302B2386126D003A158B /* ssl_pin_verifier.m */,
+				D6D6302C2386126D003A158B /* ssl_pin_verifier.h */,
+				D6D6302D2386126D003A158B /* TSKSPKIHashCache.m */,
+			);
+			path = Pinning;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		58B511DA1A9E6C8500147676 /* Approov */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "Approov" */;
+			buildPhases = (
+				58B511D71A9E6C8500147676 /* Sources */,
+				58B511D81A9E6C8500147676 /* Frameworks */,
+				58B511D91A9E6C8500147676 /* CopyFiles */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = Approov;
+			productName = RCTDataManager;
+			productReference = 134814201AA4EA6300B7C361 /* libApproov.a */;
+			productType = "com.apple.product-type.library.static";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		58B511D31A9E6C8500147676 /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0920;
+				ORGANIZATIONNAME = Facebook;
+				TargetAttributes = {
+					58B511DA1A9E6C8500147676 = {
+						CreatedOnToolsVersion = 6.1.1;
+					};
+				};
+			};
+			buildConfigurationList = 58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "Approov" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				English,
+				en,
+			);
+			mainGroup = 58B511D21A9E6C8500147676;
+			productRefGroup = 58B511D21A9E6C8500147676;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				58B511DA1A9E6C8500147676 /* Approov */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXSourcesBuildPhase section */
+		58B511D71A9E6C8500147676 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				D6D6303A2386126D003A158B /* tsk_assert.c in Sources */,
+				D6D6303B2386126D003A158B /* registry_search.c in Sources */,
+				D6D6303F2386126D003A158B /* TSKTrustKitConfig.m in Sources */,
+				D6D630392386126D003A158B /* trie_search.c in Sources */,
+				D6D6303C2386126D003A158B /* init_registry_tables.c in Sources */,
+				D6D630352386126D003A158B /* vendor_identifier.m in Sources */,
+				D6D6303E2386126D003A158B /* parse_configuration.m in Sources */,
+				D6D630342386126D003A158B /* TSKPinFailureReport.m in Sources */,
+				D6D630372386126D003A158B /* reporting_utils.m in Sources */,
+				D6D630462386126D003A158B /* TrustKit.m in Sources */,
+				D6D630382386126D003A158B /* configuration_utils.m in Sources */,
+				D6D630332386126D003A158B /* TSKBackgroundReporter.m in Sources */,
+				D6D630422386126D003A158B /* TSKPinningValidatorResult.m in Sources */,
+				D6D630362386126D003A158B /* TSKReportsRateLimiter.m in Sources */,
+				D6D630402386126D003A158B /* TSKNSURLSessionDelegateProxy.m in Sources */,
+				D6D630412386126D003A158B /* TSKNSURLConnectionDelegateProxy.m in Sources */,
+				D6D630452386126D003A158B /* TSKPinningValidator.m in Sources */,
+				D6D630432386126D003A158B /* ssl_pin_verifier.m in Sources */,
+				D6D630442386126D003A158B /* TSKSPKIHashCache.m in Sources */,
+				D6D6303D2386126D003A158B /* RSSwizzle.m in Sources */,
+				B3E7B58A1CC2AC0600A0062D /* RNApproov.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin XCBuildConfiguration section */
+		58B511ED1A9E6C8500147676 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/**";
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				OTHER_LDFLAGS = "$(inherited)";
+				SDKROOT = iphoneos;
+			};
+			name = Debug;
+		};
+		58B511EE1A9E6C8500147676 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				APPLICATION_EXTENSION_API_ONLY = YES;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = YES;
+				DEAD_CODE_STRIPPING = NO;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				HEADER_SEARCH_PATHS = "$(SRCROOT)/**";
+				MTL_ENABLE_DEBUG_INFO = NO;
+				OTHER_LDFLAGS = "$(inherited)";
+				SDKROOT = iphoneos;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		58B511F01A9E6C8500147676 /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = "$(inherited)";
+				CLANG_WARN_FLOAT_CONVERSION = NO;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_BITCODE = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_SHADOW = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../../../React/**",
+					"$(SRCROOT)/../../react-native/React/**",
+				);
+				INFOPLIST_FILE = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				KEEP_PRIVATE_EXTERNS = NO;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = Approov;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_SWIFT_SYMBOLS = YES;
+			};
+			name = Debug;
+		};
+		58B511F11A9E6C8500147676 /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				APPLICATION_EXTENSION_API_ONLY = "$(inherited)";
+				CLANG_WARN_FLOAT_CONVERSION = NO;
+				COPY_PHASE_STRIP = NO;
+				DEAD_CODE_STRIPPING = YES;
+				ENABLE_BITCODE = "$(inherited)";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(inherited)",
+					"$(PROJECT_DIR)",
+				);
+				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
+				GCC_WARN_SHADOW = YES;
+				HEADER_SEARCH_PATHS = (
+					"$(inherited)",
+					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
+					"$(SRCROOT)/../../../React/**",
+					"$(SRCROOT)/../../react-native/React/**",
+				);
+				INFOPLIST_FILE = "";
+				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
+				KEEP_PRIVATE_EXTERNS = NO;
+				LIBRARY_SEARCH_PATHS = "$(inherited)";
+				ONLY_ACTIVE_ARCH = NO;
+				OTHER_LDFLAGS = "-ObjC";
+				PRODUCT_NAME = Approov;
+				SDKROOT = iphoneos;
+				SKIP_INSTALL = YES;
+				STRIP_INSTALLED_PRODUCT = YES;
+				STRIP_SWIFT_SYMBOLS = YES;
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		58B511D61A9E6C8500147676 /* Build configuration list for PBXProject "Approov" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				58B511ED1A9E6C8500147676 /* Debug */,
+				58B511EE1A9E6C8500147676 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		58B511EF1A9E6C8500147676 /* Build configuration list for PBXNativeTarget "Approov" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				58B511F01A9E6C8500147676 /* Debug */,
+				58B511F11A9E6C8500147676 /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 58B511D31A9E6C8500147676 /* Project object */;
+}

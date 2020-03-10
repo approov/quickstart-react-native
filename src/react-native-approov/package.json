@@ -1,0 +1,35 @@
+{
+  "name": "react-native-approov",
+  "title": "React Native Approov",
+  "version": "2.2.0",
+  "description": "CriticalBlue Approov 2 module for React Native",
+  "main": "index.js",
+  "scripts": {
+    "install-fetch-support-file": "func () { cp support-files/ApproovFetchSupport.js ${1}; }; func",
+    "install-axios-support-file": "func () { cp support-files/ApproovAxiosSupport.js ${1}; }; func",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/github_account/react-native-approov.git",
+    "baseUrl": "https://github.com/github_account/react-native-approov"
+  },
+  "keywords": [
+    "react-native"
+  ],
+  "author": {
+    "name": "Simon Rigg",
+    "email": "hello@simonrigg.io"
+  },
+  "license": "MIT",
+  "licenseFilename": "LICENSE",
+  "readmeFilename": "README.md",
+  "peerDependencies": {
+    "react": "^16.8.1",
+    "react-native": ">=0.59.0-rc.0 <1.0.x"
+  },
+  "devDependencies": {
+    "react": "^16.8.3",
+    "react-native": "^0.59.10"
+  }
+}

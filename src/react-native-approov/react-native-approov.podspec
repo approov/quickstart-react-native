@@ -12,9 +12,9 @@ Pod::Spec.new do |s|
   s.homepage     = "https://github.com/github_account/react-native-approov"
   s.license      = "MIT"
   # s.license    = { :type => "MIT", :file => "FILE_LICENSE" }
-  s.authors      = { "Simon Rigg" => "hello@simonrigg.io" }
+  s.authors      = { "CriticalBlue Ltd" => "support@approov.io" }
   s.platforms    = { :ios => "9.0", :tvos => "10.0" }
-  s.source       = { :git => "https://github.com/github_account/react-native-approov.git", :tag => "#{s.version}" }
+  s.source       = { :git => "https://github.com/approov/react-native-approov.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,c,cpp,m,swift}"
   s.requires_arc = true

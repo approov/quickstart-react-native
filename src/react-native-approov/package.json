@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/github_account/react-native-approov.git",
-    "baseUrl": "https://github.com/github_account/react-native-approov"
+    "url": "git+https://github.com/approov/react-native-approov.git",
+    "baseUrl": "https://github.com/approov/react-native-approov"
   },
   "keywords": [
     "react-native"
   ],
   "author": {
-    "name": "Simon Rigg",
-    "email": "hello@simonrigg.io"
+    "name": "CriticalBlue Ltd",
+    "email": "support@approov.io"
   },
   "license": "MIT",
   "licenseFilename": "LICENSE",

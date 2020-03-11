@@ -80,16 +80,6 @@ Now grab a shape and enjoy the endless family fun!
 
 ## ADDING APPROOV SUPPORT
 
-### Add Approov Native Module
-
-Approov protection is provided through the `react-native-approov` module for both Android and iOS mobile platforms. This is an [NPM](https://www.npmjs.com) React Native [module](https://facebook.github.io/react-native/docs/native-modules-setup) which exposes the native Approov functionality to Javascript for your app to access, while hiding a lot of the complexity so you can enjoy the benefits of API protection without the fuss.
-
-Install the Approov module as an app dependency. From the command line at the directory `react-native-approov/src/ShapesApp` type:
-
-```
-$ yarn add ../react-native-approov
-```
-
 ### Add the Latest Approov SDK
 
 Currently, the underlying Approov SDK itself is not shipped as part of the `react-native-approov` module. You need to get the latest version. For the Android version do the following (if you are using Windows then substitute `approov` with `approov.exe` in all cases in this quickstart)
@@ -107,6 +97,15 @@ $ unzip approov.zip
 ```
 This will write the Approov SDK framework into `Approov.framework` in that directory.
 
+### Add Approov Native Module
+
+Approov protection is provided through the `react-native-approov` module for both Android and iOS mobile platforms. This is an [NPM](https://www.npmjs.com) React Native [module](https://facebook.github.io/react-native/docs/native-modules-setup) which exposes the native Approov functionality to Javascript for your app to access, while hiding a lot of the complexity so you can enjoy the benefits of API protection without the fuss.
+
+Install the Approov module as an app dependency. From the command line at the directory `react-native-approov/src/ShapesApp` type:
+
+```
+$ yarn add ../react-native-approov
+```
 
 ### Install Approov Token Fetch Javascript
 

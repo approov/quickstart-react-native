@@ -13,8 +13,7 @@
   },
   "dependencies": {
     "react": "16.11.0",
-    "react-native": "0.61.3",
-    "react-native-approov": "../react-native-approov/"
+    "react-native": "0.61.3"
   },
   "devDependencies": {
     "@babel/core": "^7.6.4",

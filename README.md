@@ -61,7 +61,13 @@ Open a shell terminal at `react-native-approov/src/ShapesApp` and type:
 $ yarn install
 ```
 
-Then, to run on an Android Emulator (which must already be launched), type:
+Start the [Metro](https://facebook.github.io/metro/) server with:
+
+```
+$ react-native start
+```
+
+Then, to run on an Android Emulator (which must already be launched), open another terminal window and type:
 
 ```
 $ react-native run-android
@@ -84,18 +90,31 @@ Now grab a shape and enjoy the endless family fun!
 
 Currently, the underlying Approov SDK itself is not shipped as part of the `react-native-approov` module. You need to get the latest version. For the Android version do the following (if you are using Windows then substitute `approov` with `approov.exe` in all cases in this quickstart)
 ```
-$ cd react-native-approov/android/libs
-$ approov sdk -getLibrary approov.aar
+$ approov sdk -getLibrary src/react-native-approov/android/libs/approov.aar
 ```
 This directly gets the SDK into the native module.
 
 For iOS, do the following:
 ```
-$ cd react-native-approov/ios
+$ cd src/react-native-approov/ios
 $ approov sdk -getLibrary approov.zip
 $ unzip approov.zip
 ```
 This will write the Approov SDK framework into `Approov.framework` in that directory.
+
+### Require the Approov React Native Package
+
+Edit `src/ShapesApp/packages.json` and add this dependency:
+
+```
+"react-native-approov": "../react-native-approov/"
+```
+
+From `src/ShapesApp/` folder run:
+
+```
+$ cd src/ShapesApp && yarn install
+```
 
 ### Add Approov Native Module
 
@@ -145,7 +164,7 @@ Now that we’re using Approov, let’s switch to use version 2 of the Shapes AP
 
 `const API_VERSION = 'v1';`
 
-and change it to 
+and change it to
 
 `const API_VERSION = 'v2';`
 
@@ -179,6 +198,8 @@ $ yarn run install-approov-config
 
 This command (specified in `package.json`) simply copies the `approov-initial.config` file to the relevant locations for Android and iOS (`react-native-approov/src/ShapesApp/android/app/src/main/assets/` for Android and `react-native-approov/src/ShapesApp/ios/ShapesApp/ `for iOS).
 
+Note that if you are integrating Approov into your own app then this command may not be available and you should add it. It needs to copy the `approov-initial.config` file into `react-native-approov/android/app/src/main/assets/` and `react-native-approov/ios/ShapesApp/`.
+
 Build and run the app on your preferred platform.
 
 Note that on iOS you must run the command `pod install` in the Shapes app `ios` directory first as React Native iOS is built using the [CocoaPods](https://cocoapods.org) dependency framework.
@@ -200,11 +221,12 @@ Approov command line tools are provided for Windows, MacOS, and Linux platforms.
 ### Android
 
 ```
-$ approov registration ../../development.tok -add android/app/build/outputs/apk/debug/app-debug.apk
+$ approov registration -add android/app/build/outputs/apk/debug/app-debug.apk
 ```
 
 ### iOS
 
+Open the Xcode project located in src/ShapesApp/ios/ShapesApp.xcodeproj and select your code signing certificate in the Signing & Capabilities section of the project.
 Build the Shapes app for an iOS device_ (required for Approov support)_ using:
 
 ```
@@ -222,8 +244,17 @@ $ yarn run create-ipa
 Then finally, run the app registration command:
 
 ```
-$ approov registration ../../development.tok -add Payload.ipa
+$ approov registration -add Payload.ipa
 ```
+
+If you plan to submit your application to the app store, you must remove the Intel CPU simulator support architectures from the Approov binary before submitting your app. To do so, at the directory `react-native-approov/src/ShapesApp/node_modules/react-native-approov/ios/Approov.framework` using the command line:
+
+```
+lipo Approov -remove i386 -output Approov
+lipo Approov -remove x86_64 -output Approov
+```
+
+Since executing the above commands will disable support for the iOS Simulator, you may wish to keep a copy of the Approov framework or download another copy if a Simulator run is required.
 
 ## RUNNING THE SHAPES APP WITH APPROOV
 
@@ -297,7 +328,7 @@ See the Approov [Token Binding](https://www.approov.io/docs/latest/approov-usage
 
 A common usage for this ‘token binding header’ feature is to bind a user’s login token (often an [OAuth2](https://oauth.net/2/) access token), typically specified in the `Authorization` header, to an Approov token thus combining both _user_ authentication and _app_ authentication for an optimal API protection solution. This way only the current authorized user can make API calls from this authenticated app.
 
-In the Shapes v2 API, if the backend service finds a `pay` claim in the Approov token, it looks for an authorization bearer token in the request’s `Authorization` header. If one is found, the backend service will verify that the bearer token’s hash matches the Approov token’s `pay` claim. If the bearer token is not found, the backend service rejects the request. 
+In the Shapes v2 API, if the backend service finds a `pay` claim in the Approov token, it looks for an authorization bearer token in the request’s `Authorization` header. If one is found, the backend service will verify that the bearer token’s hash matches the Approov token’s `pay` claim. If the bearer token is not found, the backend service rejects the request.
 
 ## NEXT STEPS
 

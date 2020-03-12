@@ -1,6 +1,6 @@
 # Approov Quickstart: React Native
 
-This quickstart is written specifically for native Android and iOS apps that are written using [`React Native`](https://[square.github.io/retrofit/]). If this is not your situation then check if there is a more relevant Quickstart guide available.
+This quickstart is written specifically for native Android and iOS apps that are written using [`React Native`](https://reactnative.dev). If this is not your situation then check if there is a more relevant Quickstart guide available.
 
 ## WHAT YOU WILL NEED
 * Access to either a demo or trial Approov account
@@ -10,7 +10,7 @@ This quickstart is written specifically for native Android and iOS apps that are
 ## WHAT YOU WILL LEARN
 * How to integrate Approov into a real app in a step by step fashion
 * How to register your app to get valid tokens from Approov
-* A solid understanding of how to integrate Approov into your own app that uses [`React Native`](https://[square.github.io/retrofit/]
+* A solid understanding of how to integrate Approov into your own app that uses [`React Native`](https://reactnative.dev)
 * Some pointers to other Approov features
 
 ## RUNNING THE SHAPES APP WITHOUT APPROOV

@@ -1,2 +1,7 @@
+avd/
 .DS_Store
 .vscode
+core
+approov-initial.config
+approov.aar
+ApproovFetchSupport.js

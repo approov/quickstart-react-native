@@ -17,7 +17,9 @@ This quickstart is written specifically for native Android and iOS apps that are
 
 The Shapes App is a simple React Native application written in Javascript using the React and [React Native frameworks](https://facebook.github.io/react-native/) provided by Facebook.
 
-![Shapes App](readme-images/shapes-app-start.png)
+<p>
+    <img src="readme-images/shapes-app-start.png" width="256" title="Shapes App">
+</p>
 
 The application consists mostly of boilerplate code, apart from the definitions of the shapes server’s URLs and setting up of the `onPress` callback for each of the buttons along the bottom of the screen.
 

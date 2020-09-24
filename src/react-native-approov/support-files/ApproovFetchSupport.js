@@ -38,7 +38,7 @@ const promptForAppRestart = () => {
 
 // polyfill-style fetch interceptor to add Approov tokens to request header
 const oldFetch = this.fetch;
-const approovFetch = async (url, args) => {
+const approovFetch = async (url, args={}) => {
   try {
     // bind a specified header value to the Approov token
     if (approovFetch.tokenBindingHeader) {
@@ -54,11 +54,11 @@ const approovFetch = async (url, args) => {
 
     // delegate to the existing fetch API method, adding the Approov token as a new request header
     const fetchPromise = oldFetch(url, {
+      ...args,
       headers: {
         'Approov-Token' : '' + result.token,
         ...args.headers,
       },
-      ...args,
     });
 
     // check for SSL pinning errors

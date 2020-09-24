@@ -88,7 +88,7 @@ RCT_EXPORT_MODULE(Approov)
 
 - (void)loadBundle
 {
-    RCTTriggerReloadCommandListeners();
+    RCTTriggerReloadCommandListeners(@"Restart");
 }
 
 /**

@@ -1,0 +1,4 @@
+# ignore approov setup files
+
+approov-sdk.config
+approov-sdk.props

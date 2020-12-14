@@ -17,10 +17,29 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { NativeModules } from 'react-native';
+package io.approov.reactnative;
 
-const { Approov } = NativeModules;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 
-// this is just a placeholder; currently, there are no exposed constants or functions in this interface.
+import com.facebook.react.ReactPackage;
+import com.facebook.react.bridge.NativeModule;
+import com.facebook.react.bridge.ReactApplicationContext;
+import com.facebook.react.uimanager.ViewManager;import com.facebook.react.bridge.JavaScriptModule;
 
-export default Approov;
+public class ApproovPackage implements ReactPackage {
+    @Override
+    public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
+        List<NativeModule> modules = new ArrayList<>();
+
+        modules.add(new ApproovModule(reactContext));
+
+        return modules;
+    }
+
+    @Override
+    public List<ViewManager> createViewManagers(ReactApplicationContext reactContext) {
+        return Collections.emptyList();
+    }
+}

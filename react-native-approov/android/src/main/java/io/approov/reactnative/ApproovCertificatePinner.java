@@ -17,10 +17,36 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { NativeModules } from 'react-native';
+package io.approov.reactnative;
 
-const { Approov } = NativeModules;
+import android.util.Log;
 
-// this is just a placeholder; currently, there are no exposed constants or functions in this interface.
+import java.io.IOException;
+import java.util.List;
+import java.util.Map;
 
-export default Approov;
+import io.approov.service.ApproovService;
+import okhttp3.CertificatePinner;
+
+public class ApproovCertificatePinner {
+    private final static String TAG = "ApproovCertificatePinner";
+
+    /**
+     * Builds a new certificate pinner using the current Approov-registered certificates.
+     * 
+     * @param approovService
+     * @return the certificate pinner.
+     */
+    public static CertificatePinner build(ApproovService approovService) {
+        CertificatePinner.Builder builder = new CertificatePinner.Builder();
+        Map<String, List<String>> pins = approovService.getPins("public-key-sha256");
+        for (Map.Entry<String, List<String>> entry : pins.entrySet()) {
+            for (String pin : entry.getValue()) {
+                builder = builder.add(entry.getKey(), "sha256/" + pin);
+                Log.i(TAG, "Adding OkHttp pin " + entry.getKey() + ":sha256/" + pin);
+            }
+        }
+
+        return builder.build();
+    }
+}

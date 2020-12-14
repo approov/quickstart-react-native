@@ -1,16 +1,9 @@
 {
   "name": "react-native-approov",
   "title": "React Native Approov",
-  "version": "1.0.0",
-  "description": "TODO",
+  "version": "2.0.1",
+  "description": "Approov API Threat Protection for ReactNative",
   "main": "index.js",
-  "files": [
-    "README.md",
-    "android",
-    "index.js",
-    "ios",
-    "react-native-approov.podspec"
-  ],
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },

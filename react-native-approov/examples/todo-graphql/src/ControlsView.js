@@ -17,10 +17,30 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { NativeModules } from 'react-native';
+import React from 'react';
+import { Button, StyleSheet, View } from 'react-native';
 
-const { Approov } = NativeModules;
 
-// this is just a placeholder; currently, there are no exposed constants or functions in this interface.
 
-export default Approov;
+
+const ControlsView = (props) => {  
+  return (
+    <View style={props.style}>
+      <View style={styles.buttonBar}>
+        <Button onPress={props.onCheck} title={props.checkTitle} />
+        <Button onPress={props.onShape} title={props.shapeTitle} />
+      </View>
+    </View>
+  );
+}
+
+const styles = StyleSheet.create({
+  buttonBar: {
+    flex: 1,
+    flexDirection: 'row',
+    alignItems: 'flex-end',
+    justifyContent: 'space-around',
+  },
+});
+
+export default ControlsView;

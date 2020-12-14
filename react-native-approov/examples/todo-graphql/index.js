@@ -17,10 +17,8 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { NativeModules } from 'react-native';
+import {AppRegistry} from 'react-native';
+import App from './src/App';
+import {name as appName} from './src/app.json';
 
-const { Approov } = NativeModules;
-
-// this is just a placeholder; currently, there are no exposed constants or functions in this interface.
-
-export default Approov;
+AppRegistry.registerComponent(appName, () => App);

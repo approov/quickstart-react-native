@@ -1,7 +1,7 @@
 {
-  "name": "shapes-fetch",
+  "name": "todo-graphql",
   "version": "0.0.1",
-  "description": "Shapes demo app using fetch",
+  "description": "Todo demo app using graphql (NOT AVAILABLE)", 
   "private": true,
   "scripts": {
     "android": "react-native run-android",

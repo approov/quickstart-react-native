@@ -25,4 +25,3 @@ Pod::Spec.new do |s|
   # ...
   # s.dependency "..."
 end
-

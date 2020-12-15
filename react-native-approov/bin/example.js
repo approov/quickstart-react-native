@@ -10,11 +10,11 @@ const command = (new Command())
 })
 .option('-p, --path', 'directory path (defaults to current directory)')
 
-.action((opts) => {
+.action((app, opts) => {
   const appPath = opts.path || '.'
   console.log('');
   console.log(`example command here`)
-  console.log(`  app:  ${opts.app}`)
+  console.log(`  app:  ${app}`)
   console.log(`  path: ${appPath}`)
   console.log('');
 })

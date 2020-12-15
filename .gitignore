@@ -1,4 +1,8 @@
-## OSX
+# Environment
+#
+.env*
+
+# OSX
 #
 .DS_Store
 

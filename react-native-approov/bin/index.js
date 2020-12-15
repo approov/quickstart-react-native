@@ -14,12 +14,6 @@ const sync = require('./sync')
 const splitName = scopedName.split('/')
 const name = splitName[splitName.length - 1]
 
-if (process.env.APPROOV_MANAGEMENT_TOKEN) {
-  console.log('')
-  console.log(`APPROOV_MANAGEMENT_TOKEN=${process.env.APPROOV_MANAGEMENT_TOKEN}`)
-  console.log('')
-}
-
 const program = (new Command())
 
 .name(name)

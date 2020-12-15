@@ -5,13 +5,14 @@ const command = (new Command())
 .name('example')
 .description('copy a quickstart example app into a new directory')
 
-.arguments('<app>', {
-  app: 'app to copy'
+.arguments('<app> [path]', {
+  app: 'app to copy',
+  'path': 'directory path (current directory if not specified)'
 })
-.option('-p, --path', 'directory path (defaults to current directory)')
 
-.action((app, opts) => {
-  const appPath = opts.path || '.'
+.action((app, path, opts) => {
+  const appPath = path || '.'
+
   console.log('');
   console.log(`example command here`)
   console.log(`  app:  ${app}`)

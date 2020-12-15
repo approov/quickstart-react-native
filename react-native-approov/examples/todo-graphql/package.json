@@ -1,7 +1,7 @@
 {
   "name": "todo-graphql",
   "version": "0.0.1",
-  "description": "Todo demo app using graphql (NOT AVAILABLE)", 
+  "description": "todo demo app using graphql (PLACEHOLDER)", 
   "private": true,
   "scripts": {
     "android": "react-native run-android",

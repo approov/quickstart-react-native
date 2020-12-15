@@ -42,6 +42,7 @@
     "react-native": "^0.61.5"
   },
   "dependencies": {
+    "cliui": "^7.0.4",
     "commander": "^6.2.1",
     "dotenv": "^8.2.0"
   },

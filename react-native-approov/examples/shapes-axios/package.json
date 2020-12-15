@@ -1,7 +1,7 @@
 {
   "name": "Shapes",
   "version": "0.0.1",
-  "description": "Shapes demo app using axios", 
+  "description": "shapes demo app using axios", 
   "private": true,
   "scripts": {
     "android": "react-native run-android",

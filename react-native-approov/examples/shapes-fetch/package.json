@@ -1,7 +1,7 @@
 {
   "name": "shapes-fetch",
   "version": "0.0.1",
-  "description": "Shapes demo app using fetch",
+  "description": "shapes demo app using fetch",
   "private": true,
   "scripts": {
     "android": "react-native run-android",

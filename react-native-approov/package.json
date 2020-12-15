@@ -30,8 +30,8 @@
   "licenseFilename": "LICENSE",
   "readmeFilename": "README.md",
   "main": "index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+  "bin": {
+    "react-native-approov": "bin/index.js"
   },
   "peerDependencies": {
     "react": "^16.8.1",
@@ -40,5 +40,12 @@
   "devDependencies": {
     "react": "^16.9.0",
     "react-native": "^0.61.5"
+  },
+  "dependencies": {
+    "commander": "^6.2.1",
+    "dotenv": "^8.2.0"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
   }
 }

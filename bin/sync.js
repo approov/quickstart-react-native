@@ -9,11 +9,11 @@ const command = (new Command())
   'dir': 'integration directory (default: .)'
 })
 
-.action((dir, opts) => {
+.action((dir) => {
   const syncDir = dir || '.'
 
   console.log('')
-  console.log(`sync command here`)
+  console.log(`sync results here`)
   console.log(`  dir: ${syncDir}`)
   console.log('')
 })

@@ -7,9 +7,9 @@ const { Command } = require('commander')
 const { name: scopedName, version } = require('../package.json')
 const check = require('./check')
 const example = require('./example')
-const examples = require('./examples')
 const integrate = require('./integrate')
 const sync = require('./sync')
+const whoami = require('./whoami')
 
 const splitName = scopedName.split('/')
 const name = splitName[splitName.length - 1]
@@ -21,8 +21,8 @@ const program = (new Command())
 
 .addCommand(check)
 .addCommand(example)
-.addCommand(examples)
 .addCommand(integrate)
 .addCommand(sync)
+.addCommand(whoami)
 
 .parse(process.argv)

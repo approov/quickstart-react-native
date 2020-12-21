@@ -5,7 +5,7 @@ const command = (new Command())
 .name('check')
 .description('check Approov integration in the current app')
 
-.action((opts) => {
+.action(() => {
 
   console.log('');
   console.log(`check command here`)

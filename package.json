@@ -42,9 +42,14 @@
     "react-native": "^0.61.5"
   },
   "dependencies": {
+    "chalk": "^4.1.0",
     "cliui": "^7.0.4",
     "commander": "^6.2.1",
-    "dotenv": "^8.2.0"
+    "compare-versions": "^3.6.0",
+    "dotenv": "^8.2.0",
+    "fs-extra": "^9.0.1",
+    "ora": "^5.1.0",
+    "prompts": "^2.4.0"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

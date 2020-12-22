@@ -1,9 +1,10 @@
 const { Command } = require('commander')
+const util = require('./util')
 
 const command = (new Command())
 
 .name('sync')
-.description('synchronize app using saved Approov integration files')
+.description('Synchronize app using saved Approov integration files')
 
 .arguments('[dir]', {
   'dir': 'integration directory (default: .)'
@@ -12,10 +13,8 @@ const command = (new Command())
 .action((dir) => {
   const syncDir = dir || '.'
 
-  console.log('')
-  console.log(`sync results here`)
-  console.log(`  dir: ${syncDir}`)
-  console.log('')
+  util.logError(`Check command not available`)
+  util.logInfo(`  dir: ${syncDir}`)
 })
 
 module.exports = command

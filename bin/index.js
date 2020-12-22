@@ -1,9 +1,7 @@
 #!/usr/bin/env node
 
 require('dotenv').config()
-
 const { Command } = require('commander')
-
 const { name: scopedName, version } = require('../package.json')
 const check = require('./check')
 const example = require('./example')

@@ -77,7 +77,7 @@ const command = (new Command())
 
     // gather responses
 
-    const response = await prompts([
+    let response = await prompts([
       {
         type: 'select',
         name: 'appName',

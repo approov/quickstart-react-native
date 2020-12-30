@@ -44,8 +44,6 @@ const imgAssets = {
 
 // determine which api to use
 
-console.log(`Native modules: ${Object.keys(NativeModules)}`)
-
 const api = NativeModules.Approov? {
   msg: 'Approov installed',
   version: 'protected API (v2)',

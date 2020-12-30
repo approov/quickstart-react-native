@@ -4,7 +4,9 @@ const { Command } = require('commander')
 const prompts = require('prompts')
 const chalk = require('chalk')
 const ora = require('ora')
+const shell = require('shelljs')
 const util = require('./util')
+const { ShellString } = require('shelljs')
 
 const command = (new Command())
 
@@ -57,7 +59,8 @@ const command = (new Command())
   fs.readdirSync(srcDir).forEach(file => {
     try {
       const description = require(path.join(srcDir, file, 'package.json')).description || ''
-      examples.push({ title: file, description: description, value: file })
+      const disabled = description.match(/disabled/i)
+      examples.push({ title: file, description: description, value: file, disabled: disabled })
     } catch { /* ignore files & non-package dirs */ }
   })
 
@@ -120,12 +123,36 @@ const command = (new Command())
 
   // copy app
 
-  const spinner = ora(chalk.green(`Creating ${appName} example...`)).start()
+  let spinner = ora(chalk.green(`Creating ${appName} example...`)).start()
   try {
     await fs.copy(src, dst, { overwrite:false, errorOnExist:true})
     spinner.succeed(`Created ${appName} example.`)
   } catch (err) {
     spinner.fail(chalk.red(`Failed to create ${appName} example.`))
+  }
+
+  // install app dependencies
+
+  util.logInfo(`Installing ${appName} npm dependencies...`)
+  try {
+    shell.cd(dst)
+    await util.execAsync('yarn install', {silent:false})
+    spinner.succeed(`Installed ${appName} npm dependencies`)
+  } catch (err) {
+    console.log(err.stderr)
+    util.exitError(`Failed to install ${appName} npm dependencies`)
+  }
+
+  // install ios pod dependencies
+
+  util.logInfo(`Installing ${appName} iOS pod dependencies...`)
+  try {
+    shell.cd('ios')
+    await util.execAsync('pod install', {silent:false})
+    spinner.succeed(`Installed ${appName} iOS pod dependencies`)
+  } catch (err) {
+    console.log(err.stderr)
+    util.exitError(`Failed to install ${appName} iOS pod dependencies`)
   }
 })
 

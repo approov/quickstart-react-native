@@ -27,8 +27,8 @@ import {
   Text,
   View,
 } from 'react-native'
-import { NativeModules } from 'react-native'
 import axios from 'axios'
+import { NativeModules } from 'react-native'
 
 const appTitle = 'Approov Shapes'
 const checkTitle = 'check'
@@ -89,7 +89,7 @@ const App = () => {
   // define fetch shape handler
 
   const fetchShape = () => {
-    axios(api.fetchUrl)
+    axios.get(api.fetchUrl)
     .then((response) => {
       if (response.status != 200) {
         throw new Error(`Status ${response.status}: ${response.statusText}`)

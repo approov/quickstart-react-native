@@ -7,6 +7,18 @@ const chalk = require('chalk')
 const logSymbols = require('log-symbols')
 const shell = require('shelljs')
 
+const indent = (str, num = 4) => {
+  if (!str || 'string' !== typeof str) {
+    str = ''
+  }
+  if (!num || 'number' !== typeof num || num < 0) {
+    num = 0
+  }
+
+  const sp = ' '.repeat(num)  
+  return str.replace(/^(?!$)/mg, sp)
+}
+
 const isAccessible = (file, mode = fs.constants.F_OK) => {
   try {
     fs.accessSync(file, mode)
@@ -68,17 +80,16 @@ const isPackageVersionAtLeast = (version, minVersion) => {
   return compareVersions.compare(version, minVersion, '>=')
 }
 
-const execAsync = (command, options={silent: true, cwd: process.cwd()}) => {
-  return new Promise((done, failed) => {
-    shell.exec(command, { ...options }, (err, stdout, stderr) => {
-      if (err) {
-        err.stdout = stdout
-        err.stderr = stderr
-        failed(err)
-        return
+const execAsync = (command, options={}) => {
+  if (!('silent' in options)) options.silent = true
+  if (!('cwd' in options)) options.cwd = process.cwd()
+  return new Promise((resolve, reject) => {
+    shell.exec(command, { ...options }, (code, stdout, stderr) => {
+      if (!code) {
+        resolve({ code, stdout, stderr })
+      } else {
+        reject({ code, stdout, stderr })
       }
-
-      done({ stdout, stderr })
     })
   })
 }
@@ -107,6 +118,7 @@ const exitError = msg => {
 }
 
 module.exports = {
+  indent, 
   isAccessible,
   isReadable,
   isWritable,

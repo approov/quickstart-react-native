@@ -1,3 +1,5 @@
+const { regAndroid } = require('./bin/register')
+
 module.exports = {
   commands: [
     {
@@ -11,9 +13,7 @@ module.exports = {
         },
       ],
       func: (args, config, opts) => {
-        console.log('reg-android: registers android debug APK for 1 hour.')
-        console.log(`  args: ${args}`)
-        console.log(`  opts: ${JSON.stringify(opts, null, 2)}`)
+        regAndroid(args, config, opts)
       },
       examples: [
         {

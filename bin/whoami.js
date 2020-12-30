@@ -51,7 +51,8 @@ const command = (new Command())
     const info = extractInfo(stdout)
     spinner.succeed(`Verified Approov management token:\n${info.format}`)
   } catch (err) {
-    util.exitError('Failed to verify Approov management token.')
+    spinner.fail('Failed to verify Approov management token.')
+    util.exitError()
   }
 })
 

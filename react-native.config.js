@@ -1,4 +1,4 @@
-const { regAndroid } = require('./bin/register')
+const { regAndroid } = require('./bin/cmd/register')
 
 module.exports = {
   commands: [

@@ -68,6 +68,7 @@ const App = () => {
   // define check connection handler
 
   const checkConnection = () => {
+    setResult({shape: 'none', status: ''})
     fetch(api.checkUrl, {
       method: 'GET',
     })
@@ -90,8 +91,12 @@ const App = () => {
   // define fetch shape handler
 
   const fetchShape = () => {
+    setResult({shape: 'none', status: ''})
     fetch(api.fetchUrl, {
       method: 'GET',
+      headers: {
+        Authorization: 'Bearer SAMPLE-AUTH-STRING',
+      },
     })
     .then((response) => {
       if (!response.ok) {

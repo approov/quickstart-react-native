@@ -1,6 +1,8 @@
 const { Command } = require('commander')
 const ora = require('ora')
-const util = require('./util')
+const cli = require('../util/cli')
+const rna = require('../util/rna')
+const shell = require('../util/shell')
 
 const extractInfo = text => {
   if (!text) return {}
@@ -33,26 +35,26 @@ const command = (new Command())
 .action(async () => {
   // check for approov cli and defined management token
 
-  if (util.isApproovAccessible()) {
-    util.logSuccess('Found Approov CLI.')
+  if (rna.isApproovAccessible()) {
+    cli.logSuccess('Found Approov CLI.')
   } else {
-    util.exitError('The Approov CLI is not installed or not in the current PATH.')
+    cli.exitError('The Approov CLI is not installed or not in the current PATH.')
   }
 
-  if (util.getApproovManagementToken()) {
-    util.logSuccess('Found Approov management token.')
+  if (rna.getApproovManagementToken()) {
+    cli.logSuccess('Found Approov management token.')
   } else {
-    util.exitError('The APPROOV_MANAGEMENT_TOKEN environmental variable is not set.')
+    cli.exitError('The APPROOV_MANAGEMENT_TOKEN environmental variable is not set.')
   }
 
   const spinner = ora(`Verifying Approov account...`).start()
   try {
-    const { stdout, stderr } = await util.execAsync('approov whoami')
+    const { stdout, stderr } = await shell.execAsync('approov whoami')
     const info = extractInfo(stdout)
     spinner.succeed(`Verified Approov management token:\n${info.format}`)
   } catch (err) {
     spinner.fail('Failed to verify Approov management token.')
-    util.exitError()
+    cli.exitError()
   }
 })
 

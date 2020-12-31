@@ -69,6 +69,7 @@ const App = () => {
   // define check connection handler
 
   const checkConnection = () => {
+    setResult({shape: 'none', status: ''})
     axios.get(api.checkUrl)
     .then((response) => {
       if (response.status != 200) {
@@ -89,7 +90,12 @@ const App = () => {
   // define fetch shape handler
 
   const fetchShape = () => {
-    axios.get(api.fetchUrl)
+    setResult({shape: 'none', status: ''})
+    axios.get(api.fetchUrl, {
+      headers: {
+        Authorization: 'Bearer SAMPLE-AUTH-STRING',
+      },
+    })
     .then((response) => {
       if (response.status != 200) {
         throw new Error(`Status ${response.status}: ${response.statusText}`)

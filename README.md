@@ -10,61 +10,72 @@
 
 **Many of the steps below will be simplified through scripts.**
 
-## Getting started
+## Test Flow
 
-1. First build a working react native app.
+0. Start with a react native app
 
-Note: there are example apps in the react-native-approov package which will be available (not yet) using:
+We'll use an example Shapes app from the reacct-native-approov package:
 
 ```
-$ npx react-native-approov example create shape-fetch .
+$ npx react-native-approov example
+
 ```
 
-Until then, they are available in the private [quickstart react native](https://gitlab.com/criticalblue/playground/quickstart-react-native) repo.
+Then run the app:
 
-2. Setup an Approov account and set your approov management token in APPROOV_MANAGEMENT_TOKEN.
+```
+$ yarn react-native run-android
 
-3. Add the domains of the APIs you wish to protect to your account config.
+app requirements...
 
-4. Add @approov/react-native-approov to your react-native project:
+1. Prepare Approov Environment
+
+You should have access to an Approov account and the `approov` CLI tool. Ensure that the environmental variable `APPROOV_MANAGEMEENT_TOKEN`
+is set to the Approov management token string you received. Test this:
+
+```
+$ npx react-native-approov whhoaami
+...
+```
+
+2. Integrate Approov into the React Native App
+
+The integration command is not ready for prime time, soo use this flow for now:
+
+create a setup directory: mkdir ../Approov; cd .../Approov
+
+configure app's API endpoint domain(s):
+
+approov API set to shapes demo
+
+get library and initial config
+
+approov SDK -getLibrary
+approov SDK -getConfig
+
+create approov.props file:
+
+# Approov SDK properties
+
+token.name=Approov-Token
+token.prefix=
+binding.name=Authorization
+binding.prefix=Bearer
+
+cd ../shapes-fetch
+$ npx react-native-approov sync ../Approov
+...
+
+run-android
+
+PICTURES of fail
+
+reg-android
+run-android
+
+PICTURES of success
 
 ```
 $ cd <your-react-native-project>
 $ yarn add @approov/react-native-approov
 ```
-
-5. Copy your SDK config file into `node_modules/@approov/react-native-approov/android/src/assets/approov.config`.
-
-6. If desired, create a custom props file and copy it into `node_modules/@approov/react-native-approov/android/src/assets/approov.props`.
-
-The default props file look like:
-
-```
-# Approov SDK properties
-
-# Name of token field (default: Approov-Token)
-token.name=Approov-Token
-
-# Prefix to add to token field value (default: "")
-token.prefix=
-
-# Name of binding field (default: "", example: Authorization)
-binding.name=
-
-# Prefix to strip from binding field value (default: Bearer, example: "")
-binding.prefix=Bearer
-```
-
-7. Copy the latest approov SDK Android archive file into `node_modules/@approov/react-native-approov/android/libs/approov.aar`.
-
-8. Build your app:
-
-```
-$ yarn run android
-```
-
-Your API calls will be rejected because your app is not yet registered with Approov.
-
-9. Register your app.
-
-10. Restart your app, and it should be functional and protected.

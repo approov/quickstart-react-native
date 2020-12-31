@@ -1,12 +1,11 @@
 const path = require('path')
-const fs = require('fs-extra')
 const { Command } = require('commander')
 const prompts = require('prompts')
 const chalk = require('chalk')
 const ora = require('ora')
-const shell = require('shelljs')
-const util = require('./util')
-const { ShellString } = require('shelljs')
+const cli = require('../util/cli')
+const fsx = require('../util/fsx')
+const shell = require('../util/shell')
 
 const command = (new Command())
 
@@ -19,11 +18,11 @@ const command = (new Command())
 
 .option('--no-prompt', 'do not prompt for user input')
 
-.action(async (app, dir, cmd) => {
+.action(async (app, dir, opts) => {
   const defaults = { 
     appName: 'shapes-fetch', 
     dstDir: '.',
-    srcDir: path.normalize(path.join(__dirname, '../examples'))
+    srcDir: path.normalize(path.join(__dirname, '../../examples'))
   }
 
   let appName = app || defaults.appName
@@ -33,9 +32,9 @@ const command = (new Command())
     const dstDir =  path.normalize(dir || defaults.dstDir)
     const dst = path.join(dstDir, appName)
 
-    if (util.isDirectory(dstDir)) {
-      if (util.isWritable(dstDir)) {
-        if (util.isAccessible(dst)) {
+    if (fsx.isDirectory(dstDir)) {
+      if (fsx.isWritable(dstDir)) {
+        if (fsx.isAccessible(dst)) {
           return`Destination ${dst} already exists.`
         } 
       } else {
@@ -49,14 +48,14 @@ const command = (new Command())
   }
 
   const onPromptsCancel = (prompt, answers) => {
-    util.exitError('Command aborted.')
+    cli.exitError('Command aborted.')
   }
 
   // build list of examples
 
   const srcDir = defaults.srcDir
   let examples = []
-  fs.readdirSync(srcDir).forEach(file => {
+  fsx.readdirSync(srcDir).forEach(file => {
     try {
       const description = require(path.join(srcDir, file, 'package.json')).description || ''
       const disabled = description.match(/disabled/i)
@@ -66,7 +65,7 @@ const command = (new Command())
 
   // if prompt, ask for inputs
 
-  if (cmd.prompt) {
+  if (opts.prompt) {
 
     // find initial index
 
@@ -107,7 +106,7 @@ const command = (new Command())
   // check if source is valid
 
   if (!examples.find(ex => ex.title === appName)) {
-    util.exitError(`app ${appName} not found`)
+    cli.exitError(`app ${appName} not found`)
   }
 
   const src = path.join(srcDir, appName)
@@ -116,7 +115,7 @@ const command = (new Command())
 
   const dstStatus = validateDst(dstDir)
   if (dstStatus !== true) {
-    util.exitError(dstStatus)
+    cli.exitError(dstStatus)
   }
 
   const dst = path.join(dstDir, appName)
@@ -125,7 +124,7 @@ const command = (new Command())
 
   let spinner = ora(chalk.green(`Creating ${appName} example...`)).start()
   try {
-    await fs.copy(src, dst, { overwrite:false, errorOnExist:true})
+    await fsx.copy(src, dst, { overwrite:false, errorOnExist:true})
     spinner.succeed(`Created ${appName} example.`)
   } catch (err) {
     spinner.fail(chalk.red(`Failed to create ${appName} example.`))
@@ -133,26 +132,24 @@ const command = (new Command())
 
   // install app dependencies
 
-  util.logInfo(`Installing ${appName} npm dependencies...`)
+  cli.logInfo(`Installing ${appName} npm dependencies...`)
   try {
     shell.cd(dst)
-    await util.execAsync('yarn install', {silent:false})
+    await shell.execAsync('yarn install', {silent:false})
     spinner.succeed(`Installed ${appName} npm dependencies`)
   } catch (err) {
-    console.log(err.stderr)
-    util.exitError(`Failed to install ${appName} npm dependencies`)
+    cli.exitError(`Failed to install ${appName} npm dependencies`)
   }
 
   // install ios pod dependencies
 
-  util.logInfo(`Installing ${appName} iOS pod dependencies...`)
+  cli.logInfo(`Installing ${appName} iOS pod dependencies...`)
   try {
     shell.cd('ios')
-    await util.execAsync('pod install', {silent:false})
+    await shell.execAsync('pod install', {silent:false})
     spinner.succeed(`Installed ${appName} iOS pod dependencies`)
   } catch (err) {
-    console.log(err.stderr)
-    util.exitError(`Failed to install ${appName} iOS pod dependencies`)
+    cli.exitError(`Failed to install ${appName} iOS pod dependencies`)
   }
 })
 

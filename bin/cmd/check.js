@@ -1,5 +1,5 @@
 const { Command } = require('commander')
-const util = require('./util')
+const cli = require('../util/cli')
 
 const command = (new Command())
 
@@ -7,7 +7,7 @@ const command = (new Command())
 .description('Check Approov integration in the current app')
 
 .action(() => {
-  util.logError(`Check command not available`)
+  cli.exitError(`Check command not yet available`)
 })
 
 module.exports = command

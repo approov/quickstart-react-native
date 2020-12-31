@@ -149,11 +149,13 @@ public class ApproovInterceptor implements Interceptor {
 
         // bind token if appropriate
         if (shouldBind) {
-            if (!request.headers().names().contains(bindingName)) {
-                Log.e(TAG, "Approov token binding header not found: " + bindingName);
-            } else {
-                String data = extractBindingData(request.header(bindingName));
+            String bindingValue = request.header(bindingName);
+            if (bindingValue != null) {
+                Log.i(TAG, "Approov token binding to " + bindingName);
+                String data = extractBindingData(bindingValue);
                 if (data.length() >= 0) approovService.bindToken(data);
+            } else {
+                Log.e(TAG, "Approov token binding header not found: " + bindingName);
             }
         }
 

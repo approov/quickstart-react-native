@@ -51,7 +51,8 @@
     "log-symbols": "^4.0.0",
     "ora": "^5.1.0",
     "prompts": "^2.4.0",
-    "shelljs": "^0.8.4"
+    "shelljs": "^0.8.4",
+    "tmp-promise": "^3.0.2"
   },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"

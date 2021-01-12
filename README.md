@@ -87,7 +87,7 @@ $ npx react-native-approov integrate
 ✔ Integration completed successfully.
 ```
 
-And once that's completed, rerun andorid:
+And once that's completed, rerun android:
 
 ```
 $ yarn react-native run-android

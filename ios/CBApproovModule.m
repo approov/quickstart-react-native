@@ -1,10 +1,11 @@
 #import "CBApproovModule.h"
+#import "CBApproovSessionManager.h"
 #import "CBApproovService.h"
-#import "CBApproovURLSessionSwizzler.h"
+#import "CBUtils.h"
 
-@interface CBApproovModule()
+@interface CBApproovModule ()
 
-- (NSString *)loadApproovConfig;
+@property CBApproovService *service;
 
 @end
 
@@ -17,66 +18,33 @@ RCT_EXPORT_MODULE(Approov);
     return YES;
 }
 
-/** Loads  approov.config file into string. */
-- (NSString *)loadApproovConfig {
-    NSString *config = nil;
-
-    NSURL *configURL = [[NSBundle mainBundle] URLForResource:@"approov" withExtension:@"config"];
-    if (configURL) {
-        NSError *error = nil;
-        config = [NSString stringWithContentsOfURL:configURL encoding:NSASCIIStringEncoding error:&error];
-        if (error) {
-            NSLog(@"Approov initial configuration read failed");
-            [NSException raise:@"ApproovMooduleConfigReadFailed" format:@"Approov config read failed: %@. \
-             Please make sure you have the file approov.config available in your app's root directory.", error];
-        }
-    }
-    else {
-        NSLog(@"Approov initial configuration not found");
-        [NSException raise:@"ApproovModuleConfigNotFound" format:@"Approov config not found: \
-         Please make sure you have the file approov.config available in your app's root directory."];
-    }
-
-    return config;
-}
-
 /** Initializes this native module. */
 - (instancetype)init {
-    NSLog(@"Approov: native module initialization starting");
+    CBLogI(@"Native module initialization starting");
 
     self = [super init];
     if (self == nil) {
-        NSLog(@"Approov: unable to initialize Approov module");
-        [NSException raise:@"ApproovModuleInitFailure" format:@"unable to initialize Approov module because \
-         unable to initialize root NSObject at run time."];
+        CBLogE(@"Native module failed to initialize");
+        [NSException raise:@"ApproovModuleInitFailure" format:@"Approov native module failed to initialize."];
     }
 
-    // load initial config
-    NSString *config = [self loadApproovConfig];
+    // start the Approov service
+    CBApproovService *service = [CBApproovService create];
 
-    // initialize Approov service
-    CBApproovService *approovService = [[CBApproovService alloc] initWithConfig:config withDelegate: self];
+    // start the Approov session manager and add as service delegate
+    CBApproovSessionManager *manager = [CBApproovSessionManager createWithService:service];
+    [service setDelegate:manager];
 
-    // prefetch token before first client request
-    [approovService prefetchToken];
-    
-    // swizzle url session pinning and token protection
-    [CBApproovURLSessionSwizzler swizzleWithApproovService:approovService];
-
-    NSLog(@"Approov: native module initialization finished");
+    CBLogI(@"Native module initialization finished successfully");
 
     return self;
 }
 
-RCT_EXPORT_METHOD(fetchVersion:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
-    NSString *msg = [NSString stringWithFormat:@"Version: %@", @"_name"];
+// Native moodules must have at least one brdiged method to be recognized
+// on the javascript side, so wee added a mdoule description.
+RCT_EXPORT_METHOD(fetchDescription:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
+    NSString *msg = @"Approov Native Module for React Native";
     resolve(msg);
-}
-
-- (void)approovService:(CBApproovService *)service hadConfigUpdate:(BOOL)update {
-    if (update) {
-        NSLog(@"Approov: servicing Approov config update");
-    }
 }
 
 @end

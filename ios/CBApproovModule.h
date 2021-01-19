@@ -1,6 +1,5 @@
 #import <React/RCTBridgeModule.h>
-#import "CBApproovService.h"
 
-@interface CBApproovModule : NSObject <RCTBridgeModule, CBApproovServiceDelegate>
+@interface CBApproovModule : NSObject <RCTBridgeModule>
 
 @end

@@ -1,5 +1,5 @@
 #import "CBApproovModule.h"
-#import "CBApproovSessionManager.h"
+#import "CBURLSessionManager.h"
 #import "CBApproovService.h"
 #import "CBUtils.h"
 
@@ -32,7 +32,7 @@ RCT_EXPORT_MODULE(Approov);
     CBApproovService *service = [CBApproovService create];
 
     // start the Approov session manager and add as service delegate
-    CBApproovSessionManager *manager = [CBApproovSessionManager createWithService:service];
+    CBURLSessionManager *manager = [CBURLSessionManager createWithService:service];
     [service setDelegate:manager];
 
     CBLogI(@"Native module initialization finished successfully");

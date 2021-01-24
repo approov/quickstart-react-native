@@ -10,6 +10,17 @@ void CBLog(NSString *fmt, ...) {
     NSLog(@"[Approov]  %@", msg);
 }
 
+void CBLogX(NSString *fmt, ...) {
+    if (CB_LEVEL <= CB_EXTREME) {
+        va_list vargs;
+        va_start(vargs, fmt);
+        NSString* msg = [[NSString alloc] initWithFormat:fmt arguments:vargs];
+        va_end(vargs);
+
+        NSLog(@"[Approov]D %@", msg);
+    }
+}
+
 void CBLogD(NSString *fmt, ...) {
     if (CB_LEVEL <= CB_DEBUG) {
         va_list vargs;

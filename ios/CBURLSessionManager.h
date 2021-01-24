@@ -2,30 +2,35 @@
 #import "CBApproovService.h"
 NS_ASSUME_NONNULL_BEGIN
 
+@class CBURLSessionManager;
+
 /// A session delegate wrapping react native delegates for https requests.
-@interface CBApproovSessionDelegate : NSObject <NSURLSessionDataDelegate>
+@interface CBURLSessionDelegate : NSObject <NSURLSessionDataDelegate>
 
-/// Creates an Approov session delegate.
+/// Creates a proxy session delegate.
 /// @param delegate the original react native delgate.
-/// @param service the Approov service.
-+ (instancetype)createWithDelegate:(id<NSURLSessionDelegate>)delegate withService:(CBApproovService *)service;
+/// @param manager the session manager.
++ (instancetype)createWithDelegate:(id<NSURLSessionDelegate>)delegate withManager:(CBURLSessionManager *)manager;
 
-/// Initializes an Approov session delegate.
+/// Initializes a proxy session delegate.
 /// @param delegate the original react native delgate.
-/// @param service the Approov service.
-- (instancetype)initWithDelegate:(id<NSURLSessionDelegate>)delegate withService:(CBApproovService *)service;
+/// @param manager the session manager.
+- (instancetype)initWithDelegate:(id<NSURLSessionDelegate>)delegate withManager:(CBURLSessionManager *)manager;
 
 @end
 
 /// A session manager tracking react native sessions.
-@interface CBApproovSessionManager : NSObject <CBApproovServiceDelegate>
+@interface CBURLSessionManager : NSObject <CBApproovServiceDelegate>
 
-/// Creates an Approov session manager.
+/// The Approov service being used by the session delegates.
+@property CBApproovService* service;
+
+/// Creates a session manager.
 /// @param service the Approov service.
 /// @return the manager or nil previously created.
 + (instancetype)createWithService:(CBApproovService *)service;
 
-/// Initializes an Approov session delegate.
+/// Initializes a session delegate.
 /// @param service the Approov service.
 - (instancetype)initWithService:(CBApproovService *)service;
 

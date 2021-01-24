@@ -1,5 +1,5 @@
 #import "CBApproovService.h"
-#import "CBApproovSessionManager.h"
+#import "CBURLSessionManager.h"
 #import "Approov/Approov.h"
 #import <CommonCrypto/CommonCrypto.h>
 

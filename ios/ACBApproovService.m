@@ -1,13 +1,12 @@
-#import "CBApproovService.h"
-#import "CBURLSessionManager.h"
+#import "ACBApproovService.h"
 #import "Approov/Approov.h"
 #import <CommonCrypto/CommonCrypto.h>
 
-#import "CBUtils.h"
+#import "ACBUtils.h"
 
-@implementation CBAttestationResult
+@implementation ACBAttestationResult
 
-- (instancetype) initWithRequest:(NSURLRequest *)request withAction:(CBAttestationAction)action withStatus:(NSString *)status {
+- (instancetype) initWithRequest:(NSURLRequest *)request withAction:(ACBAttestationAction)action withStatus:(NSString *)status {
     self = [super init];
     if (self) {
         _request = request;
@@ -17,30 +16,32 @@
     return self;
 }
 
-+ (instancetype) createWithRequest:(NSURLRequest *)request withAction:(CBAttestationAction)action withStatus:(NSString *)status {
++ (instancetype) createWithRequest:(NSURLRequest *)request withAction:(ACBAttestationAction)action withStatus:(NSString *)status {
     return [[self alloc] initWithRequest:request withAction:action withStatus:status];
 }
 
 @end
 
-@implementation CBApproovService
+@implementation ACBApproovService {
+    NSHashTable *_observers;
+}
 
 - (instancetype)init {
-    CBLogI(@"Approov service starting");
-    
-    // save delegate
-    _delegate = nil;
+    ACBLogI(@"Approov service starting");
+
+    self = [super init];
+    if (self == nil) {
+        ACBLogE(@"Approov service failed to start");
+        [NSException raise:@"ApproovServiceInitFailure" format:@"Approov service failed to start"];
+    }
+
+    // initialize observers
+    _observers = [NSHashTable weakObjectsHashTable];
 
     // initialize pinning headers
     [self initializePKI];
 
-    self = [super init];
-    if (self == nil) {
-        CBLogE(@"Approov service failed to start");
-        [NSException raise:@"ApproovServiceInitFailure" format:@"Approov service failed to start"];
-    }
-
-    // start by initializing the Approov SDK
+    // initialize the Approov SDK
     [self startApproov];
     
     // start a token prefetch
@@ -49,10 +50,17 @@
     return self;
 }
 
-+ (instancetype)create {
++ (instancetype)start {
     return [[self alloc] init];
 }
 
+- (void)addObserver:(id<ACBApproovServiceObserver>)observer {
+    [_observers addObject:observer];
+}
+
+- (void)removeObserver:(id<ACBApproovServiceObserver>)observer {
+    [_observers removeObject:observer];
+}
 
 NSString *const BaseConfigResource = @"approov";
 NSString *const BaseConfigExtension = @"config";
@@ -61,18 +69,18 @@ NSString *const UpdateConfigKey = @"approov-config";
 - (NSString *)loadBaseConfig {
     NSString *config = nil;
 
-    NSURL *configURL = [[NSBundle mainBundle] URLForResource:@"approov" withExtension:@"config"];
+    NSURL *configURL = [[NSBundle mainBundle] URLForResource:BaseConfigResource withExtension:BaseConfigExtension];
     if (configURL) {
         NSError *error = nil;
         config = [NSString stringWithContentsOfURL:configURL encoding:NSASCIIStringEncoding error:&error];
         if (error) {
-            CBLogE(@"Approov base configuration read failed");
+            ACBLogE(@"Approov base configuration read failed");
             [NSException raise:@"ApproovBaseConfigReadFailed" format:@"Approov base config read failed: %@. \
              Please make sure you have the file '%@.%@' available in your app's root directory.", error, BaseConfigResource, BaseConfigExtension];
         }
     }
     else {
-        CBLogE(@"Approov base configuration not found");
+        ACBLogE(@"Approov base configuration not found");
         [NSException raise:@"ApproovBaseConfigNotFound" format:@"Approov base config not found: \
          Please make sure you have the file '%@.%@' available in your app's root directory.", BaseConfigResource, BaseConfigExtension];
     }
@@ -98,18 +106,20 @@ NSString *const UpdateConfigKey = @"approov-config";
     // fetch latest config
     NSString *config = [Approov fetchConfig];
     if (!config) {
-        CBLogW(@"Approov SDK provided no update config.");
+        ACBLogW(@"Approov SDK provided no update config.");
         return;
     }
     
     // store config
     [self storeUpdateConfig:config];
-    CBLogD(@"Approov config updated");
+    ACBLogD(@"Approov config updated");
 
-    // notfiy delegate
-    if (_delegate) {
-        CBLogD(@"Approov service notifying delegate of config update");
-        [_delegate ApproovService:self updatedConfig:config];
+    // notfiy observers
+    if (_observers.count > 0) {
+        ACBLogD(@"Approov service notifying observers of config update");
+        for (id observer in _observers) {
+            [observer ApproovService:self updatedConfig:config];
+        }
     }
 }
 
@@ -124,7 +134,7 @@ NSString *const UpdateConfigKey = @"approov-config";
     NSError *error = nil;
     [Approov initialize:baseConfig updateConfig:updateConfig comment:nil error:&error];
     if (error) {
-        CBLogE(@"Approov SDK failed to initialize: %@", error);
+        ACBLogE(@"Approov SDK failed to initialize: %@", error);
     }
     
     // if no update config (1st app launch), then try again
@@ -134,73 +144,79 @@ NSString *const UpdateConfigKey = @"approov-config";
 }
 
 - (void)prefetchToken {
-    CBLogD(@"Token prefetch started");
+    ACBLogI(@"Token prefetch started");
     [Approov fetchApproovToken:^(ApproovTokenFetchResult* result) {
         // nothing to do here
     }:@"approov.io"];
 }
 
-- (CBAttestationResult *)attestRequest:(NSURLRequest *)request {
+- (ACBAttestationResult *)attestRequest:(NSURLRequest *)request {
     NSMutableURLRequest *attestedRequest = [request mutableCopy];
 
     // check host domain
     NSString *host = attestedRequest.URL.host;
     if (!host) {
-        CBLogE(@"Attested request domain was missing or invalid");
-        return [CBAttestationResult createWithRequest:attestedRequest
-            withAction:CBAttestationActionFail
+        ACBLogE(@"Attested request domain was missing or invalid");
+        return [ACBAttestationResult createWithRequest:attestedRequest
+            withAction:ACBAttestationActionFail
             withStatus:[Approov stringFromApproovTokenFetchStatus:ApproovTokenFetchStatusBadURL]];
     }
 
     // request an Approov token for the host domain
     ApproovTokenFetchResult* result = [Approov fetchApproovTokenAndWait:host];
 
-    CBAttestationAction action;
+    ACBAttestationAction action;
     switch ([result status]) {
         case ApproovTokenFetchStatusSuccess:
         case ApproovTokenFetchStatusNoApproovService:
         case ApproovTokenFetchStatusUnknownURL:
         case ApproovTokenFetchStatusUnprotectedURL: {
-            action = CBAttestationActionProceed;
+            action = ACBAttestationActionProceed;
             break;
         }
         case ApproovTokenFetchStatusNoNetwork:
         case ApproovTokenFetchStatusPoorNetwork:
         case ApproovTokenFetchStatusMITMDetected: {
-            action = CBAttestationActionRetry;
+            action = ACBAttestationActionRetry;
             break;
         }
         case ApproovTokenFetchStatusBadURL:
         case ApproovTokenFetchStatusNotInitialized: {
-            action = CBAttestationActionFail;
+            action = ACBAttestationActionFail;
             break;
         }
         default: {
-            action = CBAttestationActionFail;
+            action = ACBAttestationActionFail;
             break;
         }
     }
     NSString *status = [Approov stringFromApproovTokenFetchStatus:[result status]];
-    CBLogD(@"Attestation for domain %@: %@ (%@)", host, result.loggableToken, status);
+    ACBLogD(@"Attestation for domain %@: %@ (%@)", host, result.loggableToken, status);
     
     // @TODO: set attesting props from props plist into properties.
     NSString *TokenName = @"Approov-Token";
     NSString *TokenPrefix= @"";
     NSString *BindingName= @""; //Authorization
     NSString *BindingPrefix = @"Bearer";
-    NSString *BindingMissingData = @"?!?!?!?!?!?!?!?";
 
     // set binding from header
-    if (![BindingName isEqualToString:@""]) {
+    if (BindingName.length > 0) {
         NSString *data = [request valueForHTTPHeaderField:BindingName];
-        // @TODO: strip prefix
         if (data) {
+            // strip prefix if it's there
+            if (BindingPrefix.length > 0 && data.length > BindingPrefix.length) {
+                NSRange prefixRange = NSMakeRange(0, BindingPrefix.length);
+                if ([BindingPrefix caseInsensitiveCompare:[data substringWithRange:prefixRange]] == NSOrderedSame) {
+                    NSRange dataRange = NSMakeRange(BindingPrefix.length, data.length - BindingPrefix.length);
+                    data = [data substringWithRange:dataRange];
+                }
+            }
+            // trim whitespace
+            data = [data stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
             // set data hash
             [Approov setDataHashInToken:data];
         } else {
-            // set missiing data hash
-            CBLogW(@"Binding header %@ not set in request; using data %@", BindingName, BindingMissingData);
-            [Approov setDataHashInToken:BindingMissingData];
+            ACBLogW(@"Binding header %@ not set in request", BindingName);
         }
     }
 
@@ -213,15 +229,17 @@ NSString *const UpdateConfigKey = @"approov-config";
             value = [result token];
         }
         [attestedRequest addValue:value forHTTPHeaderField:TokenName];
+        ACBLogD(@"Attested %@: %@", TokenName, value);
     }
 
     // update config if needed
     if (result.isConfigChanged) {
+        ACBLogD(@"***** Config Update Received *****");
         [self updateConfig];
     }
 
     // return attestation result
-    return [CBAttestationResult createWithRequest:attestedRequest withAction:action withStatus:status];
+    return [ACBAttestationResult createWithRequest:attestedRequest withAction:action withStatus:status];
 }
 
 // Subject public key info (SPKI) headers for public keys' type and size. Only RSA-2048, RSA-4096, EC-256 and EC-384 are supported.
@@ -292,9 +310,7 @@ NSDictionary<NSString *, NSDictionary<NSNumber *, NSData *> *> *sSPKIHeaders;
     return [NSData dataWithData:returnData];
 }
 
-/*
- * gets the subject public key info (SPKI) header depending on a public key's type and size
- */
+// returns the subject public key info (SPKI) header depending on a public key's type and size
 - (NSData *)publicKeyInfoHeaderForKey:(SecKeyRef)publicKey {
     // get the SPKI header depending on the key's type and size
     CFDictionaryRef publicKeyAttributes = SecKeyCopyAttributes(publicKey);
@@ -305,43 +321,48 @@ NSDictionary<NSString *, NSDictionary<NSNumber *, NSData *> *> *sSPKIHeaders;
     return aSPKIHeader;
 }
 
-
-- (NSError *)verifyTrust:(SecTrustRef)serverTrust forDomain:(NSString *)host {
-    NSError *verified = nil; // return no error to indicate success
-
-    if(!serverTrust) return CBError(1100, @"CertPin: no server trust");
-    if(!host) return CBError(1105, @"CertPin: no host specified");
-
+- (ACBTrustDecision)verifyServerTrust:(SecTrustRef)serverTrust forHost:(NSString *)host {
+    if(!serverTrust) {
+        ACBLogE(@"ServerTrust check missing server trust");
+        return ACBTrustDecisionBlock;
+    }
+    
+    if(!host) {
+        ACBLogE(@"ServerTrust check missing host");
+        return ACBTrustDecisionBlock;
+    }
+    
     // check the validity of the server cert
     SecTrustResultType result;
     OSStatus status = SecTrustEvaluate(serverTrust, &result);
     if(status != errSecSuccess){
-        // Set error message and return
-        return CBError(1101, @"CertPin: server certificate validation failed");
+        ACBLogE(@"ServerTrust failed server certificate validation");
+        return ACBTrustDecisionBlock;
     } else if((result != kSecTrustResultUnspecified) && (result != kSecTrustResultProceed)){
-        // Set error message and return
-        return CBError(1102, @"CertPin: server trust evaluation failed");
+        ACBLogE(@"ServerTrust failed server trust validation");
+        return ACBTrustDecisionBlock;
     }
     NSDictionary* pins = [Approov getPins:@"public-key-sha256"];
     // if no pins are defined then we trust the connection
     if (pins == nil) {
-        return verified;
+        ACBLogD(@"ServerTrust not pinned");
+        return ACBTrustDecisionNotPinned;
     }
     
     // get the certificate chain count
     int certCountInChain = (int)SecTrustGetCertificateCount(serverTrust);
     int indexCurrentCert = 0;
-    while(indexCurrentCert < certCountInChain) {
+    while (indexCurrentCert < certCountInChain) {
         SecCertificateRef serverCert = SecTrustGetCertificateAtIndex(serverTrust, indexCurrentCert);
-        if(serverCert == nil) {
-            // Set error message and return
-            return CBError(1103, @"CertPin: failed to read certificate from chain");
+        if (serverCert == nil) {
+            ACBLogE(@"ServerTrust check failed to read certificate from chain");
+            return ACBTrustDecisionBlock;
         }
         // get the subject public key info from the certificate
         NSData* publicKeyInfo = [self publicKeyInfoOfCertificate:serverCert];
-        if(publicKeyInfo == nil){
-            // Set error message and return
-            return CBError(1104, @"CertPin: failed reading public key information");
+        if (publicKeyInfo == nil) {
+            ACBLogE(@"ServerTrust check failed reading public key information");
+            return ACBTrustDecisionBlock;
         }
         
         // compute the SHA-256 hash of the public key info and base64 encode the result
@@ -354,18 +375,21 @@ NSDictionary<NSString *, NSDictionary<NSNumber *, NSData *> *> *sSPKIHeaders;
         NSString *publicKeyHashBase64 = [[NSData dataWithBytes:publicKeyHash length:CC_SHA256_DIGEST_LENGTH] base64EncodedStringWithOptions:0];
         
         // match pins on the receivers host
-        if([pins objectForKey:host] != nil){
+        if ([pins objectForKey:host] != nil){
             // We have on or more cert hashes matching the receivers host, compare them
             NSArray<NSString*>* certHashList = [pins objectForKey:host];
-            for (NSString* certHash in certHashList){
-                if([certHash isEqualToString:publicKeyHashBase64]) return verified;
+            for (NSString* certHash in certHashList) {
+                if ([certHash isEqualToString:publicKeyHashBase64]) {
+                    ACBLogD(@"ServerTrust check matched a certificate pin");
+                    return ACBTrustDecisionAllow;
+                }
             }
         }
         indexCurrentCert += 1;
     }
 
-    return CBError(1106, @"CertPin: certificate match not found");
+    ACBLogE(@"ServerTrust check failed to match a certificate pin");
+    return ACBTrustDecisionBlock;
 }
-
 
 @end

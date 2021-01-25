@@ -1,15 +1,15 @@
-#import "CBApproovModule.h"
-#import "CBURLSessionManager.h"
-#import "CBApproovService.h"
-#import "CBUtils.h"
+#import "ACBApproovModule.h"
+#import "ACBApproovService.h"
+#import "ACBProxyURLService.h"
+#import "ACBUtils.h"
 
-@interface CBApproovModule ()
+@interface ACBApproovModule ()
 
-@property CBApproovService *service;
+@property ACBApproovService *service;
 
 @end
 
-@implementation CBApproovModule
+@implementation ACBApproovModule
 
 RCT_EXPORT_MODULE(Approov);
 
@@ -20,22 +20,21 @@ RCT_EXPORT_MODULE(Approov);
 
 /** Initializes this native module. */
 - (instancetype)init {
-    CBLogI(@"Native module initialization starting");
+    ACBLogI(@"Native module initialization starting");
 
     self = [super init];
     if (self == nil) {
-        CBLogE(@"Native module failed to initialize");
+        ACBLogE(@"Native module failed to initialize");
         [NSException raise:@"ApproovModuleInitFailure" format:@"Approov native module failed to initialize."];
     }
 
     // start the Approov service
-    CBApproovService *service = [CBApproovService create];
+    ACBApproovService *approov = [ACBApproovService start];
 
-    // start the Approov session manager and add as service delegate
-    CBURLSessionManager *manager = [CBURLSessionManager createWithService:service];
-    [service setDelegate:manager];
+    // start the URL service using Approov
+    [ACBProxyURLService startWithApproovService:approov];
 
-    CBLogI(@"Native module initialization finished successfully");
+    ACBLogI(@"Native module initialization finished successfully");
 
     return self;
 }

@@ -1,71 +1,71 @@
 #import <Foundation/Foundation.h>
-#import "CBUtils.h"
+#import "ACBUtils.h"
 
-void CBLog(NSString *fmt, ...) {
+void ACBLog(NSString *fmt, ...) {
     va_list vargs;
     va_start(vargs, fmt);
     NSString* msg = [[NSString alloc] initWithFormat:fmt arguments:vargs];
     va_end(vargs);
 
-    NSLog(@"[Approov]  %@", msg);
+    NSLog(@"[Approov] %@", msg);
 }
 
-void CBLogX(NSString *fmt, ...) {
-    if (CB_LEVEL <= CB_EXTREME) {
+void ACBLogX(NSString *fmt, ...) {
+    if (ACB_LEVEL <= ACB_EXTREME) {
         va_list vargs;
         va_start(vargs, fmt);
         NSString* msg = [[NSString alloc] initWithFormat:fmt arguments:vargs];
         va_end(vargs);
 
-        NSLog(@"[Approov]D %@", msg);
+        NSLog(@"[Approov] DEBUG: %@", msg);
     }
 }
 
-void CBLogD(NSString *fmt, ...) {
-    if (CB_LEVEL <= CB_DEBUG) {
+void ACBLogD(NSString *fmt, ...) {
+    if (ACB_LEVEL <= ACB_DEBUG) {
         va_list vargs;
         va_start(vargs, fmt);
         NSString* msg = [[NSString alloc] initWithFormat:fmt arguments:vargs];
         va_end(vargs);
 
-        NSLog(@"[Approov]D %@", msg);
+        NSLog(@"[Approov] DEBUG: %@", msg);
     }
 }
 
-void CBLogI(NSString *fmt, ...) {
-    if (CB_LEVEL <= CB_INFO) {
+void ACBLogI(NSString *fmt, ...) {
+    if (ACB_LEVEL <= ACB_INFO) {
         va_list vargs;
         va_start(vargs, fmt);
         NSString* msg = [[NSString alloc] initWithFormat:fmt arguments:vargs];
         va_end(vargs);
 
-        NSLog(@"[Approov]I %@", msg);
+        NSLog(@"[Approov] INFO: %@", msg);
     }
 }
 
-void CBLogW(NSString *fmt, ...) {
-    if (CB_LEVEL <= CB_WARN) {
+void ACBLogW(NSString *fmt, ...) {
+    if (ACB_LEVEL <= ACB_WARN) {
         va_list vargs;
         va_start(vargs, fmt);
         NSString* msg = [[NSString alloc] initWithFormat:fmt arguments:vargs];
         va_end(vargs);
 
-        NSLog(@"[Approov]W %@", msg);
+        NSLog(@"[Approov] WARN: %@", msg);
     }
 }
 
-void CBLogE(NSString *fmt, ...) {
-    if (CB_LEVEL <= CB_ERROR) {
+void ACBLogE(NSString *fmt, ...) {
+    if (ACB_LEVEL <= ACB_ERROR) {
         va_list vargs;
         va_start(vargs, fmt);
         NSString* msg = [[NSString alloc] initWithFormat:fmt arguments:vargs];
         va_end(vargs);
 
-        NSLog(@"[Approov]E %@", msg);
+        NSLog(@"[Approov] ERROR: %@", msg);
     }
 }
 
-NSError *CBError(NSInteger code, NSString *fmt, ...) {
+NSError *ACBError(NSInteger code, NSString *fmt, ...) {
     va_list vargs;
     va_start(vargs, fmt);
     NSString* msg = [[NSString alloc] initWithFormat:fmt arguments:vargs];

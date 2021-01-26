@@ -23,10 +23,18 @@
 @end
 
 @implementation ACBApproovService {
+    ACBApproovProps *_props;
     NSHashTable *_observers;
 }
 
-- (instancetype)init {
+static ACBApproovService *_ACBProxyURLService_sharedService = nil;
+static dispatch_once_t _ACBApproovService_onceToken = 0;
+
++ (instancetype)startWithProps:(ACBApproovProps *)props {
+    return [[self alloc] initWithProps:props];
+}
+
+- (instancetype)initWithProps:(ACBApproovProps *)props {
     ACBLogI(@"Approov service starting");
 
     self = [super init];
@@ -34,6 +42,14 @@
         ACBLogE(@"Approov service failed to start");
         [NSException raise:@"ApproovServiceInitFailure" format:@"Approov service failed to start"];
     }
+
+    // save props
+    if (!props) {
+        ACBLogE(@"Approov service failed to start: no props specified");
+        [NSException raise:@"ApproovServiceInitFailure" format:@"Approov service failed to start: no props specified"];
+        return nil;
+    }
+    _props = props;
 
     // initialize observers
     _observers = [NSHashTable weakObjectsHashTable];
@@ -48,10 +64,6 @@
     [self prefetchToken];
     
     return self;
-}
-
-+ (instancetype)start {
-    return [[self alloc] init];
 }
 
 - (void)addObserver:(id<ACBApproovServiceObserver>)observer {
@@ -197,26 +209,15 @@ NSString *const UpdateConfigKey = @"approov-config";
     NSString *TokenName = @"Approov-Token";
     NSString *TokenPrefix= @"";
     NSString *BindingName= @""; //Authorization
-    NSString *BindingPrefix = @"Bearer";
 
     // set binding from header
     if (BindingName.length > 0) {
         NSString *data = [request valueForHTTPHeaderField:BindingName];
         if (data) {
-            // strip prefix if it's there
-            if (BindingPrefix.length > 0 && data.length > BindingPrefix.length) {
-                NSRange prefixRange = NSMakeRange(0, BindingPrefix.length);
-                if ([BindingPrefix caseInsensitiveCompare:[data substringWithRange:prefixRange]] == NSOrderedSame) {
-                    NSRange dataRange = NSMakeRange(BindingPrefix.length, data.length - BindingPrefix.length);
-                    data = [data substringWithRange:dataRange];
-                }
-            }
-            // trim whitespace
-            data = [data stringByTrimmingCharactersInSet:[NSCharacterSet whitespaceAndNewlineCharacterSet]];
-            // set data hash
             [Approov setDataHashInToken:data];
         } else {
             ACBLogW(@"Binding header %@ not set in request", BindingName);
+            //@TODO: throw error to be consitent with other quickstarts (or hash empty string?
         }
     }
 
@@ -229,7 +230,7 @@ NSString *const UpdateConfigKey = @"approov-config";
             value = [result token];
         }
         [attestedRequest addValue:value forHTTPHeaderField:TokenName];
-        ACBLogD(@"Attested %@: %@", TokenName, value);
+        ACBLogD(@"Attested %@: %@", TokenName, result.loggableToken);
     }
 
     // update config if needed

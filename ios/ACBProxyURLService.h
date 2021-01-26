@@ -1,5 +1,6 @@
 #import <Foundation/Foundation.h>
 #import "ACBApproovService.h"
+#import "ACBApproovProps.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -13,8 +14,9 @@ NS_ASSUME_NONNULL_BEGIN
 
 /// Creates and starts a proxy URL service singleton.
 /// @param service the Approov service used by the proxy.
+/// @param props the Approov props used by the proxy.
 /// @return the initialized proxy service singleton.
-+ (instancetype) startWithApproovService:(ACBApproovService *)service;
++ (instancetype) startWithApproovService:(ACBApproovService *)service withProps:(ACBApproovProps *)props;
 
 /// Returns the proxy URL service singleton.
 /// @return the singleton or nil if not yet started.

@@ -5,6 +5,8 @@
 
 @interface ACBProxyURLService ()
 
+@property ACBApproovProps *props;
+
 @property (copy) NSURLSessionConfiguration *configuration;
 
 @property (readwrite) NSURLSession *session;
@@ -18,9 +20,9 @@
 static ACBProxyURLService *_ACBProxyURLService_sharedService = nil;
 static dispatch_once_t _ACBProxyURLService_onceToken = 0;
 
-+ (instancetype) startWithApproovService:(ACBApproovService *)service {
++ (instancetype) startWithApproovService:(ACBApproovService *)service withProps:(ACBApproovProps *)props {
     dispatch_once(&_ACBProxyURLService_onceToken, ^{
-        _ACBProxyURLService_sharedService = [[self alloc] initWithApproovService:service];
+        _ACBProxyURLService_sharedService = [[self alloc] initWithApproovService:service withProps:props];
     });
     return _ACBProxyURLService_sharedService;
 }
@@ -29,17 +31,26 @@ static dispatch_once_t _ACBProxyURLService_onceToken = 0;
     return _ACBProxyURLService_sharedService;
 }
 
-- (instancetype)initWithApproovService:(ACBApproovService *)service {
+- (instancetype)initWithApproovService:(ACBApproovService *)service withProps:(ACBApproovProps *)props {
     ACBLogI(@"Proxy URL service initializing");
     self = [super init];
     if (!self) {
-        ACBLogE(@"Proxy URL service failed to initialize: super init failed");
-        return nil;
+        ACBLogE(@"Proxy URL service failed to start");
+        [NSException raise:@"ProxyURLServiceInitFailure" format:@"Proxy URL service failed to start"];
     }
     
+    // save props
+    if (!props) {
+        ACBLogE(@"Proxy URL service failed to start: no props specified");
+        [NSException raise:@"ProxyURLServiceInitFailure" format:@"Proxy service failed to start: no props specified"];
+        return nil;
+    }
+    _props = props;
+
     // save Approov service and start watching for config changes
     if (!service) {
-        ACBLogE(@"Proxy URL service failed to initialize: missing Approov service");
+        ACBLogE(@"Proxy URL service failed to start: no Approov service specified");
+        [NSException raise:@"ProxyURLServiceInitFailure" format:@"Proxy service failed to start: no Approov service specified"];
         return nil;
     }
     _approov = service;

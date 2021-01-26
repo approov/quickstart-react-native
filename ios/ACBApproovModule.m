@@ -1,6 +1,6 @@
 #import "ACBApproovModule.h"
 #import "ACBApproovService.h"
-#import "ACBProxyURLService.h"
+#import "ACBURLSessionAdapter.h"
 #import "ACBUtils.h"
 
 @interface ACBApproovModule ()
@@ -28,11 +28,14 @@ RCT_EXPORT_MODULE(Approov);
         [NSException raise:@"ApproovModuleInitFailure" format:@"Approov native module failed to initialize."];
     }
 
-    // start the Approov service
-    ACBApproovService *approov = [ACBApproovService start];
+    // get the props
+    ACBApproovProps *props = [ACBApproovProps sharedProps];
 
-    // start the URL service using Approov
-    [ACBProxyURLService startWithApproovService:approov];
+    // start the Approov service
+    ACBApproovService *approov = [ACBApproovService startWithProps:props];
+
+    // start the URL adapter using Approov
+    [ACBURLSessionAdapter startWithApproovService:approov];
 
     ACBLogI(@"Native module initialization finished successfully");
 

@@ -1,4 +1,5 @@
 #import <Foundation/Foundation.h>
+#import "ACBApproovProps.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
@@ -61,7 +62,9 @@ typedef NS_ENUM(NSUInteger, ACBTrustDecision) {
 @property id<ACBApproovServiceObserver> observer;
 
 /// Creates and starts an initialized Approov service instance.
-+ (instancetype) start;
+/// @param props the Approov props used by the proxy.
+/// @return the initialized proxy service singleton.
++ (instancetype) startWithProps:(ACBApproovProps *)props;
 
 /// Adds a service observer.
 /// @param observer the observer.

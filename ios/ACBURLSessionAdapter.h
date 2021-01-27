@@ -6,17 +6,17 @@ NS_ASSUME_NONNULL_BEGIN
 @class ACBURLSessionAdapter;
 
 /// A session delegate wrapping react native delegates for https requests.
-@interface ACBURLSessionDelegate : NSObject <NSURLSessionDataDelegate>
+@interface ACBURLSessionDataDelegate : NSObject <NSURLSessionDelegate>
 
 /// Creates an adapter session delegate.
 /// @param delegate the original react native delgate.
 /// @param adapter the session adapter.
-+ (instancetype)createWithDelegate:(id<NSURLSessionDelegate>)delegate forAdapter:(ACBURLSessionAdapter *)adapter;
++ (instancetype)createWithDelegate:(id<NSURLSessionDataDelegate>)delegate forAdapter:(ACBURLSessionAdapter *)adapter;
 
 /// Initializes an adapter session delegate.
 /// @param delegate the original react native delgate.
 /// @param adapter the session adapter.
-- (instancetype)initWithDelegate:(id<NSURLSessionDelegate>)delegate forAdapter:(ACBURLSessionAdapter *)adapter;
+- (instancetype)initWithDelegate:(id<NSURLSessionDataDelegate>)delegate forAdapter:(ACBURLSessionAdapter *)adapter;
 
 @end
 

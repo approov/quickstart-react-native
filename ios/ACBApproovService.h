@@ -58,8 +58,8 @@ typedef NS_ENUM(NSUInteger, ACBTrustDecision) {
 /// An Approov service for react native.
 @interface ACBApproovService : NSObject
 
-/// The service delegate.
-@property id<ACBApproovServiceObserver> observer;
+/// The associated Approov props.
+@property (readonly) ACBApproovProps *props;
 
 /// Creates and starts an initialized Approov service instance.
 /// @param props the Approov props used by the proxy.

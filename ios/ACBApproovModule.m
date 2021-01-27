@@ -28,7 +28,7 @@ RCT_EXPORT_MODULE(Approov);
         [NSException raise:@"ApproovModuleInitFailure" format:@"Approov native module failed to initialize."];
     }
 
-    // get the props
+    // get the Approov props
     ACBApproovProps *props = [ACBApproovProps sharedProps];
 
     // start the Approov service

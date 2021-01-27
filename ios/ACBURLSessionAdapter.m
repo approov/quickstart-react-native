@@ -2,21 +2,21 @@
 #import "ACBUtils.h"
 #import "RSSwizzle.h"
 
-@interface ACBURLSessionDelegate ()
+@interface ACBURLSessionDataDelegate ()
 
 @property ACBURLSessionAdapter *adapter;
 
-@property id<NSURLSessionDelegate> originalDelegate;
+@property id<NSURLSessionDataDelegate> originalDelegate;
 
 @end
 
-@implementation ACBURLSessionDelegate
+@implementation ACBURLSessionDataDelegate
 
-+ (instancetype)createWithDelegate:(id<NSURLSessionDelegate>)delegate forAdapter:(ACBURLSessionAdapter *)adapter {
++ (instancetype)createWithDelegate:(id<NSURLSessionDataDelegate>)delegate forAdapter:(ACBURLSessionAdapter *)adapter {
     return [[self alloc] initWithDelegate:delegate forAdapter:adapter];
 }
 
-- (instancetype)initWithDelegate:(id<NSURLSessionDelegate>)delegate forAdapter:(ACBURLSessionAdapter *)adapter {
+- (instancetype)initWithDelegate:(id<NSURLSessionDataDelegate>)delegate forAdapter:(ACBURLSessionAdapter *)adapter {
     self = [super init];
     if (self) {
         ACBLogD(@"Initializing URL adapter session data delegate");
@@ -27,26 +27,41 @@
     return self;
 }
 
-// Decides if delegate wants to handle this method.
-- (BOOL)respondsToSelector:(SEL)sel {
-    // handle auth challenges
-    if (sel == @selector(URLSession:didReceiveChallenge:completionHandler:) ||
-            sel == @selector(URLSession:task:didReceiveChallenge:completionHandler:)) {
-        ACBLogX(@"Will handle authentication challenge: %@", NSStringFromSelector(sel));
-        return YES;
-    }
+// The two reflection functioons are quite handy. They appear to work as adverised as long as you only
+// implement the auth challenges. Implement one of the task or data delegate functions and they are all
+// presuemd to be implemented or nil which isn't very fun. So for now, they are commented out, and
+// every delegate function in RCTHTTPRequestHandler is wrapped here. YMMV.
 
-    // handle (by forwarding) selectors to original delegate if needed
-    return [_originalDelegate respondsToSelector:sel];
-}
+//// Decides if delegate wants to handle this method.
+//- (BOOL)respondsToSelector:(SEL)sel {
+//    // handle auth challenges
+//    if (sel == @selector(URLSession:didReceiveChallenge:completionHandler:) ||
+//            sel == @selector(URLSession:task:didReceiveChallenge:completionHandler:)) {
+//        ACBLogD(@"Will handle authentication challenge: %@", NSStringFromSelector(sel));
+//        return YES;
+//    }
+//
+//    // handle (by forwarding) selectors to original delegate if needed
+//    BOOL canForward = [_originalDelegate respondsToSelector:sel];
+//    if (canForward) {
+//        ACBLogD(@"Can handle selector: %@", NSStringFromSelector(sel));
+//    } else {
+//        ACBLogD(@"Can handle: %@", NSStringFromSelector(sel));
+//    }
+//    return canForward;
+//}
+//
+//// If delegate wanted to handle this selector but can't, forward it to original delegate
+//- (id)forwardingTargetForSelector:(SEL)sel {
+//    if ([_originalDelegate respondsToSelector:sel]) {
+//        ACBLogD(@"Forwarding to original delegate selector: %@", NSStringFromSelector(sel));
+//        return _originalDelegate;
+//    }
+//
+//    return nil;
+//}
 
-// If delegate wanted to handle this selector but can't, forward it to original delegate
-- (id)forwardingTargetForSelector:(SEL)sel {
-    ACBLogX(@"Forwarding to original delegate selector: %@", NSStringFromSelector(sel));
-    return _originalDelegate;
-}
-
-// handles session authenticatioon challenge
+// handles session authentication challenge
 - (void)URLSession:(NSURLSession *)session
         didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
         completionHandler:(void (^)(NSURLSessionAuthChallengeDisposition disposition, NSURLCredential *credential))completionHandler {
@@ -64,7 +79,7 @@
     }
 }
 
-// handles session task authenticatioon challenge
+// handles session task authentication challenge
 - (void)URLSession:(NSURLSession *)session
         dataTask:(NSURLSessionDataTask *)dataTask
         didReceiveChallenge:(NSURLAuthenticationChallenge *)challenge
@@ -83,26 +98,51 @@
     }
 }
 
+///// Handled session task body data.
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
+   didSendBodyData:(int64_t)bytesSent
+    totalBytesSent:(int64_t)totalBytesSent
+totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
+    [_originalDelegate URLSession:session task:task didSendBodyData:bytesSent totalBytesSent:totalBytesSent totalBytesExpectedToSend:totalBytesExpectedToSend];
+}
 
+/// Handles session task reedirection.
+- (void)URLSession:(NSURLSession *)session
+              task:(NSURLSessionTask *)task
+willPerformHTTPRedirection:(NSHTTPURLResponse *)response
+        newRequest:(NSURLRequest *)request
+ completionHandler:(void (^)(NSURLRequest *))completionHandler {
+    [_originalDelegate URLSession:session task:task willPerformHTTPRedirection:response newRequest:request completionHandler:completionHandler];
+}
 
+/// Handles session data task response.
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+didReceiveResponse:(NSURLResponse *)response
+ completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
+    [_originalDelegate URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
+}
 
-///// Handles session task completion.
-//- (void)URLSession:(NSURLSession *)session
-//        task:(NSURLSessionTask *)task
-//        didCompleteWithError:(NSError *)error {
-//
-//    if( error ) {
-//        ACBLogD(@"Proxy session task completed with error: %@", error.debugDescription);
-//    } else {
-//        ACBLogD(@"Proxy session task completed successfully");
-//    }
-//
-//
-//}
+// Handles session data task data.
+- (void)URLSession:(NSURLSession *)session
+          dataTask:(NSURLSessionDataTask *)dataTask
+    didReceiveData:(NSData *)data {
+    [_originalDelegate URLSession:session dataTask:dataTask didReceiveData:data];
+}
 
-/// Handles session invalidation.
-- (void)URLSession:(NSURLSession *)session didBecomeInvalidWithError:(NSError *)error {
-    ACBLogD(@"Proxy session became invalid with error: %@", error);
+/// Handles session task completion.
+- (void)URLSession:(NSURLSession *)session
+        task:(NSURLSessionTask *)task
+        didCompleteWithError:(NSError *)error {
+    // call original completion delegate
+    [_originalDelegate URLSession:session task:task didCompleteWithError:error];
+    
+    if( error ) {
+        ACBLogD(@"Session task completed with error: %@", error.debugDescription);
+    } else {
+        ACBLogD(@"Session task completed successfully");
+    }
 }
 
 @end
@@ -134,8 +174,9 @@ static dispatch_once_t _ACBURLSessionAdapter_onceToken = 0;
 
     ACBLogD(@"Initializing URL session adapter");
     
-    // save approoov service
+    // save and observe approoov service
     _approov = service;
+    [_approov addObserver:self];
 
     // initialize session list
     _currentSession = nil;
@@ -167,7 +208,7 @@ static dispatch_once_t _ACBURLSessionAdapter_onceToken = 0;
             // swizzle a react-native looking delegate
             if (delegate && [NSStringFromClass([delegate class]) hasPrefix:@"RCT"]) {
                 ACBLogD(@"Creating a session adapter for %@ delegate", NSStringFromClass([delegate class]));
-                ACBURLSessionDelegate *adapterDelegate = [ACBURLSessionDelegate createWithDelegate:delegate forAdapter: thisAdapter];
+                ACBURLSessionDataDelegate *adapterDelegate = [ACBURLSessionDataDelegate createWithDelegate:delegate forAdapter: thisAdapter];
                 session = RSSWCallOriginal(configuration, adapterDelegate, queue);
                 thisAdapter->_currentSession = session;
             } else {
@@ -194,11 +235,11 @@ static dispatch_once_t _ACBURLSessionAdapter_onceToken = 0;
         RSSWReplacement({
             ACBLogX(@"Examining data task for session %@", NSStringFromClass([self class]));
 
-        if (thisAdapter->_currentSession && self == thisAdapter->_currentSession) {
+            if (thisAdapter->_currentSession && self == thisAdapter->_currentSession) {
                 ACBLogD(@"Intercepting this data task for (%@) %@", request.HTTPMethod, request.URL);
 
                 ACBAttestationResult *result = [[thisAdapter approov] attestRequest:request];
-
+                    
                 switch ([result action]) {
                     case ACBAttestationActionProceed: {
                         NSURLSessionDataTask *task = RSSWCallOriginal(result.request);
@@ -206,12 +247,14 @@ static dispatch_once_t _ACBURLSessionAdapter_onceToken = 0;
                     }
                     case ACBAttestationActionRetry: {
                         NSURLSessionDataTask *task = RSSWCallOriginal(result.request);
-                        // TODO: replace with a task returning retry status code
+                        [task cancel];
+                        // TODO: return status 503 - service unavailable to suggest retry
                         return task;
                     }
                     default: {
                         NSURLSessionDataTask *task = RSSWCallOriginal(result.request);
-                        // TODO: replace with a task returning fail status code
+                        [task cancel];
+                        // TODO: return error to indicate failure
                         return task;
                     }
                 }
@@ -224,9 +267,7 @@ static dispatch_once_t _ACBURLSessionAdapter_onceToken = 0;
 }
 
 - (void)ApproovService:(ACBApproovService *)service updatedConfig:(NSString *)config {
-    // finish in flight tasks and invalidate open sesssions
-    
-    // @TODO: invalidate session from session list forcing connection reauth for future tasks
+    // placehholder for revoking servertrust to force reauthentication
 }
 
 @end

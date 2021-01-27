@@ -23,7 +23,6 @@
 @end
 
 @implementation ACBApproovService {
-    ACBApproovProps *_props;
     NSHashTable *_observers;
 }
 
@@ -60,8 +59,12 @@ static dispatch_once_t _ACBApproovService_onceToken = 0;
     // initialize the Approov SDK
     [self startApproov];
     
-    // start a token prefetch
-    [self prefetchToken];
+    // start a token prefetch?
+    NSString *prefetchStr = [_props valueForKey:@"init.prefetch"];
+    if (prefetchStr && [prefetchStr boolValue]) {
+        ACBLogI(@"Approov service prefetching Approov token during start");
+        [self prefetchToken];
+    }
     
     return self;
 }
@@ -163,20 +166,42 @@ NSString *const UpdateConfigKey = @"approov-config";
 }
 
 - (ACBAttestationResult *)attestRequest:(NSURLRequest *)request {
+    NSString *tokenName = [_props valueForKey:@"token.name"];
+    if (!tokenName) tokenName = @"Approov-Token";
+    NSString *tokenPrefix= [_props valueForKey:@"token.prefix"]; // @""
+    if (!tokenPrefix) tokenPrefix = @"";
+    NSString *bindingName= [_props valueForKey:@"binding.name"]; // @"Authorization"
+    if (!bindingName) bindingName = @"";
+
+    // copy request
     NSMutableURLRequest *attestedRequest = [request mutableCopy];
 
     // check host domain
     NSString *host = attestedRequest.URL.host;
     if (!host) {
+        // return bad url result
         ACBLogE(@"Attested request domain was missing or invalid");
         return [ACBAttestationResult createWithRequest:attestedRequest
             withAction:ACBAttestationActionFail
             withStatus:[Approov stringFromApproovTokenFetchStatus:ApproovTokenFetchStatusBadURL]];
     }
+    
+    // set binding data
+    if (bindingName.length > 0) {
+        NSString *data = [request valueForHTTPHeaderField:bindingName];
+        if (data) {
+            [Approov setDataHashInToken:data];
+        } else {
+            ACBLogW(@"Binding header %@ not set in request", bindingName);
+            // continue without setting data hash since this may be for an unprotected API domain
+            // or for an unprotected endpoint in a protected domain.
+        }
+    }
 
-    // request an Approov token for the host domain
+    // fetch Approov token for host domain
     ApproovTokenFetchResult* result = [Approov fetchApproovTokenAndWait:host];
-
+    
+    // set attestation result action and status
     ACBAttestationAction action;
     switch ([result status]) {
         case ApproovTokenFetchStatusSuccess:
@@ -204,41 +229,24 @@ NSString *const UpdateConfigKey = @"approov-config";
     }
     NSString *status = [Approov stringFromApproovTokenFetchStatus:[result status]];
     ACBLogD(@"Attestation for domain %@: %@ (%@)", host, result.loggableToken, status);
-    
-    // @TODO: set attesting props from props plist into properties.
-    NSString *TokenName = @"Approov-Token";
-    NSString *TokenPrefix= @"";
-    NSString *BindingName= @""; //Authorization
 
-    // set binding from header
-    if (BindingName.length > 0) {
-        NSString *data = [request valueForHTTPHeaderField:BindingName];
-        if (data) {
-            [Approov setDataHashInToken:data];
-        } else {
-            ACBLogW(@"Binding header %@ not set in request", BindingName);
-            //@TODO: throw error to be consitent with other quickstarts (or hash empty string?
-        }
-    }
-
-    // decorate request if success
+    // decorate attestation result request if success
     if ([result status] == ApproovTokenFetchStatusSuccess) {
         NSString *value;
-        if (![TokenPrefix isEqualToString:@""]) {
-            value = [NSString stringWithFormat:@"%@ %@", TokenPrefix, [result token]];
+        if (tokenPrefix.length > 0) {
+            value = [NSString stringWithFormat:@"%@ %@", tokenPrefix, [result token]];
         } else {
             value = [result token];
         }
-        [attestedRequest addValue:value forHTTPHeaderField:TokenName];
-        ACBLogD(@"Attested %@: %@", TokenName, result.loggableToken);
+        [attestedRequest addValue:value forHTTPHeaderField:tokenName];
     }
 
-    // update config if needed
+    // update config if needed (will nootify any observers)
     if (result.isConfigChanged) {
-        ACBLogD(@"***** Config Update Received *****");
+        ACBLogI(@"Approov config Update received");
         [self updateConfig];
     }
-
+    
     // return attestation result
     return [ACBAttestationResult createWithRequest:attestedRequest withAction:action withStatus:status];
 }

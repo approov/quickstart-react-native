@@ -1,4 +1,5 @@
 #import "ACBURLSessionAdapter.h"
+#import "ACBMockURLProtocol.h"
 #import "ACBUtils.h"
 #import "RSSwizzle.h"
 
@@ -207,8 +208,23 @@ static dispatch_once_t _ACBURLSessionAdapter_onceToken = 0;
 
             // swizzle a react-native looking delegate
             if (delegate && [NSStringFromClass([delegate class]) hasPrefix:@"RCT"]) {
-                ACBLogD(@"Creating a session adapter for %@ delegate", NSStringFromClass([delegate class]));
+
+                ACBLogD(@"Adapting a session for %@ delegate", NSStringFromClass([delegate class]));
+
+                // Add mock https protocol for sending  status code and error
+                ACBLogX(@"Adding mock protocol to the session configuration");
+                if (!configuration.protocolClasses || [configuration.protocolClasses count] == 0) {
+                    configuration.protocolClasses = @[[ACBMockURLProtocol class]];
+                } else if (![configuration.protocolClasses containsObject:[ACBMockURLProtocol class]]) {
+                    NSMutableArray *protocolClasses = [configuration.protocolClasses mutableCopy];
+                    [protocolClasses insertObject:[ACBMockURLProtocol class] atIndex:0];
+                    configuration.protocolClasses = protocolClasses;
+                }
+
+                ACBLogD(@"Adapting the delegate", NSStringFromClass([delegate class]));
                 ACBURLSessionDataDelegate *adapterDelegate = [ACBURLSessionDataDelegate createWithDelegate:delegate forAdapter: thisAdapter];
+
+                ACBLogD(@"Creating the session", NSStringFromClass([delegate class]));
                 session = RSSWCallOriginal(configuration, adapterDelegate, queue);
                 thisAdapter->_currentSession = session;
             } else {
@@ -242,20 +258,16 @@ static dispatch_once_t _ACBURLSessionAdapter_onceToken = 0;
                     
                 switch ([result action]) {
                     case ACBAttestationActionProceed: {
-                        NSURLSessionDataTask *task = RSSWCallOriginal(result.request);
-                        return task;
+                        // proceed with task using attested request
+                        return RSSWCallOriginal(result.request);
                     }
                     case ACBAttestationActionRetry: {
-                        NSURLSessionDataTask *task = RSSWCallOriginal(result.request);
-                        [task cancel];
-                        // TODO: return status 503 - service unavailable to suggest retry
-                        return task;
+                        // return a task with 5xx error code suggesting retry
+                        return [ACBMockURLProtocol createMockTaskForSession:self withStatusCode:503 withMessage:[result status]];
                     }
                     default: {
-                        NSURLSessionDataTask *task = RSSWCallOriginal(result.request);
-                        [task cancel];
-                        // TODO: return error to indicate failure
-                        return task;
+                        // return a task which fails indicating a permanent network issue
+                        return [ACBMockURLProtocol createMockTaskForSession:self withErrorCode:499 withMessage:[result status]];
                     }
                 }
             } else {

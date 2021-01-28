@@ -26,4 +26,10 @@ void ACBLogE(NSString *fmt, ...);
 
 NSError *ACBError(NSInteger code, NSString *fmt, ...);
 
+@interface NSString (NSString_Extended)
+
+- (NSString *)urlencode;
+
+@end
+
 NS_ASSUME_NONNULL_END

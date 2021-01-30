@@ -1,3 +1,24 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016-present, Critical Blue Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+ * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 #import "ACBMockURLProtocol.h"
 #import "ACBUtils.h"
 
@@ -26,8 +47,8 @@
 + (BOOL)canInitWithRequest:(NSURLRequest *) request {
     ACBLogD(@"Mock URL protocol checking if request can be handled");
 
-    ACBLogD(@"url: %@", request.URL);
-    ACBLogD(@"scheme: %@", request.URL.scheme);
+    ACBLogX(@"url: %@", request.URL);
+    ACBLogX(@"scheme: %@", request.URL.scheme);
 
     // pass is this is not a mock https scheme
     if (![request.URL.scheme isEqualToString:@"mockhttps"]) {
@@ -36,6 +57,7 @@
     }
 
     // pass if this request has already been intercepted
+    // the urlprotocol is very chatty and checks multiple times per request for some reason.
     if ([NSURLProtocol propertyForKey: @"mocked" inRequest:request] ) {
         ACBLogD(@"Mock URL protocol already handling request");
         return NO;
@@ -84,7 +106,7 @@
         // Get the parameter value
         NSString *value = [[qs componentsSeparatedByString:@"="] objectAtIndex:1];
         value = [value stringByReplacingOccurrencesOfString:@"+" withString:@" "];
-        value = [value stringByRemovingPercentEncoding];
+        value = [value urldecode];
         queryStrings[key] = value;
     }
     

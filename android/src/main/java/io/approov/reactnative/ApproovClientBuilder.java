@@ -1,5 +1,7 @@
-/**
- * Copyright 2020 CriticalBlue Ltd.
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016-present, Critical Blue Ltd.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -71,7 +73,7 @@ public class ApproovClientBuilder implements CustomClientBuilder, ApproovService
     public void apply(OkHttpClient.Builder builder) {
         if (builder == null) return;
 
-        Log.i(TAG, "Applying Approov custom client builder");
+        Log.d(TAG, "Applying Approov custom client builder");
 
         builder.cookieJar(new ReactCookieJarContainer())
         .addInterceptor(interceptor)

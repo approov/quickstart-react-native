@@ -1,5 +1,7 @@
-/**
- * Copyright 2020 CriticalBlue Ltd.
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016-present, Critical Blue Ltd.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -42,7 +44,6 @@ public class ApproovInterceptor implements Interceptor {
     private String tokenPrefix;
     private boolean shouldBind;
     private String bindingName;
-    private String bindingPrefix;
 
     // context for handling props
     private Context appContext;
@@ -109,37 +110,6 @@ public class ApproovInterceptor implements Interceptor {
             shouldBind = true;
         }
         Log.i(TAG, "binding.name: \'" + bindingName + "\'");
-
-        value = props.getProperty("binding.prefix");
-        if (value == null || value.length() == 0) {
-            bindingPrefix = "";
-        } else {
-            bindingPrefix = value;
-        }
-        Log.i(TAG, "binding.prefix: \'" + bindingPrefix + "\'");
-    }
-
-    private String extractBindingData(String value) {
-        String val = value.trim();
-        
-        if (val.length() <= 0) {
-            // value empty
-            Log.e(TAG, "Approov token binding header value is empty");
-            return "";
-        } else if (bindingPrefix.length() <= 0) {
-            // value with no prefix
-            return val;
-        } else {
-            String[] splits = (val.split("\\s+"));
-            if (splits.length != 2 || !bindingPrefix.equalsIgnoreCase(splits[0])) {
-                // value malformed
-                Log.e(TAG, "Approov token binding header value is malformed");
-                return "";
-            } else {
-                // value with prefix
-                return splits[1];
-            }                
-        }
     }
 
     @Override
@@ -149,18 +119,27 @@ public class ApproovInterceptor implements Interceptor {
 
         // bind token if appropriate
         if (shouldBind) {
-            String bindingValue = request.header(bindingName);
-            if (bindingValue != null) {
+            String data = request.header(bindingName);
+            if (data != null) {
                 Log.i(TAG, "Approov token binding to " + bindingName);
-                String data = extractBindingData(bindingValue);
-                if (data.length() >= 0) approovService.bindToken(data);
+                if (data.length() >= 0) {
+                    approovService.bindToken(data);
+                } else {
+                    Log.w(TAG, "Approov token not bound: empty " + bindingName + " header value");
+                }
             } else {
-                Log.e(TAG, "Approov token binding header not found: " + bindingName);
+                Log.w(TAG, "Approov token not bound: missing " + bindingName + "header");
             }
         }
 
         // request an Approov token for the domain (may throw IOException)
         String token = approovService.getToken(request.url().host());
+
+        // if retry, then return status 503 to fetch
+        if ("RETRY".equals(token)) {
+            Response response = chain.proceed(chain.request());
+            return response.newBuilder().code(503).message("Approov service not reached").build();
+        }
 
         // if successful, add Approov token
         if (token.length() > 0) {

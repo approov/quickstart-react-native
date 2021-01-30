@@ -1,20 +1,23 @@
-// ApproovService framework for integrating Approov into apps using OkHttp.
-//
-// MIT License
-// 
-// Copyright (c) 2016-present, Critical Blue Ltd.
-//
-// Permission is hereby granted, free of charge, to any person obtaining a copy of this software and associated documentation files
-// (the "Software"), to deal in the Software without restriction, including without limitation the rights to use, copy, modify, merge,
-// publish, distribute, sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is furnished to do so,
-// subject to the following conditions:
-//
-// The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-// 
-// THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
-// MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR
-// ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH
-// THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016-present, Critical Blue Ltd.
+ *
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ *
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ *
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+ * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
 
 package io.approov.service;
 
@@ -195,6 +198,11 @@ public class ApproovService {
                 (approovResults.getStatus() == Approov.TokenFetchStatus.UNPROTECTED_URL)) {
             // on no approov service or domain not registered with Approov, return empty string
             return "";
+        } else if  ((approovResults.getStatus() == Approov.TokenFetchStatus.NO_NETWORK) &&
+                (approovResults.getStatus() == Approov.TokenFetchStatus.POOR_NETWORK) &&
+                (approovResults.getStatus() == Approov.TokenFetchStatus.MITM_DETECTED)) {
+            // on transient failures, signal retry
+            return "RETRY";
         } else {
             // we have failed to get an Approov token in such a way that there is no point in proceeding
             // with the request - generally a retry is needed, unless the error is permanent

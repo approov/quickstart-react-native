@@ -1,6 +1,8 @@
-/**
- * Copyright 2020 CriticalBlue Ltd.
- * 
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016-present, Critical Blue Ltd.
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
  * including without limitation the rights to use, copy, modify, merge, publish, distribute,
@@ -21,7 +23,6 @@ package io.approov.reactnative;
 
 import android.util.Log;
 
-import com.facebook.react.bridge.Callback;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -31,6 +32,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Properties;
 
 import io.approov.service.ApproovService;
 
@@ -39,6 +41,9 @@ public class ApproovModule extends ReactContextBaseJavaModule {
 
     private static final String MODULE_NAME = "Approov";
     private static final String CONFIG_NAME = "approov.config";
+    private static final String PROPS_NAME = "approov.props";
+
+    private boolean shouldPrefetch;
 
     private final ReactApplicationContext reactContext;
 
@@ -65,6 +70,32 @@ public class ApproovModule extends ReactContextBaseJavaModule {
         return config;
     }
 
+    private void loadApproovProps() {
+        String value;
+
+        // try to load props
+
+        Properties props = new Properties();
+        try {
+            props.load(reactContext.getAssets().open(PROPS_NAME));
+            Log.i(TAG, "Approov props read from file " + PROPS_NAME);
+        } catch(Exception e){
+            Log.e(TAG, "Approov props read failed: " +
+                    e.getMessage() + ". Please make sure you have the file " + PROPS_NAME +
+                    " available in your app's android/app/src/main/assets/ directory." +
+                    " Using defaults.");
+        }
+
+        // set appropriate props
+
+        value = props.getProperty("init.prefetch");
+        if (value == null || value.length() == 0) {
+            shouldPrefetch = false;
+        } else {
+            shouldPrefetch = Boolean.parseBoolean(value);
+        }
+    }
+
     public ApproovModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
@@ -72,11 +103,14 @@ public class ApproovModule extends ReactContextBaseJavaModule {
         // load initial config
         String config = loadApproovConfig();
 
+        // load properties
+        loadApproovProps();
+
         // initialize Approov service
         ApproovService approovService = new ApproovService(reactContext, config);
 
-        // prefetch token before first client request
-        approovService.prefetchToken();
+        // prefetch token before first client request?
+        if (shouldPrefetch) approovService.prefetchToken();
 
         // initialize and set custom approov okhttp client builder
         NetworkingModule.setCustomClientBuilder(new ApproovClientBuilder(reactContext, approovService));

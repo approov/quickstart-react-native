@@ -55,6 +55,7 @@
     "tmp-promise": "^3.0.2"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "x": "npx @approov/react-native-approov; exit 0",
+    "start": "echo \"*** This package is not runnable. *** To get started, run: npx @approov/react-native-approov:\n\" && npx @approov/react-native-approov; exit 0"
   }
 }

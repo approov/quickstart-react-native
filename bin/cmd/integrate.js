@@ -8,13 +8,12 @@ const fsx = require('../util/fsx')
 const rna = require('../util/rna')
 const shell = require('../util/shell')
 const tmp = require('tmp-promise')
-
+const action = require('../util/action')
 const command = (new Command())
 
 .name('integrate')
 .description('Integrate Approov into the current app')
 
-.option('--api <apis>', 'list of api domains to be protected', '')
 .option('--token.name <name>', 'name of Approov token field', 'Approov-Token')
 .option('--token.prefix <string>', 'prefix prepended to Approov token string', '')
 .option('--binding.name <name>', 'name of binding field', '')
@@ -36,22 +35,9 @@ const command = (new Command())
 
   // check for approov cli and defined management token
 
-  if (rna.isApproovAccessible()) {
-    cli.logSuccess('Found Approov CLI.')
-  } else {
-    cli.exitError('The Approov CLI is not installed or not in the current PATH.')
-  }
-
-  if (!rna.getApproovManagementToken()) {
-    cli.exitError('The APPROOV_MANAGEMENT_TOKEN environmental variable is not set.')
-  }
-
-  let spinner = ora(`Verifying Approov management token...`).start()
-  try {
-    const { stdout, stderr } = await shell.execAsync('approov whoami')
-    spinner.succeed(`Verified Approov management token.`)
-  } catch (err) {
-    spinner.fail('Failed to verify Approov management token.')
+  let ok = await action.checkApproovInstallation()
+  if (!ok) {
+    cli.logError("Unable to continue; see https://www.npmjs.com/package/@approov/react-native-approov for assistance")
     cli.exitError()
   }
 
@@ -82,40 +68,27 @@ const command = (new Command())
     }
   }
 
-  // set api domains
+  // check api domains
 
   const extractDomains = (str) => {
     if (!str) return []
-    str = str.trim()
-    if (!str) return []
 
     const lines = str.split(/\r?\n/)
-    if (lines.length <= 1) return []
-    lines.shift()
 
-    return lines
+    // grab only indented non-empty lines
+    return lines.filter(str => /^\s+\S/.test(str)).map(str => str.trim())
   }
 
-  const cleanDomains = domains => {
-    return domains.filter(str => /\S/.test(str)).map(str => str.trim())
-  }
-
-  let currentDomains =[]
+  let apiDomains =[]
   spinner = ora(`Fetching current Approov-protected API domains...`).start()
   try {
     const { stdout } = await shell.execAsync('approov api -list')
-    currentDomains = cleanDomains(extractDomains(stdout))
-    spinner.succeed(`Fetched current Approov-protected API domains`)
+    apiDomains = extractDomains(stdout)
+    spinner.succeed(`Approov is protecting these API domains:`)
+    apiDomains.forEach(domain => cli.log(`  ${domain}`))
   } catch (err) {
     spinner.fail('Failed to fetch current Approov-protected API domains')
     cli.exitError()
-  }
-
-  let apiDomains = []
-  if (opts.api && opts.api.trim()) {
-    apiDomains = cleanDomains(opts.api.split(/\s*,\s*/))
-  } else {
-    apiDomains = currentDomains
   }
 
   // set other values
@@ -123,7 +96,7 @@ const command = (new Command())
   let tokenName = opts['token.name']
   let tokenPrefix = opts['token.prefix']
   let bindingName = opts['binding.name']
-  let bindingPrefix = opts['binding.prefix']
+  let usePrefetch = opts['init.prefetch']
   let saveDir = opts['save']
 
   const onPromptsCancel = (prompt, answers) => {
@@ -131,19 +104,6 @@ const command = (new Command())
   }
 
   if (opts.prompt) {
-
-    // apis
-
-    let response = await prompts([
-      {
-        type: 'list',
-        name: 'apiDomains',
-        message: 'Specify comma-separated list of API domains to protect',
-        initial: apiDomains.join(', '),
-        separator: ','
-      },
-    ], { onCancel: onPromptsCancel })
-    apiDomains = response.apiDomains
 
     // token name
 
@@ -190,24 +150,15 @@ const command = (new Command())
 
     response = await prompts([  
       {
-        type: 'text',
-        name: 'bindingPrefix',
-        format: input => input.trim(),
-        message: 'Specify prefix to remove from the binding data string, if any',
-        initial: bindingPrefix,
+        type: 'toggle',
+        name: 'usePrefetch',
+        message: 'Start token prefetch during app launch?',
+        initial: false,
+        active: 'yes',
+        inactive: 'no'
       }
     ], { onCancel: onPromptsCancel })
-    bindingPrefix = response.bindingPrefix
-  }
-
-  // add new api domains
-
-  const newDomains = apiDomains.filter( domain => !currentDomains.includes(domain))
-
-  if (newDomains.length > 0) {
-    cli.logError(`Currently, these new domains cannot be added programmatically\n    ${newDomains.join('\n    ')}`)
-    cli.logError(`Please add these API domains manually using the Approov CLI tool and then rerun integration.`)
-    cli.exitError()
+    usePrefetch = response.usePrefetch
   }
 
   // create tmp directory
@@ -241,8 +192,9 @@ const command = (new Command())
 token.name=${tokenName}
 token.prefix=${tokenPrefix}
 binding.name=${bindingName}
-binding.prefix=${bindingPrefix}
+init.prefetch=${usePrefetch}
 `
+
   try {
     await fsp.writeFile(path.join(tmpDir, 'approov.props'), propsStr)
     spinner.succeed(`Created Approov props file`)

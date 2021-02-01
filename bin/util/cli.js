@@ -14,6 +14,8 @@ const indent = (str, num = 4) => {
   return str.replace(/^(?!$)/mg, sp)
 }
 
+const log = msg => console.log(' ', msg)
+
 const logInfo = msg => console.log(logSymbols.info, msg)
 
 const logSuccess = msg => console.log(logSymbols.success, msg)
@@ -28,7 +30,8 @@ const exitError = msg => {
 }
 
 module.exports = {
-  indent, 
+  indent,
+  log,
   logInfo,
   logSuccess,
   logWarning,

@@ -84,7 +84,7 @@ $ cd ios && pod install && cd -
 $ react-native run-ios
 ```
 
-It is also possible to run the app on a real device by passing the `--device` flag to the react-native commands above. For more information, see React Native’s [running on a device](https://facebook.github.io/react-native/docs/running-on-device) documentation.
+It is also possible to run the app on a real device by passing the `--device` flag to the react-native commands above. For more information, see React Native’s [running on a device](https://facebook.github.io/react-native/docs/running-on-device) documentation. Before running on a real iOS device, you should open the `quickstart-react-native/src/ShapesApp/ShapesApp.xcworkspace` in order to configure the codesigning options and possibly change the `Bundle Identifier` to contain a unique string in order to avoid codesigning issues.
 
 Now grab a shape and enjoy the endless family fun!
 
@@ -96,20 +96,21 @@ Now grab a shape and enjoy the endless family fun!
 Currently, the underlying Approov SDK itself is not shipped as part of the `react-native-approov` module. You need to get the latest version. For the Android version do the following (if you are using Windows then substitute `approov` with `approov.exe` in all cases in this quickstart)
 ```
 $ approov sdk -getLibrary src/react-native-approov/android/libs/approov.aar
+    Android SDK library 2.6.0(3534) written to src/react-native-approov/android/libs/approov.aar
 ```
 This directly gets the SDK into the native module.
 
 For iOS, do the following:
 ```
 $ cd src/react-native-approov/ios
-$ approov sdk -getLibrary approov.zip
-$ unzip approov.zip
+$ approov sdk -getLibrary Approov.xcframework
+    iOS SDK library 2.6.0(5851) written to Approov.xcframework
 ```
-This will write the Approov SDK framework into `Approov.framework` in that directory.
+This will write the Approov SDK framework into `Approov.xcframework` in that directory.
 
 ### Require the Approov React Native Package
 
-Edit `src/ShapesApp/packages.json` and add this dependency:
+Edit `src/ShapesApp/package.json` and add this dependency:
 
 ```
 "react-native-approov": "../react-native-approov/"
@@ -118,14 +119,14 @@ Edit `src/ShapesApp/packages.json` and add this dependency:
 From `src/ShapesApp/` folder run:
 
 ```
-$ cd src/ShapesApp && yarn install
+$ yarn install
 ```
 
 ### Add Approov Native Module
 
 Approov protection is provided through the `react-native-approov` module for both Android and iOS mobile platforms. This is an [NPM](https://www.npmjs.com) React Native [module](https://facebook.github.io/react-native/docs/native-modules-setup) which exposes the native Approov functionality to Javascript for your app to access, while hiding a lot of the complexity so you can enjoy the benefits of API protection without the fuss.
 
-Install the Approov module as an app dependency. From the command line at the directory `react-native-approov/src/ShapesApp` type:
+Install the Approov module as an app dependency. From the command line at the directory `quickstart-react-native/src/ShapesApp` type:
 
 ```
 $ yarn add ../react-native-approov
@@ -133,15 +134,15 @@ $ yarn add ../react-native-approov
 
 ### Install Approov Token Fetch Javascript
 
-Install an example Approov HTTP support file (provided in the `react-native-approov` module’s `support-files` directory). From the command line at the directory `react-native-approov/src/ShapesApp` type:
+Install an example Approov HTTP support file (provided in the `react-native-approov` module’s `support-files` directory). From the command line at the directory `quickstart-react-native/src/ShapesApp` type:
 
 ```
 $ yarn --cwd node_modules/react-native-approov install-fetch-support-file $PWD/src
 ```
 
-where `$PWD` should be the current directory at `react-native-approov/src/ShapesApp`.
+where `$PWD` should be the current directory at `quickstart-react-native/src/ShapesApp`.
 
-This will copy the file `ApproovFetchSupport.js` to the ShapesApp directory at `react-native-approov/src/ShapesApp/src/`. You can read more about how this later works in the `FETCH-CODE_DETAIL.md` file.
+This will copy the file `ApproovFetchSupport.js` to the ShapesApp directory at `quickstart-react-native/src/ShapesApp/src/`. You can read more about how this later works in the `FETCH-CODE_DETAIL.md` file.
 
 ### Enable Approov Support in the App
 

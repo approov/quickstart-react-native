@@ -19,7 +19,6 @@
 		36993FD3A4DF9275B75A65E0 /* libPods-ShapesApp-tvOSTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 061E974585462A42F7F1F2EA /* libPods-ShapesApp-tvOSTests.a */; };
 		64605F29C639F86878AD149E /* libPods-ShapesApp-tvOS.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 12047CDDA2D787BF7D83E927 /* libPods-ShapesApp-tvOS.a */; };
 		BB0C274D1353976F8493CE6B /* libPods-ShapesAppTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F8BD867698A3A886744C97CD /* libPods-ShapesAppTests.a */; };
-		D61D4312237F72A800E74FC8 /* approov-initial.config in Resources */ = {isa = PBXBuildFile; fileRef = D61D4311237F72A800E74FC8 /* approov-initial.config */; };
 		F99DB1A9206A3DE829894159 /* libPods-ShapesApp.a in Frameworks */ = {isa = PBXBuildFile; fileRef = F77D6D64A44BE2795CA4E6E4 /* libPods-ShapesApp.a */; };
 /* End PBXBuildFile section */
 
@@ -41,12 +40,10 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
-		008F07F21AC5B25A0029DE68 /* main.jsbundle */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = main.jsbundle; sourceTree = "<group>"; };
 		00E356EE1AD99517003FC87E /* ShapesAppTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ShapesAppTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		00E356F11AD99517003FC87E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		00E356F21AD99517003FC87E /* ShapesAppTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ShapesAppTests.m; sourceTree = "<group>"; };
 		061E974585462A42F7F1F2EA /* libPods-ShapesApp-tvOSTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ShapesApp-tvOSTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		0D5443993F1472B1AB3C7373 /* Pods-ShapesApp-tvOSTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShapesApp-tvOSTests.debug.xcconfig"; path = "Target Support Files/Pods-ShapesApp-tvOSTests/Pods-ShapesApp-tvOSTests.debug.xcconfig"; sourceTree = "<group>"; };
 		12047CDDA2D787BF7D83E927 /* libPods-ShapesApp-tvOS.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ShapesApp-tvOS.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07F961A680F5B00A75B9A /* ShapesApp.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ShapesApp.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		13B07FAF1A68108700A75B9A /* AppDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = AppDelegate.h; path = ShapesApp/AppDelegate.h; sourceTree = "<group>"; };
@@ -55,16 +52,8 @@
 		13B07FB51A68108700A75B9A /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; name = Images.xcassets; path = ShapesApp/Images.xcassets; sourceTree = "<group>"; };
 		13B07FB61A68108700A75B9A /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; name = Info.plist; path = ShapesApp/Info.plist; sourceTree = "<group>"; };
 		13B07FB71A68108700A75B9A /* main.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = main.m; path = ShapesApp/main.m; sourceTree = "<group>"; };
-		2A5CD01E1F08DA957E011068 /* Pods-ShapesApp-tvOS.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShapesApp-tvOS.release.xcconfig"; path = "Target Support Files/Pods-ShapesApp-tvOS/Pods-ShapesApp-tvOS.release.xcconfig"; sourceTree = "<group>"; };
 		2D02E47B1E0B4A5D006451C7 /* ShapesApp-tvOS.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "ShapesApp-tvOS.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		2D02E4901E0B4A5D006451C7 /* ShapesApp-tvOSTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = "ShapesApp-tvOSTests.xctest"; sourceTree = BUILT_PRODUCTS_DIR; };
-		2F638717C814C25ED748EA9A /* Pods-ShapesApp.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShapesApp.release.xcconfig"; path = "Target Support Files/Pods-ShapesApp/Pods-ShapesApp.release.xcconfig"; sourceTree = "<group>"; };
-		6994E25481004E6AB7BCD3B5 /* Pods-ShapesApp-tvOS.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShapesApp-tvOS.debug.xcconfig"; path = "Target Support Files/Pods-ShapesApp-tvOS/Pods-ShapesApp-tvOS.debug.xcconfig"; sourceTree = "<group>"; };
-		6D02278C166BC6EAC3C7D8FA /* Pods-ShapesApp.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShapesApp.debug.xcconfig"; path = "Target Support Files/Pods-ShapesApp/Pods-ShapesApp.debug.xcconfig"; sourceTree = "<group>"; };
-		74786AC2171AA642FF7949E3 /* Pods-ShapesAppTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShapesAppTests.release.xcconfig"; path = "Target Support Files/Pods-ShapesAppTests/Pods-ShapesAppTests.release.xcconfig"; sourceTree = "<group>"; };
-		82D1A6D7BED756E30B4C0F50 /* Pods-ShapesAppTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShapesAppTests.debug.xcconfig"; path = "Target Support Files/Pods-ShapesAppTests/Pods-ShapesAppTests.debug.xcconfig"; sourceTree = "<group>"; };
-		C1B6C09E8510917B813E2480 /* Pods-ShapesApp-tvOSTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-ShapesApp-tvOSTests.release.xcconfig"; path = "Target Support Files/Pods-ShapesApp-tvOSTests/Pods-ShapesApp-tvOSTests.release.xcconfig"; sourceTree = "<group>"; };
-		D61D4311237F72A800E74FC8 /* approov-initial.config */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; name = "approov-initial.config"; path = "ShapesApp/approov-initial.config"; sourceTree = "<group>"; };
 		ED297162215061F000B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = System/Library/Frameworks/JavaScriptCore.framework; sourceTree = SDKROOT; };
 		ED2971642150620600B7C4FE /* JavaScriptCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = JavaScriptCore.framework; path = Platforms/AppleTVOS.platform/Developer/SDKs/AppleTVOS12.0.sdk/System/Library/Frameworks/JavaScriptCore.framework; sourceTree = DEVELOPER_DIR; };
 		F77D6D64A44BE2795CA4E6E4 /* libPods-ShapesApp.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-ShapesApp.a"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -127,8 +116,6 @@
 		13B07FAE1A68108700A75B9A /* ShapesApp */ = {
 			isa = PBXGroup;
 			children = (
-				D61D4311237F72A800E74FC8 /* approov-initial.config */,
-				008F07F21AC5B25A0029DE68 /* main.jsbundle */,
 				13B07FAF1A68108700A75B9A /* AppDelegate.h */,
 				13B07FB01A68108700A75B9A /* AppDelegate.m */,
 				13B07FB51A68108700A75B9A /* Images.xcassets */,
@@ -167,7 +154,6 @@
 				00E356EF1AD99517003FC87E /* ShapesAppTests */,
 				83CBBA001A601CBA00E9B192 /* Products */,
 				2D16E6871FA4F8E400B85C8A /* Frameworks */,
-				DE29333B95A187E9B0241D19 /* Pods */,
 			);
 			indentWidth = 2;
 			sourceTree = "<group>";
@@ -183,21 +169,6 @@
 				2D02E4901E0B4A5D006451C7 /* ShapesApp-tvOSTests.xctest */,
 			);
 			name = Products;
-			sourceTree = "<group>";
-		};
-		DE29333B95A187E9B0241D19 /* Pods */ = {
-			isa = PBXGroup;
-			children = (
-				6D02278C166BC6EAC3C7D8FA /* Pods-ShapesApp.debug.xcconfig */,
-				2F638717C814C25ED748EA9A /* Pods-ShapesApp.release.xcconfig */,
-				6994E25481004E6AB7BCD3B5 /* Pods-ShapesApp-tvOS.debug.xcconfig */,
-				2A5CD01E1F08DA957E011068 /* Pods-ShapesApp-tvOS.release.xcconfig */,
-				0D5443993F1472B1AB3C7373 /* Pods-ShapesApp-tvOSTests.debug.xcconfig */,
-				C1B6C09E8510917B813E2480 /* Pods-ShapesApp-tvOSTests.release.xcconfig */,
-				82D1A6D7BED756E30B4C0F50 /* Pods-ShapesAppTests.debug.xcconfig */,
-				74786AC2171AA642FF7949E3 /* Pods-ShapesAppTests.release.xcconfig */,
-			);
-			path = Pods;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -346,7 +317,6 @@
 			buildActionMask = 2147483647;
 			files = (
 				13B07FBF1A68108700A75B9A /* Images.xcassets in Resources */,
-				D61D4312237F72A800E74FC8 /* approov-initial.config in Resources */,
 				13B07FBD1A68108700A75B9A /* LaunchScreen.xib in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -608,7 +578,6 @@
 /* Begin XCBuildConfiguration section */
 		00E356F61AD99517003FC87E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 82D1A6D7BED756E30B4C0F50 /* Pods-ShapesAppTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				DEVELOPMENT_TEAM = 5RLVRSFUPN;
@@ -632,7 +601,6 @@
 		};
 		00E356F71AD99517003FC87E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 74786AC2171AA642FF7949E3 /* Pods-ShapesAppTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				COPY_PHASE_STRIP = NO;
@@ -653,7 +621,6 @@
 		};
 		13B07F941A680F5B00A75B9A /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6D02278C166BC6EAC3C7D8FA /* Pods-ShapesApp.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -679,7 +646,6 @@
 		};
 		13B07F951A680F5B00A75B9A /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2F638717C814C25ED748EA9A /* Pods-ShapesApp.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_IDENTITY = "Apple Development";
@@ -704,7 +670,6 @@
 		};
 		2D02E4971E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6994E25481004E6AB7BCD3B5 /* Pods-ShapesApp-tvOS.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -732,7 +697,6 @@
 		};
 		2D02E4981E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 2A5CD01E1F08DA957E011068 /* Pods-ShapesApp-tvOS.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = "App Icon & Top Shelf Image";
 				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
@@ -760,7 +724,6 @@
 		};
 		2D02E4991E0B4A5E006451C7 /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 0D5443993F1472B1AB3C7373 /* Pods-ShapesApp-tvOSTests.debug.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;
@@ -787,7 +750,6 @@
 		};
 		2D02E49A1E0B4A5E006451C7 /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = C1B6C09E8510917B813E2480 /* Pods-ShapesApp-tvOSTests.release.xcconfig */;
 			buildSettings = {
 				BUNDLE_LOADER = "$(TEST_HOST)";
 				CLANG_ANALYZER_NONNULL = YES;

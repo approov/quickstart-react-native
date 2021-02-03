@@ -84,6 +84,8 @@ $ cd ios && pod install && cd -
 $ react-native run-ios
 ```
 
+
+Note that on iOS you must run the command `pod install` in the Shapes app `ios` directory first as React Native iOS is built using the [CocoaPods](https://cocoapods.org) dependency framework.
 It is also possible to run the app on a real device by passing the `--device` flag to the react-native commands above. For more information, see React Native’s [running on a device](https://facebook.github.io/react-native/docs/running-on-device) documentation. Before running on a real iOS device, you should open the `quickstart-react-native/src/ShapesApp/ShapesApp.xcworkspace` in order to configure the codesigning options and possibly change the `Bundle Identifier` to contain a unique string in order to avoid codesigning issues.
 
 Now grab a shape and enjoy the endless family fun!
@@ -146,7 +148,7 @@ This will copy the file `ApproovFetchSupport.js` to the ShapesApp directory at `
 
 ### Enable Approov Support in the App
 
-In the javascript source file `react-native-approov/src/ShapesApp/src/App.js` find the location marked with a comment:
+In the javascript source file `quickstart-react-native/src/ShapesApp/src/App.js` find the location marked with a comment:
 
 ```
 *** UNCOMMENT THE SECTION BELOW FOR APPROOV ***
@@ -196,19 +198,17 @@ On success, the tool reports:
 initial SDK configuration written to approov-initial.config
 ```
 
-Copy the configuration file, `approov-initial.config`, to the root ShapesApp project directory (`react-native-approov/src/ShapesApp/approov-initial.config`). From the command line at the directory `react-native-approov/src/ShapesApp` type:
+Copy the configuration file, `approov-initial.config`, to the root ShapesApp project directory (`quickstart-react-native/src/ShapesApp/approov-initial.config`). From the command line at the directory `quickstart-react-native/src/ShapesApp` type:
 
 ```
 $ yarn run install-approov-config
 ```
 
-This command (specified in `package.json`) simply copies the `approov-initial.config` file to the relevant locations for Android and iOS (`react-native-approov/src/ShapesApp/android/app/src/main/assets/` for Android and `react-native-approov/src/ShapesApp/ios/ShapesApp/ `for iOS).
+This command (specified in `package.json`) simply copies the `approov-initial.config` file to the relevant locations for Android and iOS (`quickstart-react-native/src/ShapesApp/android/app/src/main/assets/` for Android and `quickstart-react-native/src/ShapesApp/ios/ShapesApp/ `for iOS). If you are planning on running the iOS example, you need to open the relevant projects and add the `approov-initial.config` to the `ShapesApp` project. Open the `ShapesApp.xcworkspace` and selct `Add Files to ShapesApp ...` in the `File` menu and select the `approov-initial.config` file. It should automatically be added to the `Copy Bundle Resources` in the `Build Phases` tab. If not, make sure you manually add it since this causes the file to be copied to the device during installation. 
 
-Note that if you are integrating Approov into your own app then this command may not be available and you should add it. It needs to copy the `approov-initial.config` file into `react-native-approov/android/app/src/main/assets/` and `react-native-approov/ios/ShapesApp/`.
+Note that if you are integrating Approov into your own app then this command may not be available and you should add it. It needs to copy the `approov-initial.config` file into `quickstart-react-native/android/app/src/main/assets/` and `quickstart-react-native/ios/ShapesApp/`.
 
 Build and run the app on your preferred platform.
-
-Note that on iOS you must run the command `pod install` in the Shapes app `ios` directory first as React Native iOS is built using the [CocoaPods](https://cocoapods.org) dependency framework.
 
 You should see in the [metro](https://facebook.github.io/metro/) log that Approov is successfully fetching tokens, but the Shapes API is not returning valid shapes:
 

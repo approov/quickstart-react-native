@@ -6,6 +6,8 @@ This quickstart is written specifically for native Android and iOS apps that are
 * Access to a trial or paid Approov account
 * The `approov` command line tool [installed](https://approov.io/docs/latest/approov-installation/) with access to your account
 * The contents of the folder containing this README
+* Xcode if you are planning on using iOS (version 12.3 used in this guide) and a real iOS device since Approov will not authenticate an iOS simulator
+* [`CocoaPods`](https://cocoapods.org/) is needed in order to build the iOS project
 
 ## WHAT YOU WILL LEARN
 * How to integrate Approov into a real app in a step by step fashion
@@ -78,6 +80,7 @@ $ react-native run-android
 Or to run on an iOS Simulator, type:
 
 ```
+$ cd ios && pod install && cd -
 $ react-native run-ios
 ```
 

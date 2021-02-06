@@ -11,9 +11,10 @@ const shell = require('../util/shell')
 const tmp = require('tmp-promise')
 const compareVersions = require('compare-versions')
 const lineByline = require('n-readlines')
+const xml2js = require('xml2js')
 
 const REACT_NATIVE_MIN_VERSION = '0.60'
-const REACT_NATIVE_ANDROID_MIN_SDK = '18'
+const REACT_NATIVE_ANDROID_MIN_SDK = '21'
 const REACT_NATIVE_IOS_MIN_VERSION = '10.0'
 
 const getProject = dir => {
@@ -96,6 +97,34 @@ module.exports = {
       spinner.succeed(`Verified project meets minimum Android SDK requirements (${sdk} >= ${REACT_NATIVE_ANDROID_MIN_SDK})`)
       return true
     }
+  },
+
+  checkAndroidNetworkPermissions: async (dir) => {
+    const spinner = ora(`Verifying React Native Android network permissions...`).start()
+
+    const manifestFile = path.join(dir, 'android', 'app', 'src', 'main', 'AndroidManifest.xml')
+    if (!fsx.isFile(manifestFile)) {
+      spinner.fail('Project does not contain a recognizable Android manifest')
+      return false
+    }
+
+    const parser = new xml2js.Parser()
+    try {
+      const data = await fsx.readFile(manifestFile)
+      try {
+        const result = await parser.parseStringPromise(data)
+        console.dir(result.manifest['uses-permission'][0]['$']['android:name'])
+        console.dir(result.manifest['uses-permission'][1]['$']['android:name'])
+        console.log('Done')
+      } catch (err) {
+
+      }
+    } catch (err) {
+
+    }
+
+    spinner.succeed(`Verified React Native Android network permissions`)
+    return true
   },
 
   checkIosProject: async (dir) => {

@@ -19,7 +19,9 @@ module.exports = {
 
   spinner: (msg) => ora(`Verifying Approov account...`).start(),
 
-  logNote: msg => console.log(' ', msg),
+  clearLine: () => process.stdout.write('\r\033[K'),
+
+  logNote: msg => console.log('  ', msg),
 
   logInfo: msg => console.log(logSymbols.info, msg),
 

@@ -1,10 +1,8 @@
-// command line utilities
+// file system extras
 
 const fs = require('fs-extra')
-const shell = require('shelljs')
 
 module.exports = {
-
   ...fs,
 
   isAccessible: (file, mode = fs.constants.F_OK) => {
@@ -53,21 +51,4 @@ module.exports = {
       return false
     }
   },
-
-  ...shell,
-
-  execAsync: (command, options={}) => {
-    if (!('silent' in options)) options.silent = true
-    if (!('cwd' in options)) options.cwd = process.cwd()
-    return new Promise((resolve, reject) => {
-      shell.exec(command, { ...options }, (code, stdout, stderr) => {
-        if (!code) {
-          resolve({ code, stdout, stderr })
-        } else {
-          reject({ code, stdout, stderr })
-        }
-      })
-    })
-  },
-
 }

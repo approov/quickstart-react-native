@@ -163,3 +163,9 @@ Example usage:
   register android debug APK for 1 year, 2 days, 3 hours, and 4 minutes:
   react-native reg-android --expireAfter 1y2d3h4m
   ```
+
+## React Native Approov Checks
+
+The check program will check that yoour project meets APproov requiremenest.
+
+### Check help item here

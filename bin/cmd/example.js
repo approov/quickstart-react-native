@@ -126,7 +126,8 @@ const command = (new Command())
     await fsx.copy(src, dst, { overwrite:false, errorOnExist:true})
     spinner.succeed(`Created ${appName} example.`)
   } catch (err) {
-    spinner.fail(chalk.red(`Failed to create ${appName} example.`))
+    console.log(`\nERR: ${err}`)
+    cli.exitError(chalk.red(`Failed to create ${appName} example.`))
   }
 
   // install app dependencies

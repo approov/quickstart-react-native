@@ -325,10 +325,7 @@ class Project {
   }
 
   getIosApproovConfigPath() {
-    const projName = this.getIosProjectName()
-    if (!projName) return false
-
-    return path.join(this.dir, 'ios', projName, 'approov.config')
+    return path.join(this.dir, 'node_modules', '@approov', 'react-native-approov', 'ios', 'approov.config')
   }
 
   hasIosApproovConfig() {
@@ -347,7 +344,7 @@ class Project {
   }
 
   getIosApproovPropsPath() {
-    return path.join(this.dir, 'ios', 'approov.plist')
+    return path.join(this.dir, 'node_modules', '@approov', 'react-native-approov', 'ios', 'approov.plist')
   }
 
   hasIosApproovProps() {

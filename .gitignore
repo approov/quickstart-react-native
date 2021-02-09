@@ -1,3 +1,10 @@
+# Approov customization files
+approov.config
+approov.aar
+approov.plist
+approov.zip
+Approov.Framework
+
 # Environment
 #
 .env*

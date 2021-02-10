@@ -1,7 +1,7 @@
 {
   "name": "react-native-approov",
   "title": "React Native Approov",
-  "version": "2.2.0",
+  "version": "2.6.0",
   "description": "CriticalBlue Approov 2 module for React Native",
   "main": "index.js",
   "scripts": {

@@ -3,12 +3,12 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 46;
+	objectVersion = 52;
 	objects = {
 
 /* Begin PBXBuildFile section */
+		179742E525CB5A9F00069665 /* Approov.xcframework in Frameworks */ = {isa = PBXBuildFile; fileRef = 179742E425CB5A9F00069665 /* Approov.xcframework */; };
 		B3E7B58A1CC2AC0600A0062D /* RNApproov.m in Sources */ = {isa = PBXBuildFile; fileRef = B3E7B5891CC2AC0600A0062D /* RNApproov.m */; };
-		D61E592223FBFE3F002030B5 /* Approov.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D6EB38CA236E202300AEEECD /* Approov.framework */; };
 		D6D630332386126D003A158B /* TSKBackgroundReporter.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D62FFB2386126D003A158B /* TSKBackgroundReporter.m */; };
 		D6D630342386126D003A158B /* TSKPinFailureReport.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D62FFD2386126D003A158B /* TSKPinFailureReport.m */; };
 		D6D630352386126D003A158B /* vendor_identifier.m in Sources */ = {isa = PBXBuildFile; fileRef = D6D62FFF2386126D003A158B /* vendor_identifier.m */; };
@@ -45,6 +45,7 @@
 
 /* Begin PBXFileReference section */
 		134814201AA4EA6300B7C361 /* libApproov.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = libApproov.a; sourceTree = BUILT_PRODUCTS_DIR; };
+		179742E425CB5A9F00069665 /* Approov.xcframework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcframework; path = Approov.xcframework; sourceTree = "<group>"; };
 		B3E7B5881CC2AC0600A0062D /* RNApproov.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RNApproov.h; sourceTree = "<group>"; };
 		B3E7B5891CC2AC0600A0062D /* RNApproov.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RNApproov.m; sourceTree = "<group>"; };
 		D6D62FF82386126D003A158B /* TSKTrustKitConfig.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = TSKTrustKitConfig.h; sourceTree = "<group>"; };
@@ -97,7 +98,6 @@
 		D6D630302386126D003A158B /* TSKPinningValidator.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TSKPinningValidator.m; sourceTree = "<group>"; };
 		D6D630312386126D003A158B /* TrustKit.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = TrustKit.m; sourceTree = "<group>"; };
 		D6D630322386126D003A158B /* parse_configuration.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = parse_configuration.h; sourceTree = "<group>"; };
-		D6EB38CA236E202300AEEECD /* Approov.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; path = Approov.framework; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -105,7 +105,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				D61E592223FBFE3F002030B5 /* Approov.framework in Frameworks */,
+				179742E525CB5A9F00069665 /* Approov.xcframework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -123,8 +123,8 @@
 		58B511D21A9E6C8500147676 = {
 			isa = PBXGroup;
 			children = (
+				179742E425CB5A9F00069665 /* Approov.xcframework */,
 				D6D62FF72386126D003A158B /* TrustKit */,
-				D6EB38CA236E202300AEEECD /* Approov.framework */,
 				B3E7B5881CC2AC0600A0062D /* RNApproov.h */,
 				B3E7B5891CC2AC0600A0062D /* RNApproov.m */,
 				134814211AA4EA7D00B7C361 /* Products */,
@@ -309,6 +309,7 @@
 			knownRegions = (
 				English,
 				en,
+				Base,
 			);
 			mainGroup = 58B511D21A9E6C8500147676;
 			productRefGroup = 58B511D21A9E6C8500147676;
@@ -382,6 +383,7 @@
 				DEAD_CODE_STRIPPING = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
 				ENABLE_TESTABILITY = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/**";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_DYNAMIC_NO_PIC = NO;
 				GCC_NO_COMMON_BLOCKS = YES;
@@ -398,6 +400,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/**";
+				INCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "";
 				MTL_ENABLE_DEBUG_INFO = YES;
 				ONLY_ACTIVE_ARCH = YES;
 				OTHER_LDFLAGS = "$(inherited)";
@@ -435,6 +438,7 @@
 				DEAD_CODE_STRIPPING = NO;
 				ENABLE_NS_ASSERTIONS = NO;
 				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				FRAMEWORK_SEARCH_PATHS = "$(PROJECT_DIR)/**";
 				GCC_C_LANGUAGE_STANDARD = gnu99;
 				GCC_NO_COMMON_BLOCKS = YES;
 				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
@@ -444,6 +448,7 @@
 				GCC_WARN_UNUSED_FUNCTION = YES;
 				GCC_WARN_UNUSED_VARIABLE = YES;
 				HEADER_SEARCH_PATHS = "$(SRCROOT)/**";
+				INCLUDED_RECURSIVE_SEARCH_PATH_SUBDIRECTORIES = "";
 				MTL_ENABLE_DEBUG_INFO = NO;
 				OTHER_LDFLAGS = "$(inherited)";
 				SDKROOT = iphoneos;
@@ -460,8 +465,8 @@
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_BITCODE = "$(inherited)";
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
+					"$(inherited)/**",
+					"$(PROJECT_DIR)/**",
 				);
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
 				GCC_WARN_SHADOW = YES;
@@ -470,6 +475,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
+					"$(PROJECT_DIR)/**",
 				);
 				INFOPLIST_FILE = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;
@@ -494,8 +500,8 @@
 				DEAD_CODE_STRIPPING = YES;
 				ENABLE_BITCODE = "$(inherited)";
 				FRAMEWORK_SEARCH_PATHS = (
-					"$(inherited)",
-					"$(PROJECT_DIR)",
+					"$(inherited)/**",
+					"$(PROJECT_DIR)/**",
 				);
 				GCC_WARN_FOUR_CHARACTER_CONSTANTS = YES;
 				GCC_WARN_SHADOW = YES;
@@ -504,6 +510,7 @@
 					/Applications/Xcode.app/Contents/Developer/Toolchains/XcodeDefault.xctoolchain/usr/include,
 					"$(SRCROOT)/../../../React/**",
 					"$(SRCROOT)/../../react-native/React/**",
+					"$(PROJECT_DIR)/**",
 				);
 				INFOPLIST_FILE = "";
 				IPHONEOS_DEPLOYMENT_TARGET = 10.0;

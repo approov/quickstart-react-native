@@ -9,20 +9,17 @@ Pod::Spec.new do |s|
   s.description  = <<-DESC
                   react-native-approov
                    DESC
-  s.homepage     = "https://github.com/github_account/react-native-approov"
+  s.homepage     = "https://approov.io"
   s.license      = "MIT"
   # s.license    = { :type => "MIT", :file => "FILE_LICENSE" }
   s.authors      = { "CriticalBlue Ltd" => "support@approov.io" }
-  s.platforms    = { :ios => "9.0", :tvos => "10.0" }
-  s.source       = { :git => "https://github.com/approov/react-native-approov.git", :tag => "#{s.version}" }
+  s.platforms    = { :ios => "10.0" }
+  s.source       = { :git => "https://github.com/approov/quickstart-react-native.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,c,cpp,m,swift}"
   s.requires_arc = true
 
   s.dependency "React"
-
-  # s.vendored_frameworks = 'react-native-approov/Approov.framework'
-  # s.public_header_files = 'react-native-approov/Approov.framework/Headers/*'
-  s.ios.vendored_frameworks = "**/iOS/Approov.framework"
+  s.ios.vendored_frameworks = "**/ios/Approov.xcframework"
 end
 

@@ -81,7 +81,7 @@ Or to run on an iOS Simulator, type:
 
 ```
 $ cd ios && pod install && cd -
-$ react-native run-ios
+$ yarn react-native run-ios
 ```
 
 
@@ -95,7 +95,8 @@ Now grab a shape and enjoy the endless family fun!
 
 ### Add the Latest Approov SDK
 
-Currently, the underlying Approov SDK itself is not shipped as part of the `react-native-approov` module. You need to get the latest version. For the Android version do the following (if you are using Windows then substitute `approov` with `approov.exe` in all cases in this quickstart)
+Currently, the underlying Approov SDK itself is not shipped as part of the `react-native-approov` module. You need to get the latest version. For the Android version do the following (if you are using Windows then substitute `approov` with `approov.exe` in all cases in this quickstart). From the `quickstart-react-native` directory:
+
 ```
 $ approov sdk -getLibrary src/react-native-approov/android/libs/approov.aar
     Android SDK library 2.6.0(3534) written to src/react-native-approov/android/libs/approov.aar
@@ -222,7 +223,7 @@ Warning: Never log tokens in a released app as this could permit hackers to harv
 
 Although the application is now receiving and forwarding tokens with your API calls, the tokens are not yet properly signed, because the attestation service does not recognize your application. Once you register the app with the Approov service, untampered apps will attest successfully and begin to fetch and transmit valid tokens.
 
-Approov command line tools are provided for Windows, MacOS, and Linux platforms. Select the proper operating system executable. In a shell in your `react-native-approov/src/ShapesApp` directory (this assumes that the `approov` tool is in your `PATH` and that you saved the demo management token in a file called `development.tok` in the same directory that contains the `react-native-approov` directory):
+Approov command line tools are provided for Windows, MacOS, and Linux platforms. Select the proper operating system executable. In a shell in your `quickstart-react-native/src/ShapesApp` directory:
 
 ### Android
 
@@ -252,15 +253,6 @@ Then finally, run the app registration command:
 ```
 $ approov registration -add Payload.ipa
 ```
-
-If you plan to submit your application to the app store, you must remove the Intel CPU simulator support architectures from the Approov binary before submitting your app. To do so, at the directory `react-native-approov/src/ShapesApp/node_modules/react-native-approov/ios/Approov.framework` using the command line:
-
-```
-lipo Approov -remove i386 -output Approov
-lipo Approov -remove x86_64 -output Approov
-```
-
-Since executing the above commands will disable support for the iOS Simulator, you may wish to keep a copy of the Approov framework or download another copy if a Simulator run is required.
 
 ## RUNNING THE SHAPES APP WITH APPROOV
 

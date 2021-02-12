@@ -6,7 +6,7 @@ This quickstart is written specifically for native Android and iOS apps that are
 * Access to a trial or paid Approov account
 * The `approov` command line tool [installed](https://approov.io/docs/latest/approov-installation/) with access to your account
 * The contents of the folder containing this README
-* Xcode if you are planning on using iOS (version 12.3 used in this guide) and a real iOS device since Approov will not authenticate an iOS simulator
+* Xcode (version 12.3 used in this guide) if you are planning on using iOS and a real iOS device since Approov will not authenticate an iOS simulator
 * [`CocoaPods`](https://cocoapods.org/) is needed in order to build the iOS project
 
 ## WHAT YOU WILL LEARN
@@ -59,7 +59,7 @@ A successful _shapes_ request to `/v1/shapes` returns one of four possible shape
 
 To build the React Native Shapes app, first ensure you have the `yarn` package manager installed for your system (see the instructions for your specific OS [here](https://yarnpkg.com/lang/en/docs/install/)). Also make sure your system is set up for React Native development by following their [Getting Started](https://facebook.github.io/react-native/docs/getting-started) instructions.
 
-Open a shell terminal at `react-native-approov/src/ShapesApp` and type:
+Open a shell terminal at `quickstart-react-native/src/ShapesApp` and type:
 
 ```
 $ yarn install
@@ -68,13 +68,13 @@ $ yarn install
 Start the [Metro](https://facebook.github.io/metro/) server with:
 
 ```
-$ react-native start
+$ yarn react-native start
 ```
 
 Then, to run on an Android Emulator (which must already be launched), open another terminal window and type:
 
 ```
-$ react-native run-android
+$ yarn react-native run-android
 ```
 
 Or to run on an iOS Simulator, type:

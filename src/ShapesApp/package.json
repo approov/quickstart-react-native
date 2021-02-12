@@ -12,18 +12,20 @@
     "create-ipa": "rm -rf Payload Payload.zip && mkdir Payload && cp -r ios/build/ShapesApp/Build/Products/Debug-iphoneos/ShapesApp.app Payload/ && zip -9 -r Payload.zip Payload && mv Payload.zip Payload.ipa && rm -rf Payload"
   },
   "dependencies": {
-    "react": "16.11.0",
-    "react-native": "0.62.0"
+    "react": "17.0.1",
+    "react-native": "0.63.4"
   },
   "devDependencies": {
-    "@babel/core": "^7.6.4",
+    "@babel/core": "^7.12.16",
     "@babel/runtime": "^7.6.3",
-    "@react-native-community/eslint-config": "^0.0.5",
-    "babel-jest": "^24.9.0",
-    "eslint": "^6.5.1",
-    "jest": "^24.9.0",
-    "metro-react-native-babel-preset": "^0.58.0",
-    "react-test-renderer": "16.11.0"
+    "@react-native-community/eslint-config": "^2.0.0",
+    "babel-jest": "^26.6.3",
+    "eslint": "^7.19.0",
+    "jest": "^26.6.3",
+    "metro": "^0.59.0",
+    "metro-core": "^0.59.0",
+    "metro-react-native-babel-preset": "^0.59.0",
+    "react-test-renderer": "17.0.1"
   },
   "jest": {
     "preset": "react-native"

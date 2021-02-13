@@ -87,7 +87,7 @@ $ yarn react-native run-ios --device
 
 
 Note that on iOS you must run the command `pod install` in the Shapes app `ios` directory first as React Native iOS is built using the [CocoaPods](https://cocoapods.org) dependency framework.
-It is also possible to run the app on a real device by passing the `--device` flag to the react-native commands above. For more information, see React Native’s [running on a device](https://facebook.github.io/react-native/docs/running-on-device) documentation. Before running on a real iOS device, you should open the `quickstart-react-native/src/ShapesApp/ShapesApp.xcworkspace` in order to configure the codesigning options and possibly change the `Bundle Identifier` to contain a unique string in order to avoid codesigning issues.
+If you would like to run the android sample on a device, make sure is connected and you can install and run applications using `adb`. For more information, see React Native’s [running on a device](https://facebook.github.io/react-native/docs/running-on-device) documentation. Before running on a real iOS device, you should open the `quickstart-react-native/src/ShapesApp/ShapesApp.xcworkspace` in order to configure the codesigning options and possibly change the `Bundle Identifier` to contain a unique string in order to avoid codesigning issues.
 
 Now grab a shape and enjoy the endless family fun!
 

@@ -8,7 +8,8 @@ This quickstart is written specifically for native Android and iOS apps that are
 * The contents of the folder containing this README
 * Xcode (version 12.3 used in this guide) if you are planning on using iOS and a real iOS device with iOS 10+ installed, since Approov will not authenticate an iOS simulator.
 * [`CocoaPods`](https://cocoapods.org/) is needed in order to build the iOS project
-* [`Yarn`](https://classic.yarnpkg.com/en/docs/install/) package manager
+* [`Yarn`](https://classic.yarnpkg.com/en/docs/install/) package manager (1.22.10 used in this guide)
+* ['Node'](https://nodejs.org/) is obviously required and version 14.15.4 used in this guide
 
 ## WHAT YOU WILL LEARN
 * How to integrate Approov into a real app in a step by step fashion

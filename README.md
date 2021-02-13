@@ -6,8 +6,9 @@ This quickstart is written specifically for native Android and iOS apps that are
 * Access to a trial or paid Approov account
 * The `approov` command line tool [installed](https://approov.io/docs/latest/approov-installation/) with access to your account
 * The contents of the folder containing this README
-* Xcode (version 12.3 used in this guide) if you are planning on using iOS and a real iOS device since Approov will not authenticate an iOS simulator
+* Xcode (version 12.3 used in this guide) if you are planning on using iOS and a real iOS device with iOS 10+ installed, since Approov will not authenticate an iOS simulator.
 * [`CocoaPods`](https://cocoapods.org/) is needed in order to build the iOS project
+* [`Yarn`](https://classic.yarnpkg.com/en/docs/install/) package manager
 
 ## WHAT YOU WILL LEARN
 * How to integrate Approov into a real app in a step by step fashion
@@ -77,11 +78,11 @@ Then, to run on an Android Emulator (which must already be launched), open anoth
 $ yarn react-native run-android
 ```
 
-Or to run on an iOS Simulator, type:
+Or to run on an iOS device, type:
 
 ```
 $ cd ios && pod install && cd -
-$ yarn react-native run-ios
+$ yarn react-native run-ios --device
 ```
 
 

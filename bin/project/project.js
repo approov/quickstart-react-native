@@ -1,3 +1,24 @@
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016-present, CriticalBlue Ltd.
+ * 
+ * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
+ * associated documentation files (the "Software"), to deal in the Software without restriction,
+ * including without limitation the rights to use, copy, modify, merge, publish, distribute,
+ * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
+ * furnished to do so, subject to the following conditions:
+ * 
+ * The above copyright notice and this permission notice shall be included in all copies or
+ * substantial portions of the Software.
+ * 
+ * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
+ * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+ * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
+ * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
+ * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+ */
+
 const path = require('path')
 const config = require('./config')
 const fsx = require('./fsx')
@@ -6,7 +27,6 @@ const compareVersions = require('compare-versions')
 const lineByline = require('n-readlines')
 const xml2js = require('xml2js')
 const plist = require('simple-plist')
-const tmp = require('tmp')
 
 // As my general convention, functions returning promises use verbs ending in '-ing', so for example:
 // - writeFile() is a synchronous function
@@ -504,12 +524,8 @@ class Project {
     const appDir = this.ios.build.appPath
     const payDir = this.ios.build.payPath
     const ipaFile = this.ios.build.ipaPath
-    console.log(`app Dir: ${appDir}`)
-    console.log(`pay Dir: ${payDir}`)
-    console.log(`ipa file: ${ipaFile}`)
 
-
-    // @TODO: do more of this in node rather than all in shell
+    // @TODO: use node fsx & zip utils?
     try {
       const ipaCreate = [
         `rm -rf ${payDir} ${ipaFile}`,
@@ -518,7 +534,6 @@ class Project {
         `zip -9 -r ${ipaFile} ${payDir}`,
         `rm -rf ${payDir}`,
       ].join(' && ')
-      console.log(ipaCreate)
       await sh.execAsync(ipaCreate, {silent:true})
     } catch (err) {
       console.log(err)
@@ -532,7 +547,7 @@ class Project {
     try {
       await sh.execAsync(`approov registration -add ${this.ios.build.ipaPath} -expireAfter ${expireAfter}`, {silent:false})
       isRegistered = true
-    } catch (err) {console.log(`err: ${err}`)}
+    } catch (err) {}
     this.ios.build.isRegistered = isRegistered
     this.ios.build.expireAfter = expireAfter
   }
@@ -544,7 +559,7 @@ class Project {
     try {
       await sh.execAsync(`ios-deploy -b ${this.ios.build.appPath}`)
       isDeployed = true
-    } catch (err) {console.log(`err: ${err}`)}
+    } catch (err) {}
     this.ios.build.isDeployed = isDeployed
   }
 }

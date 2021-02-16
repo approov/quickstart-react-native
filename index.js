@@ -1,5 +1,7 @@
-/**
- * Copyright 2020 CriticalBlue Ltd.
+/*
+ * MIT License
+ *
+ * Copyright (c) 2016-present, CriticalBlue Ltd.
  * 
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
@@ -17,10 +19,10 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { NativeModules } from 'react-native';
+import { NativeModules } from 'react-native'
 
-const { Approov } = NativeModules;
+const { Approov } = NativeModules
 
 // this is just a placeholder; currently, there are no exposed constants or functions in this interface.
 
-export default Approov;
+export default Approov

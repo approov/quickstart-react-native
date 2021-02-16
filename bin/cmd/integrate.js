@@ -37,7 +37,7 @@ const command = (new Command())
 .option('--no-prompt', 'do not prompt for user input', false)
 .option('--no-sync', 'do not synchronize integration files into the app', false)
 .option('--save <dir>', 'save Approov integration files into this directory', '')
-.option('--approov <version>', 'Approov version', 'most-devices')
+.option('--approov <version>', 'Approov version', config.approovDefaultVersion)
 
 .action(async (opts) => {
   const log = new Log()

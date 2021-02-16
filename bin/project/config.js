@@ -56,15 +56,15 @@ const approovReleases = {
 }
 
 // Approov release aliases
-const approovDefaultVersion = 'most-devices'
+const approovDefaultVersion = 'latest'
 const approovVersions = {
-  'most-devices'  : approovReleases['2.5'],
+  'max-devices'   : approovReleases['2.5'],
   '2.5'           : approovReleases['2.5'],
   'v2.5'          : approovReleases['2.5'],
   '2.5.0'         : approovReleases['2.5'],
   'v2.5.0'        : approovReleases['2.5'],
   'latest'        : approovReleases['2.6'],
-  'most-security' : approovReleases['2.6'],
+  'max-security'  : approovReleases['2.6'],
   '2.6'           : approovReleases['2.6'],
   'v2.6'          : approovReleases['2.6'],
   '2.6.0'         : approovReleases['2.6'],

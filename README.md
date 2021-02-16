@@ -2,95 +2,140 @@
 
 ## WARNINGS
 
-**This package is under active development.**
-**Android support is being tested.**
-
-**iOS support is not complete.**
+**This package is under beta.**
+**Android and iOS support are being tested.**
 
 ## Basic Usage
 
 ### 0. Basic Requirements
 
-Make sure you have recent versions of `node`, `npx`, and `yarn` installed on your machine.
+Make sure you have recent versions of `node` with `npx`, and `yarn` installed on your machine.
 
-Ensure you have an active Approov account and set the environmental variable `APPROOV_MANAGEMENT_TOKEN` to
-your account's management token string and have a recent `approov` CLI installed. See the
+For iOS, make sure `xcode` and the xcode command line tools are installed, as well as `ios-deploy` (which may come with react-native).
+
+For Android, make sure Android Studio is installed.
+
+For Approov, make sure you have installed and can run the `approov` CLI tool. See the
 [Approov installation instructions](https://approov.io/docs/latest/approov-installation/) for more detail.
-
-Verify your setup by calling the `react-native-approov` package `whoami` command:
-
-```
-$ npx @approov/react-native-approov whoami
-✔ Found Approov CLI.
-✔ Found Approov management token.
-✔ Verified Approov management token:
-    account: cb-skiph
-    userName: skiph (administration)
-    expiry: 2046-12-17 08:08:24
-```
 
 ### 1. Working React Native App
 
-Start with a working react native app. As an example, we'll use an example from the `react-native-approov` package:
+Start with a working react native app. If you do not have one, you may install an example from the 
+`@approov/react-native-approov` package. We'll use the `shapes_feetch` example in our instructions. To install it, do:
 
 ```
 $ npx @approov/react-native-approov example
-✔ Select example app to copy › shapes-fetch
+✔ Select example app to copy › shapes_fetch
 ✔ Specify destination path … .
 ✔ Created shapes-fetch example.
 ℹ Installing shapes-fetch npm dependencies...```
 ```
 
-Then change into the example directory and run android:
+To test the app with Android, change into the example directory and run android:
 
 ```
-$ cd shapes-fetch
-$ yarn react-native run-android
+$ cd shapes_fetch
+$ react-native run-android
+```
+
+To test the app on iOS, change into the example directory and run iOS:
+
+```
+$ cd shapes_fetch
+$ react-native run-ios
 ```
 
 You should see a running Approov Shapes app on an android emulator without Approov installed.
 
 ### 2. Approov Integration
 
-Next, we'll run the interactive `integrate` command. This will update the Approov initial config to protect
-any new API domains (for `shapes-fetch`, the API domain is `shapes.approov.io`), and it will add the Approov
-package and required modifications to the project.
-
-Currently, there are issues in the integration command with adding the approov package and new domains, so 
-we will do those steps first for now:
+Next, we'll run the `check` command too see if the app is ready for Approov integration.
 
 ```
-$ approov api -add shapes.approov.io
-$ yarn add @approov/react-native-approov
+$ npx @approov/react-native-approov check
+   
+✔ Found project.json in /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch.
+✔ Using Approov version 2.6.
+✔ Found React Native version 0.63.4.
+✔ Found active Approov CLI.
+ℹ Approov is currently protecting these API domains:
+ℹ   approov.io                 type:account, alg:HS256
+ℹ   shapes.approov.io          type:restricted, alg:HS256
+ℹ   shipfast.skiph.approov.io  type:account, alg:HS256
+ℹ   test.maplerise.com         type:account, alg:HS256
+ℹ To add or remove API domains, see https://github.com/approov/quickstart-react-native/blob/master/README.md#approov-api-domains.
+✔ Found @approov/react-native-approov package
+✔ Found Android project.
+✖ Found Android minimum SDK 18; >= 21 required.
+ℹ See https://github.com/approov/quickstart-react-native/blob/master/README.md#android-project for help.
+✔ Found required Android network permissions.
+✔ Found Android Approov SDK.
+✔ Found Android Approov config file.
+✔ Found Android Approov properties file.
+✔ Found iOS project.
+✔ Found iOS deployment target 10.0.
+✔ Found iOS Approov SDK.
+✔ Found iOS Approov config file.
+✔ Found iOS Approov properties file.
+   
+✖ Found 1 error, 0 warnings
 ```
 
-Now, run the `integrate` command:
+Fix any errors, and then proceed to the integration step:
 
 ```
 $ npx react-native-approov integrate
-✔ Found Approov CLI.
-✔ Verified Approov management token.
-✔ Found @approov/react-native-approov package
-✔ Fetched current Approov-protected API domains
-✔ Specify comma-separated list of API domains to protect … approov.io, shapes.approov.io, shipfast.skiph.approov.io
+   
+✔ Found project.json in /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch.
+✔ Using Approov version 2.6.
+✔ Found React Native version 0.63.4.
+✔ Found active Approov CLI.
+ℹ Approov is currently protecting these API domains:
+ℹ   approov.io                 type:account, alg:HS256
+ℹ   shapes.approov.io          type:restricted, alg:HS256
+ℹ To add or remove API domains, see https://github.com/approov/quickstart-react-native/blob/master/README.md#approov-api-domains.
 ✔ Specify Approov token header name … Approov-Token
-✔ Specify prefix to add to the Approov token string, if any …
-✔ Specify binding header data name, if any …
-✔ Specify prefix to remove from the binding data string, if any … Bearer
-✔ Fetched current Approov config string
-✔ Created Approov props file
-⠸ Fetching Approov Android SDK library
-✔ Fetched current Approov Android SDK library
-✔ Synced Approov config string 'android/app/src/main/assets/approov.config'
-✔ Synced Approov props file 'android/app/src/main/assets/approov.props'
-✔ Synced Approov SDK library 'node_modules/@approov/react-native-approov/android/libs/approov.aar'
-✔ Integration completed successfully.
+✔ Specify prefix to add to the Approov token string, if any … 
+✔ Specify binding header data name, if any … 
+✔ Start token prefetch during app launch? … no / yes
+  Installing the @approov/react-native-approov package...
+yarn add v1.22.5
+[1/4] Resolving packages...
+✔ Installed @approov/react-native-approov package
+  Installing Android Approov SDK library...
+Android SDK library 2.6.0(3534) written to /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch/node_modules/@approov/react-native-approov/android/libs/approov.aar
+✔ Installed Android Approov SDK library.
+  Installing Android Approov config file...
+initial SDK configuration written to /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch/android/app/src/main/assets/approov.config
+✔ Installed Android Approov config file.
+✔ Installed Android Approov props file.
+  Installing iOS Approov SDK library...
+approov sdk -libraryID 5851 -getLibrary /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch/node_modules/@approov/react-native-approov/ios/Approov.zip
+iOS device SDK library 2.6.0(5851) written to /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch/node_modules/@approov/react-native-approov/ios/Approov.zip
+Archive:  /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch/node_modules/@approov/react-native-approov/ios/Approov.zip
+✔ Installed iOS Approov SDK library.
+  Installing iOS Approov config file...
+initial SDK configuration written to /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch/node_modules/@approov/react-native-approov/ios/approov.config
+✔ Installed iOS Approov config file.
+✔ Installed iOS Approov props file.
+  Updating iOS pods...
+Auto-linking React Native module for target `shapes_fetch`: react-native-approov
+Analyzing dependencies
+Downloading dependencies
+Generating Pods project
+Integrating client project
+Pod installation complete! There are 29 dependencies from the Podfile and 28 total pods installed.
+✔ Updated iOS pods.
+   
+✔ Integration completed successfully
 ```
+
+### Android
 
 And once that's completed, rerun android:
 
 ```
-$ yarn react-native run-android
+$ react-native run-android
 ```
 
 You will see that Approov is now installed, but the API calls are failing because Approov is not registered.
@@ -105,67 +150,50 @@ The `react-native-approov` package adds a debug registration command `reg-androi
 Register your app, wait 30 seconds or so, and rerun your app:
 
 ```
-$ yarn react-native reg-android
+$react-native reg-android
 yarn run v1.22.5
 $ /Users/skiph/projects/rn-quickstart/playground/shapes-fetch/node_modules/.bin/react-native reg-android
 ✔ Found Approov CLI.
 ✔ Found Approov management token.
 ✔ Registered debug app for 1h:
-    registering app Shapes
-     0ryxGWdWRXGcFJO26vqV9dJzU5Fo/XZ81ccF9ihK9mg=com.shapes-1.0[1]-2974  SDK:Android(2.5.0)
-    registration successful, expires 2020-12-31 00:59:04
+registering app Shapes
+0ryxGWdWRXGcFJO26vqV9dJzU5Fo/XZ81ccF9ihK9mg=com.shapes-1.0[1]-2974  SDK:Android(2.5.0)
+registration successful, expires 2020-12-31 00:59:04
 ✨  Done in 4.76s.
 $ // wait 30 seconds...
 $ yarn react-native run-android
 ```
 
-You should now see your react native app, protecteed by Approov, successfully making API calls.
+You should now see your react native app, protected by Approov, successfully making API calls.
 
 If the app is still blocking API calls, you can relaunch the app pr wait 5 minutes for new tokens to be issued.
 
-## The `react-native-approov` Commands
+### iOS
+
+On iOS, Approov only attests successfully when running on a physical device and not using the interactive packager. So, on iOS, plug in a device and do:
 
 ```
-$ npx react-native-approov -V
-2.1.2
-Skips-MacBook-Pro:shapes-fetch skiph$ npx react-native-approov
-Usage: react-native-approov [options] [command]
-
-Options:
-  -V, --version                  output the version number
-  -h, --help                     display help for command
-
-Commands:
-  check                          Check Approov integration in the current app
-  example [options] [app] [dir]  Copy a quickstart example app into a new directory
-  integrate [options]            Integrate Approov into the current app
-  sync [srcDir]                  Synchronize app using saved Approov integration files
-  whoami                         Verify Approov account
-  help [command]                 display help for command
+$ react-native run-ios --device
 ```
 
-## The `react-native reg-android` Command
+to build and run your app on a device. Then register the iOS device app by:
 
 ```
-$ npx react-native reg-android --help
-react-native reg-android
+$ react-native reg-ios
+```
 
-register android debug APK
+Finally, to run your app on a device without the packager, do:
 
-Options:
-  --expireAfter <duration>  expire registration after duration (default: "1h")
-  -h, --help                output usage information
+```
+$ react-native deploy-ios
+```
 
-Example usage:
-  register android debug APK for 1 hour (default):
-  react-native reg-android
+This will install the app on your device. Launch teh app, and Approov should be protecting APi calls from teh app.
 
-  register android debug APK for 1 year, 2 days, 3 hours, and 4 minutes:
-  react-native reg-android --expireAfter 1y2d3h4m
-  ```
+## React-Native and Approov Topics
 
-## React Native Approov Checks
+### Topic 1
 
-The check program will check that yoour project meets APproov requiremenest.
+- various topics, some of which are referenced in the command output...
 
-### Check help item here
+And much more...

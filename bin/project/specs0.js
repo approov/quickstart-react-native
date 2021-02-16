@@ -8,7 +8,7 @@ const approovReleases = {
     version: '2.5',
     reactNativeMinVersion: '0.60',
     androidMinSDK: '18',
-    androidLibraryID: '2878',
+    androidLibraryID: '2974',
     iosMinDeploymentTarget: '10.0',
     iosLibraryID: '4855',      
   },
@@ -51,6 +51,27 @@ const refs = {
   contactSupport: chalk.blue(`${readme}/#`),
 }
 
+// error names
+const errors = {
+  noAPK: { name: 'noAPK', msg: apk => `Debug APK not found: ${apk}` },
+  error: { name: 'error', msg: msg => `Error: ${msg? msg:'unspecified'}`,
+}
+
+// provide error object for id and message params
+const errorForID(id, ...params) = id => {
+  if (id in errors) {
+    return {
+      name: errors[id].name,
+      message: errors[id].msg(...params),
+    }
+  } else {
+    return {
+      name: errors[error].name,
+      message: errors[error].msg(...params),
+    }
+  }
+}
+
 // provide release info by version
 const forApproovVersion = (version) => {
   if (!version || !version.trim()) version = 'latest'
@@ -61,4 +82,6 @@ const forApproovVersion = (version) => {
 
 module.exports = { 
   forApproovVersion, 
+  errorForID,
+  help: refs,
 }

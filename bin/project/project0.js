@@ -1,10 +1,13 @@
 const path = require('path')
-const { cli, fsx, shell } = require('./util')
-const Specs = require('./specs')
+const constants = require('./constants0')
+const fsx = require('./fsx')
+const sh = require('./sh')
 const compareVersions = require('compare-versions')
 const lineByline = require('n-readlines')
 const xml2js = require('xml2js')
 const plist = require('simple-plist')
+
+const chalk = require("chalk")
 
 // As my general convention, functions returning promises use verbs ending in '-ing', so for example:
 // - writeFile() is a synchronous function
@@ -27,8 +30,25 @@ class Project {
       this.json = require(filePath)
     }
 
-    // get specs
-    this.specs = Specs.forApproovVersion(version)
+    // get approov specs
+    if (!version || !version.trim()) version = 'latest'
+    version = version.trim()
+    const release = constants.approovVersions[version]
+    this.specs = release ? { ...release, isSupported:true } : { version, isSupported:false }
+  }
+
+  error(id, ...params)  {
+    if (id in constants.messages) {
+      return {
+        name: id,
+        message: constants.messages[id](...params),
+      }
+    } else {
+      return {
+        name: id,
+        message: constants.messages['contactSupport'](...params),
+      }
+    }
   }
 
   isPackage() {
@@ -51,12 +71,12 @@ class Project {
   }
 
   isApproovCLIFound() {
-    return !!shell.which('approov')
+    return !!sh.which('approov')
   }
 
   async checkingIfApproovCLIActive() {
     try {
-      const { stdout, stderr } = await shell.execAsync('approov whoami')
+      const { stdout, stderr } = await sh.execAsync('approov whoami', {silent:true})
     } catch (err) {
       return false
     }
@@ -72,7 +92,7 @@ class Project {
     }
     let apiDomains =[]
     try {
-      const { stdout } = await shell.execAsync('approov api -list')
+      const { stdout } = await sh.execAsync('approov api -list', {silent:true})
       apiDomains = extractDomains(stdout)
     } catch (err) {
       return null
@@ -88,7 +108,7 @@ class Project {
 
   async installingApproovPackage() {
     try {
-      await shell.execAsync(`cd ${this.dir} && yarn add @approov/react-native-approov`, {silent:false})
+      await sh.execAsync(`cd ${this.dir} && yarn add @approov/react-native-approov`, {silent:false})
     } catch (err) {
       console.log(err)
       return false
@@ -158,7 +178,7 @@ class Project {
 
     const libID = this.specs.androidLibraryID
     try {
-      const { stdout } = await shell.execAsync(`approov sdk -libraryID ${libID} -getLibrary ${targetPath}`)
+      const { stdout } = await sh.execAsync(`approov sdk -libraryID ${libID} -getLibrary ${targetPath}`)
     } catch (err) {
       return null
     }
@@ -179,14 +199,14 @@ class Project {
       const assetsDir = path.dirname(targetPath)
       if ('assets' !== path.basename(assetsDir)) return null
       try {
-        const { stdout } = await shell.execAsync(`mkdir ${assetsDir}`)
+        const { stdout } = await sh.execAsync(`mkdir ${assetsDir}`)
       } catch (err) {
         return null
       }
     }
 
     try {
-      const { stdout } = await shell.execAsync(`approov sdk -getConfig ${targetPath}`)
+      const { stdout } = await sh.execAsync(`approov sdk -getConfig ${targetPath}`)
     } catch (err) {
       return null
     }
@@ -207,7 +227,7 @@ class Project {
       const assetsDir = path.dirname(targetPath)
       if ('assets' !== path.basename(assetsDir)) return null
       try {
-        const { stdout } = await shell.execAsync(`mkdir ${assetsDir}`)
+        const { stdout } = await sh.execAsync(`mkdir ${assetsDir}`)
       } catch (err) {
         return null
       }
@@ -230,6 +250,29 @@ class Project {
       return null
     }
     return targetPath
+  }
+
+  getAndroidDebugAPKPath() {
+    return path.join(this.dir, 'android', 'app', 'build', 'outputs', 'apk', 'debug', 'app-debug.apk')
+  }
+
+  hasAndroidDebugAPK() {
+    return fsx.isFile(this.getAndroidDebugAPKPath())
+  }
+
+  async registeringAndroidDebugAPK(options = { expiresAfter: '1h' }) {
+    const apk = this.getAndroidDebugAPKPath()
+    if (!Project.hasAndroidDebugAPK()) throw this.error('NoAPK', apk)
+    
+    try {
+      const cmd = `approov registration -add ${getAndroidDebugAPKPath()} -expireAfter ${options.expireAfter}`
+      const { stdout } = await sh.execAsync(cmd)
+    } catch ({stdout, stderr}) {
+      throw this.error('failedAPKReg', apk)
+    }
+    return {
+      expiresAfter: options.expiresAfter,
+    }
   }
 
   getIosProjectName() {
@@ -303,20 +346,20 @@ class Project {
     const libID = this.specs.iosLibraryID
     try {
       console.log(`do: approov sdk -libraryID ${libID} -getLibrary ${zipPath}`)
-      const { stdout } = await shell.execAsync(`approov sdk -libraryID ${libID} -getLibrary ${zipPath}`)
+      const { stdout } = await sh.execAsync(`approov sdk -libraryID ${libID} -getLibrary ${zipPath}`)
     } catch (err) {
       console.log(`fetch err: ${err}`)
       try {
-        await shell.execAsync(`rm -f ${zipPath}`)
+        await sh.execAsync(`rm -f ${zipPath}`)
       } catch (err) {}
       return null
     }
     try {
-      await shell.execAsync(`rm -rf ${targetPath} && unzip ${zipPath} -d ${path.dirname(zipPath)} && rm -f ${zipPath}`)
+      await sh.execAsync(`rm -rf ${targetPath} && unzip ${zipPath} -d ${path.dirname(zipPath)} && rm -f ${zipPath}`)
     } catch (err) {
       console.log(`err: ${err}`)
       try {
-        await shell.execAsync(`rm -f ${zipPath}`)
+        await sh.execAsync(`rm -f ${zipPath}`)
       } catch (err) {}
       return null
     }
@@ -336,7 +379,7 @@ class Project {
     if (!fsx.isDirectory(path.dirname(targetPath))) return null
 
     try {
-      const { stdout } = await shell.execAsync(`approov sdk -getConfig ${targetPath}`)
+      const { stdout } = await sh.execAsync(`approov sdk -getConfig ${targetPath}`)
     } catch (err) {
       return null
     }
@@ -372,7 +415,7 @@ class Project {
   async updatingIosPods() {
     try {
       const iosDir = path.join(this.dir, 'ios')
-      await shell.execAsync(`cd ${iosDir} && pod install`, {silent:false})
+      await sh.execAsync(`cd ${iosDir} && pod install`, {silent:false})
     } catch (err) {
       console.log(err)
       return false
@@ -387,7 +430,7 @@ class Project {
     let buildDir = null
     try {
       const listBuildSettings = `xcodebuild -workspace ios/${projName}.xcworkspace -scheme ${projName} -configuration Debug -showBuildSettings`
-      const { stdout, stderr } = await shell.execAsync(listBuildSettings)
+      const { stdout, stderr } = await sh.execAsync(listBuildSettings)
       const buildDirLines = stdout.split('\n').filter(line => (line.match('TARGET_BUILD_DIR')))
       if (buildDirLines.length == 1) {
         const buildDirMatch = buildDirLines[0].match(/TARGET_BUILD_DIR\s*=\s*(.*)/)
@@ -421,11 +464,11 @@ class Project {
         `mv ${zipFile} ${ipaFile}`,
         `rm -rf ${tmpDir}`,
       ].join(' && ')
-      const { stdout, stderr } = await shell.execAsync(`echo ${ipaCreate}`)
+      const { stdout, stderr } = await sh.execAsync(`echo ${ipaCreate}`)
     } catch (err) {
       console.log(err)
       try {
-        const { stdout, stderr } = await shell.execAsync(`rm -rf ${tmpDir} ${zipFile} ${ipaFile}`)
+        const { stdout, stderr } = await sh.execAsync(`rm -rf ${tmpDir} ${zipFile} ${ipaFile}`)
       } catch (err) {}
       return null
     }

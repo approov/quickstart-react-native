@@ -1,13 +1,10 @@
 const { Command } = require('commander')
-const Project = require('../project')
-const { cli, fsx, shell } = require('../util')
-
+const { config, fsx, Log, Project, sh } = require('../project')
 const path = require('path')
 const prompts = require('prompts')
 const chalk = require('chalk')
 
 const command = (new Command())
-
 
 .name('integrate')
 .description('Integrate Approov into the current app')
@@ -19,19 +16,21 @@ const command = (new Command())
 .option('--no-prompt', 'do not prompt for user input', false)
 .option('--no-sync', 'do not synchronize integration files into the app', false)
 .option('--save <dir>', 'save Approov integration files into this directory', '')
-.option('--approov <version>', 'Approov version', 'latest')
+.option('--approov <version>', 'Approov version', 'most-devices')
 
 .action(async (opts) => {
+  const log = new Log()
+
   let errors = 0
   let warnings = 0
   const complete = () => {
-    cli.logNote('')
+    log.note()
     if (errors == 0 && warnings == 0) {
-      cli.logSuccess("Integration completed successfully")
+      log.succeed("Integration completed successfully")
     } else if (errors == 0) {
-      cli.logWarning(`Found${errors} error${errors!=1?'s':''}, ${warnings} warning${warnings!=1?'s':''}`)
+      log.warn(`Found ${errors} error${errors!=1?'s':''}, ${warnings} warning${warnings!=1?'s':''}`)
     } else {
-      cli.exitError(`Found ${errors} error${errors!=1?'s':''}, ${warnings} warning${warnings!=1?'s':''}`)
+      log.exit(`Found ${errors} error${errors!=1?'s':''}, ${warnings} warning${warnings!=1?'s':''}`)
     }
   }
 
@@ -40,78 +39,81 @@ const command = (new Command())
   const sync = opts.sync
   const save = !!opts.save
   if (!sync && !save) {
-    cli.logWarning('Nothing to do; neither sync nor save requested.')
+    log.warn('Nothing to do; neither sync nor save requested.')
     warnings++
     complete()
   }
 
+  log.note()
   const project = new Project(process.cwd(), opts['approov'])
-  const help = project.specs.refs
-  const spinner = cli.spinner()
+  
+  // check project
 
-  cli.clearLine()
-  cli.logNote('')
+  log.spin('Checking Project...')
+  await project.checkingProject()
+  if (!project.isPkg) {
+    log.fail(`No project.json found in ${project.dir}.`)
+    log.help('reactNativeProject')
+    errors++
+    complete()
+  }
+  log.succeed(`Found project.json in ${project.dir}.`)
   
   // check Approov Version
 
-  spinner.start("Checking Approov version...")
-  if (!project.specs.isSupported) {
-    spinner.fail('Directory does not appear to be an npm project.')
-    cli.logInfo(`See ${help.approovVersions} for help.`)
+  log.spin('Checking Approov version...')
+  await project.checkingApproovSdk()
+  if (!project.approov.sdk.isSupported) {
+    log.fail(`Approov version ${project.approov.sdk.name} not supported`)
+    log.help('approovVersions')
     errors++
     complete()
   }
-  spinner.succeed(`Using Approov version ${project.specs.version}.`)
+  log.succeed(`Using Approov version ${project.approov.sdk.version}.`)
 
-  // check ReactNative
+  // check React Native
 
-  spinner.start("Checking if a React Native project...")
-  if (!project.isPackage()) {
-    spinner.fail('Directory does not appear to be an npm project.')
-    cli.logInfo(`See ${help.reactNativeProject} for help.`)
+  log.spin('Checking React Native project...')
+  await project.checkingReactNative()
+  if (!project.reactNative.version) {
+    log.fail('React Native package not found.')
+    log.help('reactNativeProject')
     errors++
     complete()
   }
-  const version = project.getReactNativeVersion()
-  if (!version) {
-    spinner.succeed(`Found an npm project.`)
-    spinner.fail('Found no React Native package.')
-    cli.logInfo(`See ${help.reactNativeProject} for help.`)
+  if (!project.reactNative.isVersionSupported) {
+    log.succeed(`Found React Native version ${project.reactNative.version}.`)
+    log.fail(`Approov requires a React Native version >= ${project.reactNative.minVersion}.`)
+    log.help('reactNativeProject')
     errors++
     complete()
   }
-  if (!project.isReactNativeVersionSupported(version)) {
-    spinner.succeed(`Found a React Native project.`)
-    spinner.fail(`Approov requires a React Native version >= ${project.specs.reactNativeMinVersion}; found version ${version}.`)
-    cli.logInfo(`See ${help.reactNativeProject} for help.`)
-    errors++
-    complete()
-  }
-  spinner.succeed(`Found a React Native project.`)
-  spinner.succeed(`Found React Native version ${version}.`)
+  log.succeed(`Found React Native version ${project.reactNative.version}.`)
 
-  // check Approov CLI
+  // check Approov CLI and protected API domains
 
-  spinner.start(`Checking for the Approov CLI...`)
-  if (!await project.checkingIfApproovCLIActive()) {
-    if (!project.isApproovCLIFound()) {
-      spinner.fail('The Approov CLI is not installed or not in the current PATH.')
+  log.spin(`Checking for Approov CLI...`)
+  await project.checkingApproovCli()
+  if (!project.approov.cli.isActive) {
+    if (!project.approov.cli.isFound()) {
+      log.fail('Approov CLI not found; check PATH.')
     } else {
-      spinner.fail('The Approov CLI is not active.')
+      log.fail('Approov CLI found, but not responding; check activation.')
     }
-    cli.logInfo(`See ${help.approovCLI} for help.`)
+    log.help('approovCLI')
     errors++
   } else {
-    spinner.succeed(`Found a working Approov CLI.`)
-    const apiDomains = await project.findingProtectedAPIDomains()
-    if (apiDomains.length <= 0) {
-      spinner.warning('No protected API Domains found')
+    log.succeed(`Found active Approov CLI.`)
+    log.spin(`Finding Approov protected API domains...`)
+    await project.findingApproovApiDomains()    
+    if (project.approov.api.domains.length <= 0) {
+      log.warn('No protected API Domains found')
       warnings++
     } else {
-      spinner.info(`Approov is currently protecting these API domains:`)
-      apiDomains.forEach(domain => cli.logInfo(chalk.green(`  ${domain}`)))
+      log.info(`Approov is currently protecting these API domains:`)
+      project.approov.api.domains.forEach(domain => log.info(chalk.green(`  ${domain}`)))
     }
-    cli.logInfo(`To add or remove API domains, see ${help.approovAPIDomains}.`)
+    log.info(`To add or remove API domains, see ${config.refs['approovAPIDomains']}.`)
   }
 
   // get/modify values
@@ -191,93 +193,100 @@ const command = (new Command())
     usePrefetch,
   }
 
-  console.log(`props: ${props}`)
-
   // check and install Approov package
 
-  spinner.start(`Checking if \'@approov/react-native-approov\` package is installed...`)
-  if (!project.isApproovPackageInstalled()) {
-    spinner.start(`Installing the \'@approov/react-native-approov\` package...`)
-    if (!await project.installingApproovPackage()) {
-      spinner.fail(`Failed to install \'@approov/react-native-approov\' package`)
+  log.spin(`Checking if \'@approov/react-native-approov\` package is installed...`)
+  if (!project.approov.pkg.isInstalled) {
+    log.note(`Installing the @approov/react-native-approov package...`)
+    await project.installingApproovPkg()
+    if (!project.approov.pkg.isInstalled) {
+      log.fail(`Failed to install @approov/react-native-approov package`)
+      log.help('contactSupport')
       errors++
       complete()
     }
-    spinner.succeed(`Installed @approov/react-native-approov package`)
+    log.succeed(`Installed @approov/react-native-approov package`)
   } else {
-    spinner.succeed('The \'@approov/react-native-approov\` package is already installed')
+    log.succeed('The @approov/react-native-approov package is already installed')
   }
 
   // install android files
 
-  if (project.isAndroidProject()) {
-    spinner.start(`Installing Android Approov SDK library...`).start()
-    if (!await project.writingAndroidApproovSDK()) {
-      spinner.fail('Failed to install Android Approov SDK library.')
-      cli.logInfo(`See ${help.contactSupport} for help.`)
+  if (project.reactNative.hasAndroid) {
+    log.note(`Installing Android Approov SDK library...`)
+    await project.installingAndroidApproovSdk()
+    if (!project.android.approov.hasSdk) {
+      log.fail('Failed to install Android Approov SDK library.')
+      log.help('contactSupport')
       errors++
       complete()
     }
-    spinner.succeed(`Installed Android Approov SDK library.`)
+    log.succeed(`Installed Android Approov SDK library.`)
 
-    spinner.start(`Installing Android Approov config file...`).start()
-    if (!await project.writingAndroidApproovConfig()) {
-      spinner.fail('Failed to install Android Approov config file.')
-      cli.logInfo(`See ${help.contactSupport} for help.`)
+    log.note(`Installing Android Approov config file...`)
+    await project.installingAndroidApproovConfig()
+    if (!project.android.approov.hasConfig) {
+      log.fail('Failed to install Android Approov config file.')
+      log.help('contactSupport')
       errors++
       complete()
     }
-    spinner.succeed(`Installed Android Approov config file.`)
+    log.succeed(`Installed Android Approov config file.`)
 
-    spinner.start(`Installing Android Approov props file...`).start()
-    if (!await project.writingAndroidApproovProps(props)) {
-      spinner.fail('Failed to install Android Approov props file.')
-      cli.logInfo(`See ${help.contactSupport} for help.`)
+    log.spin(`Installing Android Approov props file...`)
+    await project.installingAndroidApproovProps(props)
+    if (!project.android.approov.hasProps) {
+      log.fail('Failed to install Android Approov props file.')
+      log.help('contactSupport')
       errors++
       complete()
     }
-    spinner.succeed(`Installed Android Approov props file.`)
+    log.succeed(`Installed Android Approov props file.`)
   }
 
-  // install ios files & update pods
+  // install ios files
 
-  if (project.isIosProject()) {
-    spinner.start(`Installing iOS Approov SDK library...`).start()
-    if (!await project.writingIosApproovSDK()) {
-      spinner.fail('Failed to install iOS Approov SDK library.')
-      cli.logInfo(`See ${help.contactSupport} for help.`)
+  if (project.reactNative.hasIos) {
+    log.note(`Installing iOS Approov SDK library...`)
+    await project.installingIosApproovSdk()
+    if (!project.ios.approov.hasSdk) {
+      log.fail('Failed to install iOS Approov SDK library.')
+      log.help('contactSupport')
       errors++
       complete()
     }
-    spinner.succeed(`Installed iOS Approov SDK library.`)
+    log.succeed(`Installed iOS Approov SDK library.`)
 
-    spinner.start(`Installing iOS Approov config file...`).start()
-    if (!await project.writingIosApproovConfig()) {
-      spinner.fail('Failed to install iOS Approov config file.')
-      cli.logInfo(`See ${help.contactSupport} for help.`)
+    log.note(`Installing iOS Approov config file...`)
+    await project.installingIosApproovConfig()
+    if (!project.ios.approov.hasConfig) {
+      log.fail('Failed to install iOS Approov config file.')
+      log.help('contactSupport')
       errors++
       complete()
     }
-    spinner.succeed(`Installed iOS Approov config file.`)
+    log.succeed(`Installed iOS Approov config file.`)
 
-    spinner.start(`Installing iOS Approov props file...`).start()
-    if (!await project.writingIosApproovProps(props)) {
-      spinner.fail('Failed to install iOS Approov props file.')
-      cli.logInfo(`See ${help.contactSupport} for help.`)
+    log.spin(`Installing iOS Approov props file...`)
+    await project.installingIosApproovProps(props)
+    if (!project.ios.approov.hasProps) {
+      log.fail('Failed to install iOS Approov props file.')
+      log.help('contactSupport')
       errors++
       complete()
     }
-    spinner.succeed(`Installed iOS Approov props file.`)
-
-    spinner.start(`Updating iOS pod dependencies...`)
-    if (!await project.updatingIosPods()) {
-      spinner.fail('Failed to update iOS pods.')
-      cli.logInfo(`See ${help.contactSupport} for help.`)
-      errors++
-      complete()
-    }
-    spinner.succeed(`Updated iOS pods.`)
+    log.succeed(`Installed iOS Approov props file.`)
   }
+
+  log.note(`Updating iOS pods...`)
+  await project.updatingIosPods()
+  if (!project.ios.updatedPods) {
+    log.fail('Failed to update iOS pods.')
+    log.help('contactSupport')
+    errors++
+    complete()
+  }
+  log.succeed(`Updated iOS pods.`)
 
   // complete
 

@@ -54,6 +54,7 @@
     "prompts": "^2.4.0",
     "shelljs": "^0.8.4",
     "simple-plist": "^1.1.1",
+    "tmp": "^0.2.1",
     "xml2js": "^0.4.23"
   },
   "scripts": {

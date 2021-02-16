@@ -1,6 +1,5 @@
 const { Command } = require('commander')
-const Project = require('../project')
-const { cli } = require('../util')
+const { config, Project, Log } = require('../project')
 const chalk = require('chalk')
 
 const command = (new Command())
@@ -8,219 +7,221 @@ const command = (new Command())
 .name('check')
 .description('Check Approov integration in the current app')
 
-.option('--approov <version>', 'Approov version', 'latest')
+.option('--approov <version>', 'Approov version', config.approovDefaultVersion)
 
 .action(async (opts) => {
+  const log = new Log()
+
   let errors = 0
   let warnings = 0
   const complete = () => {
-    cli.logNote('')
+    log.note()
     if (errors == 0 && warnings == 0) {
-      cli.logSuccess("All checks completed successfully")
+      log.succeed("All checks completed successfully")
     } else if (errors == 0) {
-      cli.logWarning(`Found${errors} error${errors!=1?'s':''}, ${warnings} warning${warnings!=1?'s':''}`)
+      log.warn(`Found ${errors} error${errors!=1?'s':''}, ${warnings} warning${warnings!=1?'s':''}`)
     } else {
-      cli.exitError(`Found ${errors} error${errors!=1?'s':''}, ${warnings} warning${warnings!=1?'s':''}`)
+      log.exit(`Found ${errors} error${errors!=1?'s':''}, ${warnings} warning${warnings!=1?'s':''}`)
     }
   }
 
+  log.note()
   const project = new Project(process.cwd(), opts['approov'])
-  const help = project.specs.refs
-  const spinner = cli.spinner()
+  
+  // check project
 
-  cli.clearLine()
-  cli.logNote('')
+  log.spin('Checking Project...')
+  await project.checkingProject()
+  if (!project.isPkg) {
+    log.fail(`No project.json found in ${project.dir}.`)
+    log.help('reactNativeProject')
+    errors++
+    complete()
+  }
+  log.succeed(`Found project.json in ${project.dir}.`)
   
   // check Approov Version
 
-  spinner.start("Checking Approov version...")
-  if (!project.specs.isSupported) {
-    spinner.fail('Directory does not appear to be an npm project.')
-    cli.logInfo(`See ${help.approovVersions} for help.`)
+  log.spin('Checking Approov version...')
+  await project.checkingApproovSdk()
+  if (!project.approov.sdk.isSupported) {
+    log.fail(`Approov version ${project.approov.sdk.name} not supported`)
+    log.help('approovVersions')
     errors++
     complete()
   }
-  spinner.succeed(`Using Approov version ${project.specs.version}.`)
+  log.succeed(`Using Approov version ${project.approov.sdk.version}.`)
 
-  // check ReactNative
+  // check React Native
 
-  spinner.start("Checking if a React Native project...")
-  if (!project.isPackage()) {
-    spinner.fail('Directory does not appear to be an npm project.')
-    cli.logInfo(`See ${help.reactNativeProject} for help.`)
+  log.spin('Checking React Native project...')
+  await project.checkingReactNative()
+  if (!project.reactNative.version) {
+    log.fail('React Native package not found.')
+    log.help('reactNativeProject')
     errors++
     complete()
   }
-  const version = project.getReactNativeVersion()
-  if (!version) {
-    spinner.succeed(`Found an npm project.`)
-    spinner.fail('Found no React Native package.')
-    cli.logInfo(`See ${help.reactNativeProject} for help.`)
+  if (!project.reactNative.isVersionSupported) {
+    log.succeed(`Found React Native version ${project.reactNative.version}.`)
+    log.fail(`Approov requires a React Native version >= ${project.reactNative.minVersion}.`)
+    log.help('reactNativeProject')
     errors++
     complete()
   }
-  if (!project.isReactNativeVersionSupported(version)) {
-    spinner.succeed(`Found a React Native project.`)
-    spinner.fail(`Approov requires a React Native version >= ${project.specs.reactNativeMinVersion}; found version ${version}.`)
-    cli.logInfo(`See ${help.reactNativeProject} for help.`)
-    errors++
-    complete()
-  }
-  spinner.succeed(`Found a React Native project.`)
-  spinner.succeed(`Found React Native version ${version}.`)
+  log.succeed(`Found React Native version ${project.reactNative.version}.`)
 
-  // check Approov CLI
+  // check Approov CLI and protected API domains
 
-  spinner.start(`Checking for the Approov CLI...`)
-  if (!await project.checkingIfApproovCLIActive()) {
-    if (!project.isApproovCLIFound()) {
-      spinner.fail('The Approov CLI is not installed or not in the current PATH.')
+  log.spin(`Checking for Approov CLI...`)
+  await project.checkingApproovCli()
+  if (!project.approov.cli.isActive) {
+    if (!project.approov.cli.isFound()) {
+      log.fail('Approov CLI not found; check PATH.')
     } else {
-      spinner.fail('The Approov CLI is not active.')
+      log.fail('Approov CLI found, but not responding; check activation.')
     }
-    cli.logInfo(`See ${help.approovCLI} for help.`)
+    log.help('approovCLI')
     errors++
   } else {
-    spinner.succeed(`Found a working Approov CLI.`)
-    const apiDomains = await project.findingProtectedAPIDomains()
-    if (apiDomains.length <= 0) {
-      spinner.warning('No protected API Domains found')
+    log.succeed(`Found active Approov CLI.`)
+    log.spin(`Finding Approov protected API domains...`)
+    await project.findingApproovApiDomains()    
+    if (project.approov.api.domains.length <= 0) {
+      log.warn('No protected API Domains found')
       warnings++
     } else {
-      spinner.info(`Approov is currently protecting these API domains:`)
-      apiDomains.forEach(domain => cli.logInfo(chalk.green(`  ${domain}`)))
+      log.info(`Approov is currently protecting these API domains:`)
+      project.approov.api.domains.forEach(domain => log.info(chalk.green(`  ${domain}`)))
     }
-    cli.logInfo(`To add or remove API domains, see ${help.approovAPIDomains}.`)
+    log.info(`To add or remove API domains, see ${config.refs['approovAPIDomains']}.`)
   }
 
   // check Approov package
 
-  spinner.start(`Checking if \'@approov/react-native-approov\` package is installed...`)
-  if (!project.isApproovPackageInstalled()) {
-    spinner.info('The \'@approov/react-native-approov\` package is not installed')
+  log.spin(`Checking for \'@approov/react-native-approov\` package...`)
+  await project.checkingApproovPkg()
+  if (!project.approov.pkg.isInstalled) {
+    log.info('The @approov/react-native-approov package is not installed')
   } else {
-    spinner.succeed('The \'@approov/react-native-approov\` package is installed')
+    log.succeed('Found @approov/react-native-approov package')
   }
 
   // check Android project
 
-  spinner.start(`Checking for Android project...`)
-  if (!project.isAndroidProject()) {
-    spinner.warn('No Android project found.')
-    cli.logInfo('Skipping additional Android checks.')
-    cli.logInfo(`See ${help.androidProject} for help.`)
+  log.spin(`Checking for Android project...`)
+  if (!project.reactNative.hasAndroid) {
+    log.warn('No Android project found.')
+    log.info('Skipping additional Android checks.')
+    log.help('androidProject')
     warnings++
   } else {
-    spinner.succeed(`Found Android project.`)
-
-    spinner.start(`Checking for Android minimum SDK...`)
-    const minSDK = await project.findingAndroidMinSDK()
-    if (!minSDK) {
-      spinner.fail(`Found no Android minimum SDK; >= ${project.specs.andrdoidMinSDK} required.`)
-      cli.logInfo(`See ${help.androidProject} for help.`)
+    log.succeed(`Found Android project.`)
+    log.spin(`Checking Android project...`)
+    await project.checkingAndroidProject()
+    if (!project.android.minSdk) {
+      log.fail(`Found no Android minimum SDK; >= ${project.android.minMinSdk} required.`)
+      log.help('androidProject')
       errors++
-    } else if (!project.isAndroidMinSDKSupported(minSDK)) {
-      spinner.fail(`Found Android minimum SDK ${minSDK}; >= ${project.specs.androidMinSDK} required.`)
-      cli.logInfo(`See ${help.androidProject} for help.`)
-      errors++
-    } else {
-      spinner.succeed(`Found Android minimum SDK ${minSDK}.`)
-    }
-
-    spinner.start('Checking for Android network permissions...')
-    const permissions = await project.findingAndroidNetworkPermissions()
-    if (!permissions.includes('android.permission.INTERNET')) {
-      spinner.fail('Missing required \'android.permission.INTERNET\' in Android manifest.')
-      cli.logInfo(`See ${help.androidNetworkPermissions} for help.`)
+    } else if (!project.android.isMinSdkSupported) {
+      log.fail(`Found Android minimum SDK ${project.android.minSdk}; >= ${project.android.minMinSdk} required.`)
+      log.help('androidProject')
       errors++
     } else {
-      spinner.succeed('Found \'android.permission.INTERNET\' in Android manifest.')
-    }
-    if (!permissions.includes('android.permission.INTERNET')) {
-      spinner.fail('Missing required \'android.permission.ACCESS_NETWORK_STATE\' in Android manifest.')
-      cli.logInfo(`See ${help.androidNetworkPermissions} for help.`)
-      errors++
-    } else {
-      spinner.succeed('Found \'android.permission.ACCESS_NETWORK_STATE\' in Android manifest.')
+      log.succeed(`Found Android minimum SDK ${project.android.minSdk}.`)
     }
 
-    if (project.isApproovPackageInstalled()) {
-      spinner.start('Checking for Android approov components...')
-      if (!project.hasAndroidApproovSDK()) {
-        spinner.fail('Missing Approov Android SDK.')
-        cli.logInfo(`See ${help.androidApproov} for help.`)
+    if (!project.android.permitsNetworking) {
+      Object.keys(project.android.networkPermissions).forEach(p => {
+        if (!project.android.networkPermissions[p]) {
+          log.fail(`Missing required ${p} in Android manifest.`)
+          log.help('androidNetworkPermissions')
+          errors++
+        }
+      })
+    } else {
+      log.succeed('Found required Android network permissions.')
+    }
+
+    if (project.approov.pkg.isInstalled) {
+      log.spin(`Checking for Android Approov components...`)
+      await project.checkingAndroidApproov()
+      if (!project.android.approov.hasSdk) {
+        log.fail('Missing Android Approov SDK.')
+        log.help('androidApproov')
         errors++
       } else {
-        spinner.succeed('Found Approov Android SDK.')
+        log.succeed('Found Android Approov SDK.')
       }
-      spinner.start('Checking for Android approov components...')
-      if (!project.hasAndroidApproovConfig()) {
-        spinner.fail('Missing Approov Android config file.')
-        cli.logInfo(`See ${help.androidApproov} for help.`)
+      if (!project.android.approov.hasConfig) {
+        log.fail('Missing Android Approov config file.')
+        log.help('androidApproov')
         errors++
       } else {
-        spinner.succeed('Found Approov Android config file.')
+        log.succeed('Found Android Approov config file.')
       }
-      spinner.start('Checking for Android approov components...')
-      if (!project.hasAndroidApproovProps()) {
-        spinner.fail('Missing Approov Android properties file.')
-        cli.logInfo(`See ${help.androidApproov} for help.`)
+      if (!project.android.approov.hasProps) {
+        log.fail('Missing Android Approov properties file.')
+        log.help('androidApproov')
         errors++
       } else {
-        spinner.succeed('Found Approov Android properties file.')
+        log.succeed('Found Android Approov properties file.')
       }
     }
   }
 
-  // check iOS Project
+  // check iOS project
 
-  spinner.start(`Checking for iOS project...`)
-  if (!project.isIosProject()) {
-    spinner.warn('No iOS project found.')
-    cli.logInfo('Skipping additional iOS checks.')
-    cli.logInfo(`See ${help.iosProject} for help.`)
+  log.spin(`Checking for iOS project...`)
+  if (!project.reactNative.hasIos) {
+    log.warn('No iOS project found.')
+    log.info('Skipping additional iOS checks.')
+    log.help('iosProject')
+    warnings++
+  } else if (!project.ios.hasXcodebuild) {
+    log.warn('Missing Xcode command line tools (xcodebuild).')
+    log.info('Skipping additional iOS checks.')
+    log.help('iosProject')
     warnings++
   } else {
-    spinner.succeed(`Found iOS project.`)
-
-    spinner.start(`Checking for iOS deployment target...`)
-    const target = await project.findingIosDeploymentTarget()
-    if (!target) {
-      spinner.fail(`Found no iOS deployment target; >= ${project.specs.iosMinDeploymentTarget} required.`)
-      cli.logInfo(`See ${help.iosProject} for help.`)
+    log.succeed(`Found iOS project.`)
+    log.spin(`Checking iOS project...`)
+    await project.checkingIosProject()
+    if (!project.ios.deployTarget) {
+      log.fail(`Found no iOS deployment target; >= ${project.ios.minDeployTarget} required.`)
+      log.help('iosProject')
       errors++
-    } else if (!project.isIosDeploymentTargetSupported(target)) {
-      spinner.fail(`Found iOS deployment target ${target}; >= ${project.specs.iosMinDeploymentTarget} required.`)
-      cli.logInfo(`See ${help.iosProject} for help.`)
+    } else if (!project.ios.isDeployTargetSupported) {
+      log.fail(`Found iOS deployment target ${project.ios.deployTarget}; >= ${project.ios.minDeployTarget} required.`)
+      log.help('iosProject')
       errors++
     } else {
-      spinner.succeed(`Found iOS deployment target ${target}.`)
+      log.succeed(`Found iOS deployment target ${project.ios.deployTarget}.`)
     }
 
-    if (project.isApproovPackageInstalled()) {
-      spinner.start('Checking for iOS Approov components...')
-      if (!project.hasIosApproovSDK()) {
-        spinner.fail('Missing iOS Approov SDK.')
-        cli.logInfo(`See ${help.iosApproov} for help.`)
+    if (project.approov.pkg.isInstalled) {
+      log.spin(`Checking for iOS Approov components...`)
+      await project.checkingIosApproov()
+      if (!project.ios.approov.hasSdk) {
+        log.fail('Missing iOS Approov SDK.')
+        log.help('iosApproov')
         errors++
       } else {
-        spinner.succeed('Found iOS Approov SDK.')
+        log.succeed('Found iOS Approov SDK.')
       }
-      spinner.start('Checking for iOS Approov components...')
-      if (!project.hasIosApproovConfig()) {
-        spinner.fail('Missing iOS Approov config file.')
-        cli.logInfo(`See ${help.iosApproov} for help.`)
+      if (!project.ios.approov.hasConfig) {
+        log.fail('Missing iOS Approov config file.')
+        log.help('iosApproov')
         errors++
       } else {
-        spinner.succeed('Found iOS Approov config file.')
+        log.succeed('Found iOS Approov config file.')
       }
-      spinner.start('Checking for iOS Approov components...')
-      if (!project.hasIosApproovProps()) {
-        spinner.fail('Missing iOS Approov properties file.')
-        cli.logInfo(`See ${help.iosApproov} for help.`)
+      if (!project.ios.approov.hasProps) {
+        log.fail('Missing iOS Approov properties file.')
+        log.help('iosApproov')
         errors++
       } else {
-        spinner.succeed('Found iOS Approov properties file.')
+        log.succeed('Found iOS Approov properties file.')
       }
     }
   }

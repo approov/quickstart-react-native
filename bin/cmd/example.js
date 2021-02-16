@@ -2,7 +2,7 @@ const { Command } = require('commander')
 const path = require('path')
 const prompts = require('prompts')
 const chalk = require('chalk')
-const { cli, fsx, shell } = require('../util')
+const { Log, fsx, sh } = require('../project')
 
 const command = (new Command())
 
@@ -16,6 +16,7 @@ const command = (new Command())
 .option('--no-prompt', 'do not prompt for user input')
 
 .action(async (app, dir, opts) => {
+  const log = new Log()
 
   const defaults = { 
     appName: 'shapes-fetch', 
@@ -46,7 +47,7 @@ const command = (new Command())
   }
 
   const onPromptsCancel = (prompt, answers) => {
-    cli.exitError('Command aborted.')
+    log.exit('Command aborted.')
   }
 
   // build list of examples
@@ -105,7 +106,7 @@ const command = (new Command())
   // check if source is valid
 
   if (!examples.find(ex => ex.title === appName)) {
-    cli.exitError(`app ${appName} not found`)
+    log.exit(`app ${appName} not found`)
   }
 
   const src = path.join(srcDir, appName)
@@ -114,42 +115,42 @@ const command = (new Command())
 
   const dstStatus = validateDst(dstDir)
   if (dstStatus !== true) {
-    cli.exitError(dstStatus)
+    log.exit(dstStatus)
   }
 
   const dst = path.join(dstDir, appName)
 
   // copy app
 
-  const spinner = cli.spinner().start(chalk.green(`Creating ${appName} example...`))
+  log.spin(chalk.green(`Creating ${appName} example...`))
   try {
     await fsx.copy(src, dst, { overwrite:false, errorOnExist:true})
-    spinner.succeed(`Created ${appName} example.`)
+    log.succeed(`Created ${appName} example.`)
   } catch (err) {
     console.log(`\nERR: ${err}`)
-    cli.exitError(chalk.red(`Failed to create ${appName} example.`))
+    log.exit(chalk.red(`Failed to create ${appName} example.`))
   }
 
   // install app dependencies
 
-  cli.logInfo(`Installing ${appName} npm dependencies...`)
+  log.info(`Installing ${appName} npm dependencies...`)
   try {
-    shell.cd(dst)
-    await shell.execAsync('yarn install', {silent:false})
-    spinner.succeed(`Installed ${appName} npm dependencies`)
+    sh.cd(dst)
+    await sh.execAsync('yarn install', {silent:false})
+    log.succeed(`Installed ${appName} npm dependencies`)
   } catch (err) {
-    cli.exitError(`Failed to install ${appName} npm dependencies`)
+    log.exit(`Failed to install ${appName} npm dependencies`)
   }
 
   // install ios pod dependencies
 
-  cli.logInfo(`Installing ${appName} iOS pod dependencies...`)
+  log.info(`Installing ${appName} iOS pod dependencies...`)
   try {
-    shell.cd('ios')
-    await shell.execAsync('pod install', {silent:false})
-    spinner.succeed(`Installed ${appName} iOS pod dependencies`)
+    sh.cd('ios')
+    await sh.execAsync('pod install', {silent:false})
+    log.succeed(`Installed ${appName} iOS pod dependencies`)
   } catch (err) {
-    cli.exitError(`Failed to install ${appName} iOS pod dependencies`)
+    log.exit(`Failed to install ${appName} iOS pod dependencies`)
   }
 
 })

@@ -165,13 +165,17 @@ const command = (new Command())
 
   // install ios pod dependencies
 
-  log.info(`Installing ${appName} iOS pod dependencies...`)
-  try {
-    sh.cd('ios')
-    await sh.execAsync('pod install', {silent:false})
-    log.succeed(`Installed ${appName} iOS pod dependencies`)
-  } catch (err) {
-    log.exit(`Failed to install ${appName} iOS pod dependencies`)
+  if (sh.which('pod')) {
+    log.info(`Installing ${appName} iOS pod dependencies...`)
+    try {
+      sh.cd('ios')
+      await sh.execAsync('pod install', {silent:false})
+      log.succeed(`Installed ${appName} iOS pod dependencies`)
+    } catch (err) {
+      log.exit(`Failed to install ${appName} iOS pod dependencies`)
+    }
+  } else {
+    log.warn(`Skipping ${appName} iOS pod dependencies; pod installation not available.`)
   }
 
 })

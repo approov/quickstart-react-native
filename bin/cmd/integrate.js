@@ -299,15 +299,20 @@ const command = (new Command())
     log.succeed(`Installed iOS Approov props file.`)
   }
 
-  log.note(`Updating iOS pods...`)
-  await project.updatingIosPods()
-  if (!project.ios.updatedPods) {
-    log.fail('Failed to update iOS pods.')
-    log.help('contactSupport')
-    errors++
-    complete()
+  if (sh.which('pod')) {
+    log.note(`Updating iOS pods...`)
+    await project.updatingIosPods()
+    if (!project.ios.updatedPods) {
+      log.fail('Failed to update iOS pods.')
+      log.help('contactSupport')
+      errors++
+      complete()
+    }
+    log.succeed(`Updated iOS pods.`)
+  } else {
+    log.warn(`Skipping ${appName} iOS pod dependencies; pod installation not available.`)
+    warnings++
   }
-  log.succeed(`Updated iOS pods.`)
 
   // complete
 

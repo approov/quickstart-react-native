@@ -21,7 +21,7 @@ For Approov, make sure you have installed and can run the `approov` CLI tool. Se
 ### 1. Working React Native App
 
 Start with a working react native app. If you do not have one, you may install an example from the 
-`@approov/react-native-approov` package. We'll use the `shapes_feetch` example in our instructions. To install it, do:
+`@approov/react-native-approov` package. We'll use the `shapes_fetch` example in our instructions. To install it, do:
 
 ```
 $ npx @approov/react-native-approov example
@@ -84,7 +84,7 @@ $ npx @approov/react-native-approov check
 Fix any errors, and then proceed to the integration step:
 
 ```
-$ npx react-native-approov integrate
+$ npx @approov/react-native-approov integrate
    
 ✔ Found project.json in /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch.
 ✔ Using Approov version 2.6.
@@ -188,7 +188,7 @@ Finally, to run your app on a device without the packager, do:
 $ react-native deploy-ios
 ```
 
-This will install the app on your device. Launch teh app, and Approov should be protecting APi calls from teh app.
+This will install the app on your device. Launch the app, and Approov should be protecting APi calls from the app.
 
 ## React-Native and Approov Topics
 

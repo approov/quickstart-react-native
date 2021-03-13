@@ -20,6 +20,8 @@
  */
 
 const path = require('path')
+const tmp = require('tmp-promise')
+const jsonfile = require('jsonfile')
 const config = require('./config')
 const fsx = require('./fsx')
 const sh = require('./sh')
@@ -33,24 +35,21 @@ const plist = require('simple-plist')
 // - writingFile is an asynchronous function
 
 class Project {
-  constructor(dir = process.cwd(), version) {
+  constructor(dir = process.cwd()) {
     // init info to be collected (mostly here for documentation)
     this.dir = null
+    this.platform = null
+    this.isIosDevPlatform = false
     this.isPkg = false,
     this.json = null,
     this.reactNative = {                // react native checks
       version: null,
-      minVersion: '0.60',
+      minVersion: config.specs.reactNative.minVersion,
       isVersionSupported: false,
       hasAndroid: false,
       hasIos: false,
     }
     this.approov = {
-      sdk: {                            // approov sdk checks
-        name: null,
-        version: null,
-        isSupported: false,  
-      },
       cli: {                            // approov cli checks
         isFound: false,
         isActive: false,
@@ -58,6 +57,7 @@ class Project {
       },
       api: {                            // protected apis found
         domains: [],
+        domainsJsonPath: null,
       },
       pkg: {                            // approov pkg checks
         isInstalled: false,
@@ -66,7 +66,7 @@ class Project {
     this.android = {
       path: null,
       minSdk: null,
-      minMinSdk: null,
+      minMinSdk: config.specs.android.minSdk,
       isMinSdkSupported: false,
       permitsNetworking: false,
       networkPermissions: {
@@ -74,7 +74,6 @@ class Project {
         'android.permission.ACCESS_NETWORK_STATE': false,
       },
       approov: {                        // android approov checks
-        sdkLibraryId: null,
         sdkPath: null,
         hasSdk: false,
         configPath: null,
@@ -94,15 +93,13 @@ class Project {
       path: null,
       name: null,
       deployTarget: null,
-      minDeployTarget: null,
+      minDeployTarget: config.specs.ios.minDeployTarget,
       isMDeployTargetSupported: false,
       hasProvisioningProfile: true,
       hasXcodebuild: false,
       hasIosdeploy: false,
       approov: {                        // ios approov checks
-        sdkVersion: null,
-        sdkType: null,
-        sdkLibraryId: null,
+        isBitcodeSdk: false,
         sdkPath: null,
         hasSdk: false,
         configPath: null,
@@ -124,38 +121,18 @@ class Project {
 
     // save dir
     this.dir = dir
-
-    // save sdk name
-    let name = version
-    if (!name || !name.trim()) name = config.approovDefaultVersion
-    name = name.trim()
-    this.approov.sdk.name = name
   }
 
   async checkingProject() {
-      // read project.json
+
+    this.platform = process.platform
+    this.isIosDevPlatform = this.platform.toLowerCase() === 'darwin'
+    
     if (fsx.isDirectory(this.dir) && fsx.isFile(path.join(this.dir, 'package.json'))) {
       let filePath = path.join(this.dir, 'package.json')
       if (!filePath.includes(path.sep)) filePath= `.${path.sep}${filePath}`
       this.json = require(filePath)
       this.isPkg = true
-    }
-  }
-
-  async checkingApproovSdk() {
-    // get initial approov info
-    const release = config.approovVersions[this.approov.sdk.name]
-    if (release) {
-      this.approov.sdk.version = release.sdkVersion
-      this.approov.sdk.isSupported = true
-      this.reactNative.minVersion = release.reactNative.minVersion
-      this.android.minMinSdk = release.android.minSdk
-      this.android.approov.sdkLibraryId = release.android.sdkLibraryId
-      this.ios.minDeployTarget = release.ios.minDeployTarget
-      this.ios.approov.sdkType = release.ios.sdkType
-      this.ios.approov.sdkLibraryId = release.ios.sdkLibraryId 
-    } else {
-      this.approov.sdk.isSupported = false
     }
   }
 
@@ -209,29 +186,24 @@ class Project {
     // properly set up?
     let isActive = false
     try {
-      await sh.execAsync('approov whoami', {silent:true})
+      const { code, stdout, stderr } = await sh.execAsync('echo "xxx" | approov api -list', {silent:true})
+      isActive = true
     } catch (err) {
       isActive = false
     }
-    isActive = true
     this.approov.cli.isActive = isActive
-
-    // scrape version (if needed in future)
-    this.approov.cli.version = '0.0'
   }
 
   async findingApproovApiDomains() {
-    const extractDomains = (str) => {
-      if (!str) return []  
-      const lines = str.split(/\r?\n/)
-      // grab only indented non-empty lines
-      return lines.filter(str => /^\s+\S/.test(str)).map(str => str.trim())
-    }
-
-    let apiDomains =[]
+    let apiDomains = []
     try {
-      const { stdout } = await sh.execAsync('approov api -list', {silent:true})
-      apiDomains = extractDomains(stdout)
+      const { path: tmpFile, cleanup } = await tmp.file()
+      try {
+        await sh.execAsync(`approov api -getAll ${tmpFile}`, {silent:true})
+        const apis = await jsonfile.readFile(tmpFile)
+        apiDomains = Object.keys(apis)
+      } catch (err) {}
+      cleanup()
     } catch (err) {}
     this.approov.api.domains = apiDomains
   }
@@ -312,9 +284,8 @@ class Project {
     let isInstalled = false
     const sdkPath = this.android.approov.sdkPath
     if (fsx.isDirectory(path.dirname(sdkPath))) {
-      const libId = this.android.approov.sdkLibraryId
       try {
-        const { stdout } = await sh.execAsync(`approov sdk -libraryID ${libId} -getLibrary ${sdkPath}`)
+        const { stdout } = await sh.execAsync(`approov sdk -getLibrary ${sdkPath}`)
         isInstalled = true
       } catch (err) {}
     }
@@ -410,11 +381,9 @@ class Project {
     const sdkPath = this.ios.approov.sdkPath
     if (fsx.isDirectory(path.dirname(sdkPath))) {
       const zipPath = path.join(path.dirname(sdkPath), 'Approov.zip')
-      const libId = this.ios.approov.sdkLibraryId
       let isZipped = false
       try {
-        console.log(`approov sdk -libraryID ${libId} -getLibrary ${zipPath}`)
-        const { stdout } = await sh.execAsync(`approov sdk -libraryID ${libId} -getLibrary ${zipPath}`)
+        const { stdout } = await sh.execAsync(`approov sdk -getLibrary ${zipPath}`)
         isZipped = true
       } catch (err) {
         try {

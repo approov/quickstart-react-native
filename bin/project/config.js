@@ -21,74 +21,38 @@
 
 // Configuration
 
-// Approov fun facts by release
-const approovReleases = {
-  '2.5': {
-    sdkVersion: '2.5',
-    reactNative: {
-      minVersion: '0.60',
-    },
-    android: {
-      sdkLibraryId: '2974',
-      minSdk: '18',
-    },
-    ios: {
-      sdkType: 'framework',
-      sdkLibraryId: '4855',      
-      minDeployTarget: '10.0',
-    },
+// Approov-related specs
+const specs = {
+  reactNative: {
+    minVersion: '0.60',
   },
-  '2.6': {
-    sdkVersion: '2.6',
-    reactNative: {
-      minVersion: '0.60',
-    },
-    android: {
-      sdkLibraryId: '3534',
-      minSdk: '21',
-    },
-    ios: {
-      sdkType: 'framework',
-      sdkLibraryId: '5851',      
-      minDeployTarget: '10.0',
-    },
+  android: {
+    minSdk: '21',
   },
-}
-
-// Approov release aliases
-const approovDefaultVersion = 'latest'
-const approovVersions = {
-  'max-devices'   : approovReleases['2.5'],
-  '2.5'           : approovReleases['2.5'],
-  'v2.5'          : approovReleases['2.5'],
-  '2.5.0'         : approovReleases['2.5'],
-  'v2.5.0'        : approovReleases['2.5'],
-  'latest'        : approovReleases['2.6'],
-  'max-security'  : approovReleases['2.6'],
-  '2.6'           : approovReleases['2.6'],
-  'v2.6'          : approovReleases['2.6'],
-  '2.6.0'         : approovReleases['2.6'],
-  'v2.6.0'        : approovReleases['2.6'],
+  ios: {
+    minDeployTarget: '10.0',
+    useBitcode: false,
+  },
+  reg: {
+    expireAfter: '1h',
+  }
 }
 
 // Default registration expiration
-const approovDefaultExpireAfter = '1h'
 
 // reference links
 const readme = 'https://github.com/approov/quickstart-react-native/blob/master/README.md'
 const refs = {
   contactSupport: `${readme}#`,
   reactNativeProject: `${readme}#react-native-project`,
-  approovCLI: `${readme}#approov-cli`,
-  approovAPIDomains: `${readme}#approov-api-domains`,
-  approovVersion: `${readme}# `,
+  approovCLI: `${readme}#approov-cli`,  
+  approovAPIDomains: `https://approov.io/docs/latest/approov-usage-documentation/#managing-api-domains`,
   approovPackage: `${readme}# `,
   androidProject: `${readme}#android-project`,
-  androidNetworkPermissions: `${readme}#android-network-permissions`,
-  androidApproov: `${readme}#`,
-  iosProject: `${readme}#`,
-  iosApproov: `${readme}#`,
-  approovReg: `${readme}#`,
+  androidApproov: `${readme}#android-approov`,
+  iosProject: `${readme}#ios-project`,
+  iosApproov: `${readme}#ios-approov`,
+  approovReg: `${readme}#approov-reg`,
 }
 
 // error messages
@@ -100,10 +64,7 @@ const errMsgs = {
 
 
 module.exports = { 
-  approovReleases,
-  approovDefaultVersion,
-  approovVersions,
-  approovDefaultExpireAfter,
+  specs,
   refs,
   errMsgs,
 }

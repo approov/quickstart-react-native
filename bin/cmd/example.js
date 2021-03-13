@@ -19,8 +19,9 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-const { Command } = require('commander')
+const { Command, Option } = require('commander')
 const path = require('path')
+const os = require('os')
 const prompts = require('prompts')
 const chalk = require('chalk')
 const { Log, fsx, sh } = require('../project')
@@ -35,6 +36,7 @@ const command = (new Command())
   dir: 'directory to copy app into (default: .)'
 })
 .option('--no-prompt', 'do not prompt for user input')
+.addOption(new Option('-a, --all').hideHelp())
 
 .action(async (app, dir, opts) => {
   const log = new Log()
@@ -77,12 +79,14 @@ const command = (new Command())
   let examples = []
   fsx.readdirSync(srcDir).forEach(file => {
     try {
-      const description = require(path.join(srcDir, file, 'package.json')).description || ''
-      const disabled = description.match(/disabled/i)
-      examples.push({ title: file, description: description, value: file, disabled: disabled })
+      const pkg = require(path.join(srcDir, file, 'package.json'))
+      if (pkg) {
+        const description = pkg.description || ''
+        const hide = !opts.all && pkg.approov && pkg.approov.example === 'hide'
+        if (!hide) examples.push({ title: file, description: description, value: file, disable: false})
+      }
     } catch { /* ignore files & non-package dirs */ }
   })
-
 
   // if prompt, ask for inputs
 
@@ -165,19 +169,22 @@ const command = (new Command())
 
   // install ios pod dependencies
 
-  if (sh.which('pod')) {
-    log.info(`Installing ${appName} iOS pod dependencies...`)
-    try {
-      sh.cd('ios')
-      await sh.execAsync('pod install', {silent:false})
-      log.succeed(`Installed ${appName} iOS pod dependencies`)
-    } catch (err) {
-      log.exit(`Failed to install ${appName} iOS pod dependencies`)
+  if (os.type() === 'Darwin') {
+    if (sh.which('pod')) {
+      log.info(`Installing ${appName} iOS pod dependencies...`)
+      try {
+        sh.cd('ios')
+        await sh.execAsync('pod install', {silent:false})
+        log.succeed(`Installed ${appName} iOS pod dependencies`)
+      } catch (err) {
+        log.exit(`Failed to install ${appName} iOS pod dependencies`)
+      }
+    } else {
+      log.warn(`Skipping ${appName} iOS pod dependencies; pod installation not available.`)
     }
   } else {
-    log.warn(`Skipping ${appName} iOS pod dependencies; pod installation not available.`)
+    log.warn(`Pod installation for iOS not available on ${os.type()}`)
   }
-
 })
 
 module.exports = command

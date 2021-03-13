@@ -8,6 +8,7 @@ Approov.Framework
 # Environment
 #
 .env*
+!.env.SAMPLE
 
 # OSX
 #

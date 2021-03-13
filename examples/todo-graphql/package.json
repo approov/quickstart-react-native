@@ -1,7 +1,0 @@
-{
-  "name": "todo-graphql",
-  "version": "0.0.1",
-  "description": "todo demo app using graphql (DISABLED)", 
-  "private": true,
-  "license": "MIT"
-}

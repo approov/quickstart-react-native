@@ -1,0 +1,147 @@
+<h1 id="react-native-approov">react-native-approov</h1>
+<h2 id="warnings">WARNINGS</h2>
+<p><strong>This package is under beta.</strong>
+<strong>Android and iOS support are being tested.</strong></p>
+<h2 id="basic-usage">Basic Usage</h2>
+<h3 id="0-basic-requirements">0. Basic Requirements</h3>
+<p>Make sure you have recent versions of <code>node</code> with <code>npx</code>, and <code>yarn</code> installed on your machine.</p>
+<p>For iOS, make sure <code>xcode</code> and the xcode command line tools are installed, as well as <code>ios-deploy</code> (which may come with react-native).</p>
+<p>For Android, make sure Android Studio is installed.</p>
+<p>For Approov, make sure you have installed and can run the <code>approov</code> CLI tool. See the
+<a href="https://approov.io/docs/latest/approov-installation/">Approov installation instructions</a> for more detail.</p>
+<h3 id="1-working-react-native-app">1. Working React Native App</h3>
+<p>Start with a working react native app. If you do not have one, you may install an example from the 
+<code>@approov/react-native-approov</code> package. We&#39;ll use the <code>shapes_feetch</code> example in our instructions. To install it, do:</p>
+<pre><code>$ npx @approov/react-native-approov example
+✔ Select example app to copy › shapes_fetch
+✔ Specify destination path … .
+✔ Created shapes-fetch example.
+ℹ Installing shapes-fetch npm dependencies...```
+</code></pre>
+<p>To test the app with Android, change into the example directory and run android:</p>
+<pre><code>$ cd shapes_fetch
+$ react-native run-android
+</code></pre>
+<p>To test the app on iOS, change into the example directory and run iOS:</p>
+<pre><code>$ cd shapes_fetch
+$ react-native run-ios
+</code></pre>
+<p>You should see a running Approov Shapes app on an android emulator without Approov installed.</p>
+<h3 id="2-approov-integration">2. Approov Integration</h3>
+<p>Next, we&#39;ll run the <code>check</code> command too see if the app is ready for Approov integration.</p>
+<pre><code>$ npx @approov/react-native-approov check
+   
+✔ Found project.json in /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch.
+✔ Using Approov version 2.6.
+✔ Found React Native version 0.63.4.
+✔ Found active Approov CLI.
+ℹ Approov is currently protecting these API domains:
+ℹ   approov.io                 type:account, alg:HS256
+ℹ   shapes.approov.io          type:restricted, alg:HS256
+ℹ   shipfast.skiph.approov.io  type:account, alg:HS256
+ℹ   test.maplerise.com         type:account, alg:HS256
+ℹ To add or remove API domains, see https://github.com/approov/quickstart-react-native/blob/master/README.md#approov-api-domains.
+✔ Found @approov/react-native-approov package
+✔ Found Android project.
+✖ Found Android minimum SDK 18; &gt;= 21 required.
+ℹ See https://github.com/approov/quickstart-react-native/blob/master/README.md#android-project for help.
+✔ Found required Android network permissions.
+✔ Found Android Approov SDK.
+✔ Found Android Approov config file.
+✔ Found Android Approov properties file.
+✔ Found iOS project.
+✔ Found iOS deployment target 10.0.
+✔ Found iOS Approov SDK.
+✔ Found iOS Approov config file.
+✔ Found iOS Approov properties file.
+   
+✖ Found 1 error, 0 warnings
+</code></pre>
+<p>Fix any errors, and then proceed to the integration step:</p>
+<pre><code>$ npx react-native-approov integrate
+   
+✔ Found project.json in /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch.
+✔ Using Approov version 2.6.
+✔ Found React Native version 0.63.4.
+✔ Found active Approov CLI.
+ℹ Approov is currently protecting these API domains:
+ℹ   approov.io                 type:account, alg:HS256
+ℹ   shapes.approov.io          type:restricted, alg:HS256
+ℹ To add or remove API domains, see https://github.com/approov/quickstart-react-native/blob/master/README.md#approov-api-domains.
+✔ Specify Approov token header name … Approov-Token
+✔ Specify prefix to add to the Approov token string, if any … 
+✔ Specify binding header data name, if any … 
+✔ Start token prefetch during app launch? … no / yes
+  Installing the @approov/react-native-approov package...
+yarn add v1.22.5
+[1/4] Resolving packages...
+✔ Installed @approov/react-native-approov package
+  Installing Android Approov SDK library...
+Android SDK library 2.6.0(3534) written to /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch/node_modules/@approov/react-native-approov/android/libs/approov.aar
+✔ Installed Android Approov SDK library.
+  Installing Android Approov config file...
+initial SDK configuration written to /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch/android/app/src/main/assets/approov.config
+✔ Installed Android Approov config file.
+✔ Installed Android Approov props file.
+  Installing iOS Approov SDK library...
+approov sdk -libraryID 5851 -getLibrary /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch/node_modules/@approov/react-native-approov/ios/Approov.zip
+iOS device SDK library 2.6.0(5851) written to /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch/node_modules/@approov/react-native-approov/ios/Approov.zip
+Archive:  /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch/node_modules/@approov/react-native-approov/ios/Approov.zip
+✔ Installed iOS Approov SDK library.
+  Installing iOS Approov config file...
+initial SDK configuration written to /Users/skiph/projects/rn-quickstart/playground/tmp/shapes_fetch/node_modules/@approov/react-native-approov/ios/approov.config
+✔ Installed iOS Approov config file.
+✔ Installed iOS Approov props file.
+  Updating iOS pods...
+Auto-linking React Native module for target `shapes_fetch`: react-native-approov
+Analyzing dependencies
+Downloading dependencies
+Generating Pods project
+Integrating client project
+Pod installation complete! There are 29 dependencies from the Podfile and 28 total pods installed.
+✔ Updated iOS pods.
+   
+✔ Integration completed successfully
+</code></pre>
+<h3 id="android">Android</h3>
+<p>And once that&#39;s completed, rerun android:</p>
+<pre><code>$ react-native run-android
+</code></pre>
+<p>You will see that Approov is now installed, but the API calls are failing because Approov is not registered.</p>
+<p>You can view approov-relevant logging info using logcat, similar to this:</p>
+<pre><code>$ adb logcat | grep -i approov
+</code></pre>
+<p>The <code>react-native-approov</code> package adds a debug registration command <code>reg-android</code> to the react native cli.
+Register your app, wait 30 seconds or so, and rerun your app:</p>
+<pre><code>$react-native reg-android
+yarn run v1.22.5
+$ /Users/skiph/projects/rn-quickstart/playground/shapes-fetch/node_modules/.bin/react-native reg-android
+✔ Found Approov CLI.
+✔ Found Approov management token.
+✔ Registered debug app for 1h:
+registering app Shapes
+0ryxGWdWRXGcFJO26vqV9dJzU5Fo/XZ81ccF9ihK9mg=com.shapes-1.0[1]-2974  SDK:Android(2.5.0)
+registration successful, expires 2020-12-31 00:59:04
+✨  Done in 4.76s.
+$ // wait 30 seconds...
+$ yarn react-native run-android
+</code></pre>
+<p>You should now see your react native app, protected by Approov, successfully making API calls.</p>
+<p>If the app is still blocking API calls, you can relaunch the app pr wait 5 minutes for new tokens to be issued.</p>
+<h3 id="ios">iOS</h3>
+<p>On iOS, Approov only attests successfully when running on a physical device and not using the interactive packager. So, on iOS, plug in a device and do:</p>
+<pre><code>$ react-native run-ios --device
+</code></pre>
+<p>to build and run your app on a device. Then register the iOS device app by:</p>
+<pre><code>$ react-native reg-ios
+</code></pre>
+<p>Finally, to run your app on a device without the packager, do:</p>
+<pre><code>$ react-native deploy-ios
+</code></pre>
+<p>This will install the app on your device. Launch teh app, and Approov should be protecting APi calls from teh app.</p>
+<h2 id="react-native-and-approov-topics">React-Native and Approov Topics</h2>
+<h3 id="topic-1">Topic 1</h3>
+<ul>
+<li>various topics, some of which are referenced in the command output...</li>
+</ul>
+<p>And much more...</p>

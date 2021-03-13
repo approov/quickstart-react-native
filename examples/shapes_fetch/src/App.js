@@ -46,16 +46,12 @@ const imgAssets = {
 
 // determine which api to use
 
-const api = NativeModules.Approov? {
-  msg: 'Approov installed',
+const api = {
   version: 'protected API (v2)',
+  // the check endpoint should always work
   checkUrl: `https://shapes.approov.io/v2/hello`,
+  // the fetch endpoint should only succeed if approov is integrated
   fetchUrl: `https://shapes.approov.io/v2/shapes`,
-} : {
-  msg: 'Approov not installed',
-  version: 'unproetcted API (v1)',
-  checkUrl: `https://shapes.approov.io/v1/hello`,
-  fetchUrl: `https://shapes.approov.io/v1/shapes`,
 }
 console.log(`${api.msg}, using ${api.version}`)
 
@@ -139,9 +135,6 @@ const App = () => {
             <Button onPress={fetchShape} title={fetchTitle} />
           </View>
         </View>
-        <View style={styles.apiBox}>
-          <Text style={styles.api}>{api.msg}</Text>
-        </View>
       </SafeAreaView>
     </>
   );
@@ -198,12 +191,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'flex-end',
     justifyContent: 'space-around',
-  },
-  apiBox: {
-    flex: 1,
-    flexDirection: 'row',
-    justifyContent: 'center',
-    alignItems: 'center',
   },
   api: {
     fontSize: 16,

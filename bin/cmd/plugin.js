@@ -19,101 +19,26 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-const { config, Log, Project } = require('../project')
+const { Action, config } = require('../project')
 
 const optionDefaults = {
   expireAfter: config.approovDefaultExpireAfter
 }
 
 const registeringAndroid = async (opts = {expireAfter: config.approovDefaultExpireAfter}) => {
-  const log = new Log()
+  const action = new Action(process.cwd())
 
-  let errors = 0
-  let warnings = 0
-  const complete = () => {
-    log.note()
-    if (errors == 0 && warnings == 0) {
-      log.succeed(`Registration successful, expiring after ${project.android.build.expireAfter}.`)
-    } else if (errors == 0) {
-      log.warn(`Found ${errors} error${errors!=1?'s':''}, ${warnings} warning${warnings!=1?'s':''}`)
-    } else {
-      log.exit(`Found ${errors} error${errors!=1?'s':''}, ${warnings} warning${warnings!=1?'s':''}`)
-    }
+  try {
+    await action.checkingProject()
+    await action.checkingReactNative()
+    await action.checkingApproovCli()
+    await action.checkingAndroidBuild()
+    await action.registeringAndroidApk()
+  } catch (err) { 
+    action.unexpected(err)
   }
 
-  log.note()
-  const project = new Project(process.cwd(), 'latest')
-  
-  // check project
-
-  log.spin('Checking Project...')
-  await project.checkingProject()
-  if (!project.isPkg) {
-    log.fail(`No project.json found in ${project.dir}.`)
-    log.help('reactNativeProject')
-    errors++
-    complete()
-  }
-  log.succeed(`Found project.json in ${project.dir}.`)
-
-  // check React Native
-
-  log.spin('Checking React Native project...')
-  await project.checkingReactNative()
-  if (!project.reactNative.version) {
-    log.fail('React Native package not found.')
-    log.help('reactNativeProject')
-    errors++
-    complete()
-  }
-  if (!project.reactNative.isVersionSupported) {
-    log.succeed(`Found React Native version ${project.reactNative.version}.`)
-    log.fail(`Approov requires a React Native version >= ${project.reactNative.minVersion}.`)
-    log.help('reactNativeProject')
-    errors++
-    complete()
-  }
-  log.succeed(`Found React Native version ${project.reactNative.version}.`)
-
-  // check Approov CLI
-
-  log.spin(`Checking for Approov CLI...`)
-  await project.checkingApproovCli()
-  if (!project.approov.cli.isActive) {
-    if (!project.approov.cli.isFound()) {
-      log.fail('Approov CLI not found; check PATH.')
-    } else {
-      log.fail('Approov CLI found, but not responding; check activation.')
-    }
-    log.help('approovCLI')
-    errors++
-    complete()
-  }
-  log.succeed(`Found active Approov CLI.`)
-
-  // check android build
-
-  log.spin(`Checking for Android debug APK`)
-  await project.checkingAndroidBuild()
-  if (!project.android.build.hasApk) {
-    log.fail(`Approov debug APK ${project.android.build.apkPath} not found`)
-    log.info(`Has \`react-native run-android\` been run?`)
-    errors++
-    complete()
-  }
-  log.succeed(`Found Android debug APK.`)
-        
-  // register the APK
-
-  log.note(`Registering Android debug APK`)
-  await project.registeringAndroidBuild(opts.expireAfter)
-  if (!project.android.build.isRegistered) {
-    log.fail(`Unable to register debug APK ${project.android.build.apkPath}.`)
-    log.help('contactSupport')
-  }
-  log.succeed(`Registered the debug APK ${project.android.build.apkPath} for ${project.android.build.expireAfter}.`)
-
-  complete()
+  action.complete(`Registration successful, expiring after ${opts.expireAfter}.`)
 }
 
 const registeringIos = async (opts = {expireAfter: config.approovDefaultExpireAfter}) => {

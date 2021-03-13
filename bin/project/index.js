@@ -19,13 +19,15 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
- const config = require('./config')
+const config = require('./config')
 const Project = require('./project')
+const Action = require('./action')
 const Log = require('./log')
 const fsx = require('./fsx')
 const sh = require('./sh')
 
 module.exports = {
+  Action,
   config,
   fsx,
   Log,

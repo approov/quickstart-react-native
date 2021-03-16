@@ -49,9 +49,9 @@
     return self;
 }
 
-// These two reflection functioons are quite handy. They appear to work as adverised as long as you only
+// These two reflection functions are quite handy. They appear to work as advertised as long as you only
 // implement the auth challenges. Implement any one of the task or data delegate functions and they are all
-// presuemd to be implemented or nil which isn't very helpful. So for now, they are commented out, and
+// presumed to be implemented or nil which isn't very helpful. So for now, they are commented out, and
 // every delegate function in RCTHTTPRequestHandler is wrapped here. Unfortunate, but YMMV.
 
 //// Decides if delegate wants to handle this method.

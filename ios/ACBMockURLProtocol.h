@@ -23,7 +23,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// A mock hhtps protocol good for returning status codes and errors..
+/// A mock https protocol good for returning status codes and errors.
 @interface ACBMockURLProtocol : NSURLProtocol <NSURLSessionDataDelegate>
 
 /// Starts a data task which returns a custom status code.

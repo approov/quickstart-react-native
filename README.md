@@ -188,7 +188,7 @@ Finally, to run your app on a device without the packager, do:
 $ react-native deploy-ios
 ```
 
-This will install the app on your device. Launch the app, and Approov should be protecting APi calls from the app.
+This will install the app on your device. Launch the app, and Approov should be protecting API calls from the app.
 
 ## React-Native and Approov Topics
 

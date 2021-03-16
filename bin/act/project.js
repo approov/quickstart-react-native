@@ -93,7 +93,7 @@ class Project {
     this.log.spin(`Checking for Approov CLI...`)
     if (!task.hasApproovCli()) {
       this.errors++
-      this.log.fatal('Approov CLI not found in PATH.', 'approovCLI')
+      this.log.fatal('Approov CLI not found in PATH.', this.ref('approovCLI'))
     }
     if (!await task.checkingApproovSessionActive()) {
       this.errors++
@@ -112,7 +112,7 @@ class Project {
       this.log.info(`Approov is currently protecting these API domains:`)
       apiDomains.forEach(domain => this.log.info(chalk.green(`  ${domain}`)))
     }
-    this.log.info(`To add or remove API domains, see ${config.refs['approovAPIDomains']}.`)
+    this.log.info(`To add or remove API domains, see ${this.ref('approovAPIDomains')}`)
   }
 
   async checkingApproovPackage() {
@@ -186,7 +186,7 @@ class Project {
         if (!permissions.includes(p)) {
           hasPermissions = false
           this.errors++
-          this.log.fail(`Missing required ${p} in Android manifest.`, 'androidProject')
+          this.log.fail(`Missing required ${p} in Android manifest.`, this.ref('androidProject'))
         }
       })
       if (hasPermissions) {

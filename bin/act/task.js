@@ -307,7 +307,18 @@ const tasks = {
   getIosApproovPropsPath: function(dir) {},
   hasIosApproovProps: function(dir) {},
   installingIosApproovProps: async function(dir) {},
-  installingIosPods: async function(dir) {},
+  
+  installingIosPods: async function(dir) {
+    let isInstalled = false
+    try {
+      sh.cd(path.join(dir, 'ios'))
+      await sh.execAsync('pod install', {silent:false})
+      isInstalled = true
+    } catch (err) {
+    }
+    return isInstalled
+  },
+
   getIoosAppPath: function(dir, configuration) {},
   hasIoSApp: function(dir, configuration) {},
   getIosIpaPath: function(dir, configuration) {},

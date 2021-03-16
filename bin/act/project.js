@@ -135,6 +135,24 @@ class Project {
         this.log.fatal(`Failed to install @approov/react-native-approov package`, this.ref('contactSupport'))
       }
       this.log.succeed(`Installed @approov/react-native-approov package`)
+      if (task.getPlatform() === 'darwin') {
+        if (task.hasPod()) {
+          this.log.info(`Installing iOS pod dependencies...`)
+          const isInstalled = await task.installingIosPods(this.dir)
+          if (!isInstalled) {
+            this.errors++
+            this.log.fatal(`Failed to install iOS pod dependencies`, this.ref('contactSupport'))
+          }
+          this.log.succeed(`Installed iOS pod dependencies`)
+        } else {
+          this.warnings++
+          this.log.warn(`Skipping iOS pod dependencies; pod install not found in PATH.`)
+        }
+      } else {
+        this.warnings++
+        this.log.warn(`Skipping iOS pod dependencies; pod installation for iOS not available on ${task.getPlatform()}`)
+      }
+    
     } else {
       this.log.succeed('The @approov/react-native-approov package is already installed')
     }

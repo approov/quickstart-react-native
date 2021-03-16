@@ -175,7 +175,7 @@ const command = (new Command())
 
   // install ios pod dependencies
 
-  if (task.getPlatform() === 'Darwin') {
+  if (task.getPlatform() === 'darwin') {
     if (task.hasPod()) {
       log.info(`Installing ${appName} iOS pod dependencies...`)
       try {
@@ -189,7 +189,7 @@ const command = (new Command())
       log.warn(`Skipping ${appName} iOS pod dependencies; pod install not found in PATH.`)
     }
   } else {
-    log.warn(`Pod installation for iOS not available on ${os.type()}`)
+    log.warn(`Pod installation for iOS not available on ${task.getPlatform()}`)
   }
 })
 

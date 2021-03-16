@@ -259,7 +259,7 @@ NSString *const UpdateConfigKey = @"approov-config";
         [attestedRequest addValue:value forHTTPHeaderField:tokenName];
     }
 
-    // update config if needed (will nootify any observers)
+    // update config if needed (will notify any observers)
     if (result.isConfigChanged) {
         ACBLogI(@"Approov config Update received");
         [self updateConfig];
@@ -322,15 +322,15 @@ NSDictionary<NSString *, NSDictionary<NSNumber *, NSData *> *> *sSPKIHeaders;
         CFRelease(policy);
         CFRelease(trust);
     }
-    if(publicKey == nil) return nil;
+    if (publicKey == nil) return nil;
     
     // get the SPKI header depending on the public key's type and size
     NSData* spkiHeader = [self publicKeyInfoHeaderForKey:publicKey];
-    if(spkiHeader == nil) return nil;
+    if (spkiHeader == nil) return nil;
     
     // combine the public key header and the public key data to form the public key info
     CFDataRef publicKeyData = SecKeyCopyExternalRepresentation(publicKey, nil);
-    if(publicKeyData == nil) return nil;
+    if (publicKeyData == nil) return nil;
     NSMutableData* returnData = [NSMutableData dataWithData:spkiHeader];
     [returnData appendData:(__bridge NSData * _Nonnull)(publicKeyData)];
     CFRelease(publicKeyData);

@@ -39,17 +39,15 @@ class Project {
   }
 
   complete(successMsg, warningMsg, errorMsg) {
-    const log = this.log
-
-    log.note()
+    this.log.note()
     if (this.errors == 0 && this.warnings == 0) {
-      if (successMsg) log.succeed(successMsg)
+      if (successMsg) this.log.succeed(successMsg)
     } else if (this.errors == 0) {
-      if (warningMsg) log.succeed(warningMsg)
-      log.warn(`Found ${this.errors} error${this.errors!=1?'s':''}, ${this.warnings} warning${this.warnings!=1?'s':''}`)
+      if (warningMsg) this.log.succeed(warningMsg)
+      this.log.warn(`Found ${this.errors} error${this.errors!=1?'s':''}, ${this.warnings} warning${this.warnings!=1?'s':''}`)
     } else {
-      if (errorMsg) log.succeed(errorMsg)
-      log.exit(`Found ${this.errors} error${this.errors!=1?'s':''}, ${this.warnings} warning${this.warnings!=1?'s':''}`)
+      if (errorMsg) this.log.succeed(errorMsg)
+      this.log.exit(`Found ${this.errors} error${this.errors!=1?'s':''}, ${this.warnings} warning${this.warnings!=1?'s':''}`)
     }
   }
 
@@ -95,11 +93,11 @@ class Project {
     this.log.spin(`Checking for Approov CLI...`)
     if (!task.hasApproovCli()) {
       this.errors++
-      log.fatal('Approov CLI not found in PATH.', 'approovCLI')
+      this.log.fatal('Approov CLI not found in PATH.', 'approovCLI')
     }
     if (!await task.checkingApproovSessionActive()) {
       this.errors++
-      log.fatal('Approov CLI found, but no active session. Ensure a role is set and a session is active, entering a password if necessary.', this.ref('approovCLI'))
+      this.log.fatal('Approov CLI found, but no active session. Ensure a role is set and a session is active, entering a password if necessary.', this.ref('approovCLI'))
     }
     this.log.succeed(`Found Approov CLI with active session.`)
   }

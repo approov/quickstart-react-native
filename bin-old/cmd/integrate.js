@@ -21,10 +21,9 @@
 
 const { Command } = require('commander')
 const prompts = require('prompts')
-const { Project } = require('../act')
-const { Log, LogError } = require('../util')
+const { Action, config } = require('../project')
 
-const updatingProps = async (project, opts) => {
+const updatingProps = async (opts) => {
   let tokenName = opts['token.name']
   let tokenPrefix = opts['token.prefix']
   let bindingName = opts['binding.name']
@@ -32,9 +31,7 @@ const updatingProps = async (project, opts) => {
   let saveDir = opts['save']
 
   const onPromptsCancel = (prompt, answers) => {
-    project.errors++
-    project.log.info('Command aborted')
-    throw new LogError('Command aborted')
+    cli.exitError('Command aborted.')
   }
 
   if (opts.prompt) {
@@ -115,25 +112,25 @@ const command = (new Command())
 .option('--no-prompt', 'do not prompt for user input', false)
 .option('--no-sync', 'do not synchronize integration files into the app', false)
 .option('--save <dir>', 'save Approov integration files into this directory', '')
+.option('--approov <version>', 'Approov version', config.approovDefaultVersion)
 
 .action(async (opts) => {
-  const project = new Project(process.cwd())
+  const action = new Action(process.cwd())
 
   try {
-    await project.checkingReactNative()
-    await project.checkingApproovCli()
-    await project.findingApproovApiDomains()
+    await action.checkingProject()
+    await action.checkingReactNative()
+    await action.checkingApproovCli()
+    await action.findingApproovApiDomains()
 
-    const props = await updatingProps(project, opts)
+    const props = await updatingProps(opts)
 
-    await project.installingApproovPackage()
-    await project.installingAndroidFiles(props)
-    // await project.installingIosFiles(props)
-  } catch (err) {
-    project.handleError(err)
-  }
+    await action.installingApproovPackage()
+    await action.installingAndroidFiles(props)
+    await action.installingIosFiles(props)
+  } catch (err) {console.log(`err: ${err}`)} // errors reported in complete()
 
-  project.complete("Approov integration completed successfully")
+  action.complete("Approov integration completed successfully")
 })
 
 module.exports = command

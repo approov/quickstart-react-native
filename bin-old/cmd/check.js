@@ -19,9 +19,28 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
- module.exports = {
-  check: require('./check'),
-  example: require('./example'),
-  integrate: require('./integrate'),
-  // plugin: require('./plugin'),
-}
+const { Command } = require('commander')
+const { Action } = require('../project')
+
+const command = (new Command())
+
+.name('check')
+.description('Check Approov integration in the current app (special)')
+
+.action(async (opts) => {
+  const action = new Action(process.cwd())
+
+  try {
+    await action.checkingProject()
+    await action.checkingReactNative()
+    await action.checkingApproovCli()
+    await action.findingApproovApiDomains()
+    await action.checkingApproovPackage()
+    await action.checkingAndroidProject()
+    await action.checkingIosProject()
+  } catch (err) {} // errors reported in complete()
+
+  action.complete("All checks completed successfully")
+})
+
+module.exports = command

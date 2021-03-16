@@ -28,6 +28,11 @@ module.exports = {
       description: 'register Android debug APK',
       options: [
         {
+          name: '--variant <variant>',
+          description: 'select build variant',
+          default: plugin.optionDefaults.variant,
+        },
+        {
           name: '--expireAfter <duration>',
           description: 'expire registration after duration',
           default: plugin.optionDefaults.expireAfter,

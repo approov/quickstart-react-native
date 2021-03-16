@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*
  * MIT License
  *
@@ -19,9 +21,21 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
- module.exports = {
-  check: require('./check'),
-  example: require('./example'),
-  integrate: require('./integrate'),
-  // plugin: require('./plugin'),
-}
+require('dotenv').config()
+const { Command } = require('commander')
+const { name: scopedName, version } = require('../package.json')
+const { check, example, integrate } = require('./cmd')
+
+const splitName = scopedName.split('/')
+const name = splitName[splitName.length - 1]
+
+const program = (new Command())
+
+.name(name)
+.version(version)
+
+.addCommand(check)
+.addCommand(example)
+.addCommand(integrate)
+
+.parse(process.argv)

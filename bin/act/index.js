@@ -19,9 +19,12 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
- module.exports = {
-  check: require('./check'),
-  example: require('./example'),
-  integrate: require('./integrate'),
-  // plugin: require('./plugin'),
+const config = require('./config')
+const Project = require('./project')
+const task = require('./task')
+
+module.exports = {
+  config,
+  Project,
+  task,
 }

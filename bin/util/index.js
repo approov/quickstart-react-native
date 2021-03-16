@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 /*
  * MIT License
  *
@@ -19,9 +21,13 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
- module.exports = {
-  check: require('./check'),
-  example: require('./example'),
-  integrate: require('./integrate'),
-  // plugin: require('./plugin'),
+const { Log, LogError } = require('./log')
+const fsx = require('./fsx')
+const sh = require('./sh')
+
+module.exports = {
+  fsx,
+  Log,
+  LogError,
+  sh,
 }

@@ -23,5 +23,5 @@
   check: require('./check'),
   example: require('./example'),
   integrate: require('./integrate'),
-  // plugin: require('./plugin'),
+  plugin: require('./plugin'),
 }

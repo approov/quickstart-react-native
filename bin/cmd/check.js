@@ -20,7 +20,7 @@
  */
 
 const { Command } = require('commander')
-const { Action } = require('../project')
+const { Project } = require('../act')
 
 const command = (new Command())
 
@@ -28,19 +28,20 @@ const command = (new Command())
 .description('Check Approov integration in the current app (special)')
 
 .action(async (opts) => {
-  const action = new Action(process.cwd())
+  const project = new Project(process.cwd())
 
   try {
-    await action.checkingProject()
-    await action.checkingReactNative()
-    await action.checkingApproovCli()
-    await action.findingApproovApiDomains()
-    await action.checkingApproovPackage()
-    await action.checkingAndroidProject()
-    await action.checkingIosProject()
-  } catch (err) {} // errors reported in complete()
+    await project.checkingReactNative()
+    await project.checkingApproovCli()
+    await project.findingApproovApiDomains()
+    await project.checkingApproovPackage()
+    await project.checkingAndroidProject()
+    // await project.checkingIosProject()
+  } catch (err) {
+    project.handleError(err)
+  }
 
-  action.complete("All checks completed successfully")
+  project.complete("Approov check completed successfully")
 })
 
 module.exports = command

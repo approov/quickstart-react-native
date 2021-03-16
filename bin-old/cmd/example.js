@@ -24,8 +24,7 @@ const path = require('path')
 const os = require('os')
 const prompts = require('prompts')
 const chalk = require('chalk')
-const { task } = require('../act')
-const { Log, fsx, sh } = require('../util')
+const { Log, fsx, sh } = require('../project')
 
 const command = (new Command())
 
@@ -157,11 +156,6 @@ const command = (new Command())
     log.exit(chalk.red(`Failed to create ${appName} example.`))
   }
 
-  if (!task.hasYarn(this.dir)) {
-    log.warn(`Yarn not found in PATH; the package was copied but not installed.`)
-    process.exit(0)
-  }
-
   // install app dependencies
 
   log.info(`Installing ${appName} npm dependencies...`)
@@ -175,8 +169,8 @@ const command = (new Command())
 
   // install ios pod dependencies
 
-  if (task.getPlatform() === 'Darwin') {
-    if (task.hasPod()) {
+  if (os.type() === 'Darwin') {
+    if (sh.which('pod')) {
       log.info(`Installing ${appName} iOS pod dependencies...`)
       try {
         sh.cd('ios')
@@ -186,7 +180,7 @@ const command = (new Command())
         log.exit(`Failed to install ${appName} iOS pod dependencies`)
       }
     } else {
-      log.warn(`Skipping ${appName} iOS pod dependencies; pod install not found in PATH.`)
+      log.warn(`Skipping ${appName} iOS pod dependencies; pod installation not available.`)
     }
   } else {
     log.warn(`Pod installation for iOS not available on ${os.type()}`)

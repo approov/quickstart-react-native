@@ -157,7 +157,7 @@ const command = (new Command())
     log.exit(chalk.red(`Failed to create ${appName} example.`))
   }
 
-  if (!task.hasYarn(this.dir)) {
+  if (!task.hasEnvYarn(this.dir)) {
     log.warn(`Yarn not found in PATH; the package was copied but not installed.`)
     process.exit(0)
   }
@@ -175,8 +175,8 @@ const command = (new Command())
 
   // install ios pod dependencies
 
-  if (task.getPlatform() === 'darwin') {
-    if (task.hasPod()) {
+  if (task.isIosSupported()) {
+    if (task.hasEnvPod()) {
       log.info(`Installing ${appName} iOS pod dependencies...`)
       try {
         sh.cd('ios')

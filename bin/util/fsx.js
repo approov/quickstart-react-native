@@ -72,4 +72,26 @@ module.exports = {
       return false
     }
   },
+
+  /**
+   * Compares the last modified times of two paths.
+   * 
+   * @returns >0 if path1 mtime more recent than path2 mtime, 
+   *           0 if the mtimes are the same, and 
+   *          <0 if path1 mtime less recent than path2 mtime.
+   */
+  compareMtimes: (path1, path2) => {
+    if (!path1 && !path2) return 0
+    if (!path1) return -1
+    if (!path2) return 1
+
+    const stat1 = fsx.statsSync(path1)
+    const stat2 = fsx.statsSync(path2)
+
+    if (!stat1 && !stat2) return 0
+    if (!stat1) return -1
+    if (!stat2) return 1
+
+    return stat1.mtimeMs >= stat2.mtimeMs ? stat1.mtimeMs > stat2.mtimeMs ? 1 : 0 : -1
+  }
 }

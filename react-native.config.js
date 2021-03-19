@@ -58,6 +58,11 @@ module.exports = {
       description: 'register iOS debug device IPA',
       options: [
         {
+          name: '--configuration <configuration>',
+          description: 'select build configuration',
+          default: plugin.optionDefaults.configuration,
+        },
+        {
           name: '--expireAfter <duration>',
           description: 'expire registration after duration',
           default: plugin.optionDefaults.expireAfter,
@@ -82,6 +87,11 @@ module.exports = {
       name: 'deploy-ios',
       description: 'deploy iOS debug app to device',
       options: [
+        {
+          name: '--configuration <configuration>',
+          description: 'select build configuration',
+          default: plugin.optionDefaults.configuration,
+        },
       ],
       func: async (args, config, opts) => {
         await plugin.deployingIos(opts)

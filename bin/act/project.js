@@ -23,6 +23,7 @@ const chalk = require('chalk')
 const config = require('./config')
 const task = require('./task')
 const { Log, LogError } = require('../util')
+const { findingIosAppPath, hasIosApproovConfig, buildingIosIpa } = require('./task')
 
 class Project {
   constructor(dir = process.cwd()) {
@@ -30,9 +31,9 @@ class Project {
     this.warnings = 0
     this.errors = 0
 
-    this.dir = dir,
-    this.hasAndroid = false,
-    this.hasIos = false,
+    this.dir = dir
+    this.hasAndroid = false
+    this.hasIos = false
     this.canBuildIos = false
 
     this.log.note()
@@ -66,13 +67,13 @@ class Project {
 
   async checkingReactNative() {
     this.log.spin('Checking Project...')
-    if (!task.hasPackageSpec(this.dir)) {
+    if (!task.hasReactNativePackageSpec(this.dir)) {
       this.errors++
       this.log.fatal(`No project.json found in ${this.dir}.`, this.ref('reactNativeProject'))
     }
     this.log.succeed(`Found project.json in ${this.dir}.`)
 
-    if (!task.hasYarn()) {
+    if (!task.hasEnvYarn()) {
       this.errors++
       this.log.fatal(`Yarn not found in PATH; the approov package requires it.`)
     }
@@ -91,11 +92,11 @@ class Project {
 
   async checkingApproovCli() {
     this.log.spin(`Checking for Approov CLI...`)
-    if (!task.hasApproovCli()) {
+    if (!task.hasEnvApproov()) {
       this.errors++
       this.log.fatal('Approov CLI not found in PATH.', this.ref('approovCLI'))
     }
-    if (!await task.checkingApproovSessionActive()) {
+    if (!await task.checkingEnvApproovSessionActive()) {
       this.errors++
       this.log.fatal('Approov CLI found, but no active session. Ensure a role is set and a session is active, entering a password if necessary.', this.ref('approovCLI'))
     }
@@ -104,7 +105,7 @@ class Project {
 
   async findingApproovApiDomains() {
     this.log.spin(`Finding Approov protected API domains...`)
-    const apiDomains = await task.findingApproovApiDomains()
+    const apiDomains = await task.findingReactNativeApproovApiDomains()
     if (apiDomains.length <= 0) {
       this.warnings++
       this.log.warn('No protected API Domains found')
@@ -117,7 +118,7 @@ class Project {
 
   async checkingApproovPackage() {
     this.log.spin(`Checking for \'@approov/react-native-approov\` package...`)
-    if (!task.hasApproovPackage(this.dir)) {
+    if (!task.hasReactNativeApproovPackage(this.dir)) {
       this.log.info('The @approov/react-native-approov package is not installed')
     } else {
       this.log.succeed('Found @approov/react-native-approov package')
@@ -126,15 +127,15 @@ class Project {
 
   async installingApproovPackage() {
     this.log.spin(`Checking if \'@approov/react-native-approov\` package is installed...`)
-    if (!task.hasApproovPackage(this.dir)) {
+    if (!task.hasReactNativeApproovPackage(this.dir)) {
       this.log.note(`Installing the @approov/react-native-approov package...`)
-      if (!await task.installingApproovPackage(this.dir)) {
+      if (!await task.installingReactNativeApproovPackage(this.dir)) {
         this.errors++
         this.log.fatal(`Failed to install @approov/react-native-approov package`, this.ref('contactSupport'))
       }
       this.log.succeed(`Installed @approov/react-native-approov package`)
-      if (task.getPlatform() === 'darwin') {
-        if (task.hasPod()) {
+      if (task.isIosSupported()) {
+        if (task.hasEnvPod()) {
           this.log.info(`Installing iOS pod dependencies...`)
           const isInstalled = await task.installingIosPods(this.dir)
           if (!isInstalled) {
@@ -193,7 +194,7 @@ class Project {
         this.log.succeed('Found required Android network permissions.')
       }
   
-      if (task.hasApproovPackage(this.dir)) {
+      if (task.hasReactNativeApproovPackage(this.dir)) {
         this.log.spin(`Checking for Android Approov components...`)
         if (!task.hasAndroidApproovSdk(this.dir)) {
           this.errors++
@@ -249,13 +250,13 @@ class Project {
     this.log.spin(`Checking for Android ${variant} APK...`)
     if (!task.hasAndroidApk(this.dir, variant)) {
       this.errors++
-      this.log.fail(`Approov ${variant} APK not found.`)
+      this.log.fail(`Android ${variant} APK not found.`)
       this.log.info(`Has \`react-native run-android${variant!=='debug'? ` --variant=${variant}`:''}\` been run?`)
-      throw new LogError(`Approov ${variant} APK not found.`)
+      throw new LogError(`Android ${variant} APK not found.`)
     }
     this.log.succeed(`Found the Android ${variant} APK.`)
 
-    this.log.note(`Registering Android debug APK`)
+    this.log.note(`Registering Android ${variant} APK`)
     const isRegistered = await task.registeringAndroidApk(this.dir, variant, expireAfter)
     if (!isRegistered) {
       this.errors++
@@ -264,121 +265,190 @@ class Project {
     this.log.succeed(`Registered the ${variant} APK for ${expireAfter}.`)
   }
 
-  // async checkingIosProject() {
-  //   const project = this.project
-  //   const log = this.log
+  async checkingIosProject() {
+    this.log.spin(`Checking for iOS project...`)
+    if (!task.hasIosPath(this.dir)) {
+      this.warnings++
+      this.log.warn('No iOS project found.')
+      this.log.info('Skipping additional iOS checks.', this.ref('iosProject'))
+    } else if (!task.isIosSupported()){
+      this.warnings++
+      this.log.warn(`iOS project found but ${task.getEnvPlatform()} does not support iOS development.`)
+      this.log.info('Skipping additional iOS checks.', this.ref('iosProject'))
+    } else if (!task.hasEnvXcodebuild() || !task.hasEnvIosDeploy()) {
+      log.succeed(`Found iOS project.`)
+      if (!task.hasEnvXcodebuild()) {
+        this.warnings++
+        this.log.warn('Missing Xcode command line tools (xcodebuild).')
+      }
+      if (!task.hasEnvIosDeploy()) {
+        this.warnings++
+        this.log.warn('Missing iOS deployment tool (ios-deploy).')
+      }
+      this.log.info('Skipping additional iOS checks.', this.ref('iosProject'))
+    } else {
+      this.log.succeed(`Found iOS project.`)
+      const scheme = task.getIosScheme(this.dir)
+      if (!scheme) {
+        this.errors++
+        this.log.fatal('Failed to find iOS workspace.', this.ref('iosProject'))
+      }
+      this.log.succeed(`Found iOS workspace - ${scheme}`)
 
-  //   log.spin(`Checking for iOS project...`)
-  //   if (!project.isIosDevPlatform) {
-  //     log.warn('Not on an iOS-compatible development platform')
-  //     log.info('Skipping additional iOS checks.')
-  //     log.help('iosProject')
-  //     this.warnings++
-  //   } else if (!project.reactNative.hasIos) {
-  //     log.warn('No iOS project found.')
-  //     log.info('Skipping additional iOS checks.')
-  //     log.help('iosProject')
-  //     this.warnings++
-  //   } else if (!project.ios.hasXcodebuild) {
-  //     log.warn('Missing Xcode command line tools (xcodebuild).')
-  //     log.info('Skipping additional iOS checks.')
-  //     log.help('iosProject')
-  //     this.warnings++
-  //   } else {
-  //     log.succeed(`Found iOS project.`)
-  //     log.spin(`Checking iOS project...`)
-  //     await project.checkingIosProject()
-  //     if (!project.ios.deployTarget) {
-  //       log.fail(`Found no iOS deployment target; >= ${project.ios.minDeployTarget} required.`)
-  //       log.help('iosProject')
-  //       this.errors++
-  //     } else if (!project.ios.isDeployTargetSupported) {
-  //       log.fail(`Found iOS deployment target ${project.ios.deployTarget}; >= ${project.ios.minDeployTarget} required.`)
-  //       log.help('iosProject')
-  //       this.errors++
-  //     } else {
-  //       log.succeed(`Found iOS deployment target ${project.ios.deployTarget}.`)
-  //     }
+      this.log.spin(`Checking iOS deploy target...`)
+      const target = await task.findingIosDeployTarget(this.dir, scheme)
+      if (!target) {
+        this.errors++
+        this.log.fatal('Failed to find iOS deploy target.', this.ref('iosProject'))
+      }
+      const minTarget = config.specs.ios.minDeployTarget
+      if (!task.isIosDeployTargetSupported(target, minTarget)) {
+        this.errors++
+        this.log.fail(`Found iOS deployment target ${target}; >= ${minTarget} required.`, this.ref('iosProject'))
+      } else {
+        this.log.succeed(`Found iOS deployment target ${target}.`)
+      }
   
-  //     if (project.approov.pkg.isInstalled) {
-  //       log.spin(`Checking for iOS Approov components...`)
-  //       await project.checkingIosApproov()
-  //       if (!project.ios.approov.hasSdk) {
-  //         log.fail('Missing iOS Approov SDK.')
-  //         log.help('iosApproov')
-  //         this.errors++
-  //       } else {
-  //         log.succeed('Found iOS Approov SDK.')
-  //       }
-  //       if (!project.ios.approov.hasConfig) {
-  //         log.fail('Missing iOS Approov config file.')
-  //         log.help('iosApproov')
-  //         this.errors++
-  //       } else {
-  //         log.succeed('Found iOS Approov config file.')
-  //       }
-  //       if (!project.ios.approov.hasProps) {
-  //         log.fail('Missing iOS Approov properties file.')
-  //         log.help('iosApproov')
-  //         this.errors++
-  //       } else {
-  //         log.succeed('Found iOS Approov properties file.')
-  //       }
-  //     }
-  //   }
-  // }
+      if (task.hasReactNativeApproovPackage(this.dir)) {
+        this.log.spin(`Checking for iOS Approov components...`)
+        if (!task.hasIosApproovSdk(this.dir)) {
+          this.errors++
+          this.log.fail('Missing iOS Approov SDK.', this.ref('iosApproov'))
+        } else {
+          this.log.succeed('Found iOS Approov SDK.')
+        }
+        if (!task.hasIosApproovConfig(this.dir)) {
+          this.errors++
+          this.log.fail('Missing iOS Approov config file.', this.ref('iosApproov'))
+        } else {
+          this.log.succeed('Found iOS Approov config file.')
+        }
+        if (!task.hasIosApproovProps(this.dir)) {
+          this.errors++
+          this.log.fail('Missing iOS Approov properties file.', this.ref('iosApproov'))
+        } else {
+          this.log.succeed('Found iOS Approov properties file.')
+        }
 
-  // async installingIosFiles(props) {
-  //   const project = this.project
-  //   const log = this.log
+        this.log.info('NOTE: Approov integrated apps will only attest properly on a physical device.')
+        this.log.info('      Running on a physical device requires a team be specified for code signing.')
+      }
+    }  
+  }
 
-  //   if (project.reactNative.hasIos) {
-  //     log.note(`Installing iOS Approov SDK library...`)
-  //     await project.installingIosApproovSdk()
-  //     if (!project.ios.approov.hasSdk) {
-  //       log.fail('Failed to install iOS Approov SDK library.')
-  //       log.help('contactSupport')
-  //       this.errors++
-  //       throw new Error('Failed to install iOS Approov SDK library.')
-  //     }
-  //     log.succeed(`Installed iOS Approov SDK library.`)
+  async installingIosFiles(props) {
+    if (task.hasIosPath(this.dir)) {
+      this.log.note(`Installing iOS Approov SDK library...`)
+      let isInstalled = await task.installingIosApproovSdk(this.dir)
+      if (!isInstalled) {
+        this.errors++
+        this.log.fatal('Failed to install iOS Approov SDK library.', this.ref('contactSupport'))
+      }
+      this.log.succeed(`Installed iOS Approov SDK library.`)
 
-  //     log.note(`Installing iOS Approov config file...`)
-  //     await project.installingIosApproovConfig()
-  //     if (!project.ios.approov.hasConfig) {
-  //       log.fail('Failed to install iOS Approov config file.')
-  //       log.help('contactSupport')
-  //       this.errors++
-  //       throw new Error('Failed to install iOS Approov config file.')
-  //     }
-  //     log.succeed(`Installed iOS Approov config file.`)
+      this.log.note(`Installing iOS Approov config file...`)
+      isInstalled = await task.installingIosApproovConfig(this.dir)
+      if (!isInstalled) {
+        this.errors++
+        this.log.fatal('Failed to install iOS Approov config file.', this.ref('contactSupport'))
+      }
+      this.log.succeed(`Installed iOS Approov config file.`)
 
-  //     log.spin(`Installing iOS Approov props file...`)
-  //     await project.installingIosApproovProps(props)
-  //     if (!project.ios.approov.hasProps) {
-  //       log.fail('Failed to install iOS Approov props file.')
-  //       log.help('contactSupport')
-  //       this.errors++
-  //       throw new Error('Failed to install iOS Approov props file.')
-  //     }
-  //     log.succeed(`Installed iOS Approov props file.`)
-  //   }
+      this.log.note(`Installing iOS Approov properties file...`)
+      isInstalled = await task.installingIosApproovProps(this.dir, props)
+      if (!isInstalled) {
+        this.errors++
+        this.log.fatal('Failed to install iOS Approov properties file.', this.ref('contactSupport'))
+      }
+      this.log.succeed(`Installed iOS Approov properties file.`)
 
-  //   if (sh.which('pod')) {
-  //     log.note(`Updating iOS pods...`)
-  //     await project.updatingIosPods()
-  //     if (!project.ios.updatedPods) {
-  //       log.fail('Failed to update iOS pods.')
-  //       log.help('contactSupport')
-  //       this.errors++
-  //       throw new Error('Failed to update iOS pods.')
-  //     }
-  //     log.succeed(`Updated iOS pods.`)
-  //   } else {
-  //     log.warn(`Skipping ${appName} iOS pod dependencies; pod installation not available.`)
-  //     warnings++
-  //   }
-  // }
+      if (!task.isIosSupported()){
+        this.warnings++
+        this.log.warn(`iOS pods not updated; ${task.getEnvPlatform()} does not support iOS development.`)
+      } else if (!task.hasEnvPod()) {
+        this.warnings++
+        this.log.warn('iOS pods not updated; missing cocoapod command line tool (pod).')
+      } else {
+        this.log.succeed(`Found iOS project.`)
+        isInstalled = await task.installingIosPods(this.dir)
+        if (!isInstalled) {
+          this.errors++
+          this.log.fatal('Failed to update iOS pods.', this.ref('contactSupport'))
+        }
+      }
+
+      this.log.info('NOTE: Approov integrated apps will only attest properly on a physical device.')
+      this.log.info('      Running on a physical device requires a team be specified for code signing.')
+    }
+  }
+
+  async registeringIosIpa(configuration, expireAfter) {
+    const scheme = this.getIosScheme(this.dir)
+    if (!configuration) configuration = 'Debug'
+
+    this.log.spin(`Checking for iOS ${configuration} IPA...`)
+    const appPath = await findingIosAppPath(this.dir, scheme, configuration)
+    if (!hasIosApp(appPath)) {
+      this.errors++
+      this.log.fail(`iOS ${configuration} APP not found.`)
+      this.log.info(`Has \`react-native run-ios --device ${configuration!=='debug'? ` --configuration=${configuration}`:''}\` been run?`)
+      throw new LogError(`iOS ${configuration} APP not found.`)
+    }
+    const ipaPath = task.getIosIpaPath(this.dir, scheme, configuration)
+    if (task.isIosIpaCurrent(appPath, ipaPath)) {
+      const isBuilt = await buildingIosIpa(appPath, ipaPath)
+      if (!isBuilt) {
+        this.errors++
+        this.log.fatal('Failed to build iOS ${configuration} IPA.', this.ref('contactSupport'))
+      } else {
+        this.log.succeed(`Found the iOS ${configuration} IPA.`)
+      }
+    } else {
+      this.log.succeed(`Found the iOS ${configuration} IPA.`)
+    }
+
+    this.log.note(`Registering iOS ${configuration} IPA.`)
+    const isRegistered = await task.registeringIosIpa(this.dir, scheme, configuration, expireAfter)
+    if (!isRegistered) {
+      this.errors++
+      this.log.fatal(`Unable to register the ${configuration} IPA`, this.ref('approovReg'))
+    }
+    this.log.succeed(`Registered the ${configuration} IPA for ${expireAfter}.`)
+  }
+
+  async deployingIosIpa(configuration, expireAfter) {
+    const scheme = this.getIosScheme(this.dir)
+    if (!configuration) configuration = 'Debug'
+
+    this.log.spin(`Checking for iOS ${configuration} IPA...`)
+    const appPath = await findingIosAppPath(this.dir, scheme, configuration)
+    if (!hasIosApp(appPath)) {
+      this.errors++
+      this.log.fail(`iOS ${configuration} APP not found.`)
+      this.log.info(`Has \`react-native run-ios --device ${configuration!=='debug'? ` --configuration=${configuration}`:''}\` been run?`)
+      throw new LogError(`iOS ${configuration} APP not found.`)
+    }
+    const ipaPath = task.getIosIpaPath(this.dir, scheme, configuration)
+    if (task.isIosIpaCurrent(appPath, ipaPath)) {
+      const isBuilt = await buildingIosIpa(appPath, ipaPath)
+      if (!isBuilt) {
+        this.errors++
+        this.log.fatal('Failed to build iOS ${configuration} IPA.', this.ref('contactSupport'))
+      } else {
+        this.log.succeed(`Found the iOS ${configuration} IPA.`)
+      }
+    } else {
+      this.log.succeed(`Found the iOS ${configuration} IPA.`)
+    }
+
+    this.log.note(`Deploying iOS ${configuration} IPA.`)
+    const isDeployed = await task.deployingIosIpa(this.dir, scheme, configuration)
+    if (!isDeployed) {
+      this.errors++
+      this.log.fatal(`Unable to deploy the ${configuration} IPA; check for active device.`)
+    }
+    this.log.succeed(`Deployed the ${configuration} IPA.`)
+  }
 }
 
 module.exports = Project

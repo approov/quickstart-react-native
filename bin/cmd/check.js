@@ -36,7 +36,7 @@ const command = (new Command())
     await project.findingApproovApiDomains()
     await project.checkingApproovPackage()
     await project.checkingAndroidProject()
-    // await project.checkingIosProject()
+    await project.checkingIosProject()
   } catch (err) {
     project.handleError(err)
   }

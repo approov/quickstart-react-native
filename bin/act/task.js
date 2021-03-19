@@ -34,22 +34,57 @@ const { fsx, sh } = require('../util')
 
 const tasks = {
 
-  // react native and generic info
+  // host environment
 
-  getPlatform: function() {
+  getEnvPlatform: function() {
     return process.platform
   },
 
-  hasYarn: function() {
+  hasEnvYarn: function() {
     return !!sh.which('yarn')
   },
 
-  hasPackageSpec: function(dir) {
+  hasEnvApproov: function() {
+    return !!sh.which('approov')
+  },
+
+  checkingEnvApproovSessionActive: async function() {
+    if (!this.hasEnvApproov()) return false
+    try {
+      await sh.execAsync('echo "" | approov api -list', {silent:true})
+      await sh.execAsync('approov role .', {silent:true})
+      return true
+    } catch (err) {}
+    return false
+  },
+
+  hasEnvJava: function() {
+    if (process.env['JAVA_HOME']) {
+      if (!!sh.which(`${path.join(process.env['JAVA_HOME'], 'bin', 'java')}`)) return true
+    }
+    return !!sh.which('java')
+  },
+
+  hasEnvPod: function() {
+    return !!sh.which('pod')
+  },
+
+  hasEnvXcodebuild: function() {
+    return !!sh.which('xcodebuild')
+  },
+
+  hasEnvIosDeploy: function() {
+    return !!sh.which('ios-deploy')
+  },
+
+  // react native info
+
+  hasReactNativePackageSpec: function(dir) {
     return fsx.isDirectory(dir) && fsx.isFile(path.join(dir, 'package.json'))
   },
   
-  getPackageSpec: function(dir) {
-    if (this.hasPackageSpec(dir)) {
+  getReactNativePackageSpec: function(dir) {
+    if (this.hasReactNativePackageSpec(dir)) {
       let filePath = path.join(dir, 'package.json')
       if (!filePath.includes(path.sep)) filePath= `.${path.sep}${filePath}`
       return require(filePath)
@@ -58,7 +93,7 @@ const tasks = {
   },
 
   getReactNativeVersion: function(dir) {
-    const pkg = this.getPackageSpec(dir)
+    const pkg = this.getReactNativePackageSpec(dir)
     return pkg && pkg.dependencies && pkg.dependencies['react-native']
   },
 
@@ -67,20 +102,7 @@ const tasks = {
     return compareVersions.compare(version, minVersion, '>=')
   },
 
-  hasApproovCli: function() {
-    return !!sh.which('approov')
-  },
-
-  checkingApproovSessionActive: async function() {
-    if (!this.hasApproovCli()) return false
-    try {
-      await sh.execAsync('echo "xxx" | approov api -list', {silent:true})
-      return true
-    } catch (err) {}
-    return false
-  },
-
-  findingApproovApiDomains: async function() {
+  findingReactNativeApproovApiDomains: async function() {
     let apiDomains = []
     try {
       const { path: tmpFile, cleanup } = await tmp.file()
@@ -94,13 +116,13 @@ const tasks = {
     return apiDomains  
   },
 
-  hasApproovPackage: function(dir) {
-    const pkg = this.getPackageSpec(dir)
+  hasReactNativeApproovPackage: function(dir) {
+    const pkg = this.getReactNativePackageSpec(dir)
     if (!pkg || !pkg.dependencies) return false
     return '@approov/react-native-approov' in pkg.dependencies
   },
 
-  installingApproovPackage: async function(dir) {
+  installingReactNativeApproovPackage: async function(dir) {
     try {
       await sh.execAsync(`cd ${dir} && yarn add @approov/react-native-approov`, {silent:false})
       return true
@@ -108,22 +130,17 @@ const tasks = {
     return false  
   },
 
-  hasAndroidPath: function(dir) {
-    return fsx.isDirectory(dir) && fsx.isDirectory(path.join(dir, 'android'))
-  },
+  // android info
 
   getAndroidPath: function(dir) {
-    return this.hasAndroidPath(dir) && path.join(dir, 'android')
+    return path.join(dir, 'android')
   },
 
-  hasJava: function() {
-    if (process.env['JAVA_HOME']) {
-      if (!!sh.which(`${path.join(process.env['JAVA_HOME'], 'bin', 'java')}`)) return true
-    }
-    return !!sh.which('java')
+  hasAndroidPath: function(dir) {
+    return fsx.isDirectory(this.getAndroidPath(dir))
   },
 
-  hasGradle: function(dir) {
+  hasAndroidGradle: function(dir) {
     if (!hasAndroidPath(dir)) return false
     return fsx.isFile(path.join(this.getAndroidPath(dir), 'gradle', 'wrapper', 'gradle-wrapper.jar'))
   },
@@ -272,46 +289,151 @@ const tasks = {
     return isRegistered
   },
 
-  hasIosPath: function(dir) {
-    return fsx.isDirectory(dir) && fsx.isDirectory(path.join(dir, 'ios'))
+  // ios
+
+  isIosSupported: function() {
+    return this.getEnvPlatform() === 'darwin'
   },
 
   getIosPath: function(dir) {
-    return this.hasAndroidPath(dir) && path.join(dir, 'ios')
+    return path.join(dir, 'ios')
   },
 
-  canSupportIos: function() {
-    return process.platform === 'Darwin'
+  hasIosPath: function(dir) {
+    return fsx.isDirectory(this.getIosPath(dir))
   },
 
-  hasPod: function() {
-    return !!sh.which('pod')
+  getIosScheme: function(dir) {
+    let scheme = null
+    try {
+      const files = fsx.readdirSync(this.getIosPath(dir)).filter(f => f.endsWith('.xcworkspace'))
+      if (files.length == 1) {
+        scheme = path.basename(files[0], '.xcworkspace')
+      }
+    } catch (err) {}
+    return scheme
   },
 
-  hasXcodebuild: function() {
-    return !!sh.which('xcodebuild')
+  getIosWorkspacePath(dir, scheme) {
+    if (!scheme) scheme = this.getIosScheme(dir)
+
+    return path.join(this.getIosPath(dir), `${scheme}.xcworkspace`)
   },
 
-  hasIosDeploy: function() {
-    return !!sh.which('ios-deploy')
+  hasIosWorkspace: function(dir, scheme) {
+    return fsx.isDirectory(this.getIosWorkspacetPath(dir, scheme))
   },
 
-  getIosDeployTarget: function(dir) {},
-  isIosDeployTragetSupported: function(deployTarget, minDeployTarget) {},
-  getIosApproovSdkPath: function(dir) {},
-  hasIosApproovSdk: function(dir) {},
-  installingIosApproovSdk: async function(dir) {},
-  getIosApproovConfigPath: function(dir) {},
-  hasIosApproovConfig: function(dir) {},
-  installingIosApproovConfig: async function(dir) {},
-  getIosApproovPropsPath: function(dir) {},
-  hasIosApproovProps: function(dir) {},
-  installingIosApproovProps: async function(dir) {},
+  findingIosDeployTarget: async function(dir, scheme, configuration) {
+    if (!scheme) scheme = this.getIosScheme(dir)
+    if (!configuration) configuration = 'Debug'
+
+    const workspace = this.getIosWorkspacePath(dir, scheme)
+
+    let target = null
+    try {
+      const buildSettings = `xcodebuild -workspace ${workspace} -scheme ${scheme} -configuration ${configuration} -showBuildSettings`
+      const { stdout } = await sh.execAsync(buildSettings, {silent:true})
+      const targetLines = stdout.split('\n').filter(line => (line.match(/IPHONEOS_DEPLOYMENT_TARGET\s*=\s*(.*)/)))
+      if (targetLines.length > 0) {
+        const targetMatch = targetLines[targetLines.length - 1].match(/IPHONEOS_DEPLOYMENT_TARGET\s*=\s*(.*)/)
+        if (targetMatch && targetMatch.length >= 2) target = targetMatch[1].trim()
+      }
+    } catch (err) {}
+    return target
+  },
+
+  isIosDeployTargetSupported: function(deployTarget, minDeployTarget) {
+    if (!deployTarget || !minDeployTarget) return false
+    return compareVersions.compare(deployTarget, minDeployTarget, '>=')
+  },
+
+  getIosApproovSdkPath: function(dir) {
+    return path.join(dir, 'node_modules', '@approov', 'react-native-approov', 'ios', 'Approov.framework')
+  },
+
+  hasIosApproovSdk: function(dir) {
+    return fsx.isDirectory(this.getIosApproovSdkPath(dir))
+  },
+
+  installingIosApproovSdk: async function(dir) {
+    let isInstalled = false
+    const sdkPath = this.getIosApproovSdkPath(dir)
+    if (fsx.isDirectory(path.dirname(sdkPath))) {
+      const zipPath = path.join(path.dirname(sdkPath), 'Approov.zip')
+      let isZipped = false
+      try {
+        await sh.execAsync(`approov sdk -getLibrary ${zipPath}`)
+        isZipped = true
+      } catch (err) {
+        try {
+          await sh.execAsync(`rm -f ${zipPath}`)
+        } catch (err) {}
+      }
+      if (isZipped) {
+        try {
+          await sh.execAsync(`rm -rf ${sdkPath} && unzip ${zipPath} -d ${path.dirname(zipPath)} && rm -f ${zipPath}`)
+          isInstalled = true
+        } catch (err) {
+          try {
+            await sh.execAsync(`rm -f ${zipPath}`)
+          } catch (err) {}
+        }
+      } 
+    }
+    return isInstalled
+  },
+
+  getIosApproovConfigPath: function(dir) {
+    return path.join(dir, 'node_modules', '@approov', 'react-native-approov', 'ios', 'approov.config')
+  },
+
+  hasIosApproovConfig: function(dir) {
+    return fsx.isFile(this.getIosApproovConfigPath(dir))
+  },
+
+  installingIosApproovConfig: async function(dir) {
+    let isInstalled = false
+    const configPath = this.getIosApproovConfigPath(dir)
+    if (fsx.isDirectory(path.dirname(configPath))) {
+      try {
+        const { stdout } = await sh.execAsync(`approov sdk -getConfig ${configPath}`)
+        isInstalled = true
+      } catch (err) {}
+    }
+    return isInstalled
+  },
+
+  getIosApproovPropsPath: function(dir) {
+    return path.join(dir, 'node_modules', '@approov', 'react-native-approov', 'ios', 'approov.plist')
+  },
+
+  hasIosApproovProps: function(dir) {
+    return fsx.isFile(this.getIosApproovPropsPath(dir))
+  },
+
+  installingIosApproovProps: async function(dir, props) {
+    let isInstalled = false
+    const propsPath = this.getIosApproovPropsPath(dir)
+    if (props && fsx.isDirectory(path.dirname(propsPath))) {
+      const plistProps = {
+        'token.name':    props.tokenName,
+        'token.prefix':  props.tokenPrefix,
+        'binding.name':  props.bindingName,
+        'init.prefetch': props.usePrefetch,
+      }
+      try {
+        plist.writeFileSync(propsPath, plistProps)
+        isInstalled = true
+      } catch (err) {}
+    }
+    return isInstalled
+  },
   
   installingIosPods: async function(dir) {
     let isInstalled = false
     try {
-      sh.cd(path.join(dir, 'ios'))
+      sh.cd(this.getIosPath(dir))
       await sh.execAsync('pod install', {silent:false})
       isInstalled = true
     } catch (err) {
@@ -319,12 +441,102 @@ const tasks = {
     return isInstalled
   },
 
-  getIoosAppPath: function(dir, configuration) {},
-  hasIoSApp: function(dir, configuration) {},
-  getIosIpaPath: function(dir, configuration) {},
-  hasIoSIpa: function(dir, configuration) {},
-  registeringIosIpa: async function(dir, configuration) {},
-  deployingIosIpa: async function(dir, configuration) {},
+  findingIosAppPath: async function(dir, scheme, configuration) {
+    if (!scheme) scheme = this.getIosScheme(dir)
+    if (!configuration) configuration = 'Debug'
+
+    const workspace = this.getIosWorkspacePath(dir, scheme)
+
+    let buildDir = null
+    try {
+      const buildSettings = `xcodebuild -workspace ${workspace} -scheme ${scheme} -configuration ${configuration} -showBuildSettings`
+      const { stdout } = await sh.execAsync(buildSettings, {silent:true})
+      const buildDirLines = stdout.split('\n').filter(line => (line.match('TARGET_BUILD_DIR')))
+      if (buildDirLines.length == 1) {
+        const buildDirMatch = buildDirLines[0].match(/TARGET_BUILD_DIR\s*=\s*(.*)/)
+        if (buildDirMatch && buildDirMatch.length >= 2) buildDir = buildDirMatch[1].trim()
+      }
+    } catch (err) {}
+    if (!buildDir) return null
+    return path.join(buildDir, `${name}.app`)
+  },
+
+  hasIoSApp: function(appPath) {
+    return fsx.isDirectory(appPath)
+  },
+
+  getIosIpaPath: function(dir, scheme, configuration) {
+    if (!scheme) scheme = this.getIosScheme(dir)
+    if (!configuration) configuration = 'Debug'
+
+    return path.join(this.dir, 'node_modules', '@approov', 'react-native-approov', 'ios', 'build', configuration, `${scheme}.ipa`)
+  },
+
+  isIoSIpaCurrent: function(appPath, ipaPath) {
+    return fsx.isFile(ipaPath) && this.hasIosApp(appPath) && (fsx.compareMtimes(ipaPath, appPath) > 0)
+  },
+
+  buildingIosIpa: async function(appPath, ipaPath) {
+    const payPath = path.join(path.dirname(ipaPath), 'Payload')
+
+    let isBuilt = false
+    try {
+      // use node fsx & zip utils instead?
+      const ipaCreate = [
+        `mkdir -p ${path.dirname(ipaPath)}`,
+        `rm -rf ${payPath} ${ipaPath}`,
+        `mkdir ${payPath}`,
+        `cp -r ${appPath} ${payPath}/`,
+        `zip -9 -r ${ipaPath} ${payPath}`,
+        `rm -rf ${payPath}`,
+      ].join(' && ')
+      await sh.execAsync(ipaCreate, {silent:true})
+      isBuilt = true
+    } catch (err) {
+      console.log(err)
+      try {
+        await sh.execAsync(`rm -rf ${payPath} ${ipaPath}`)
+      } catch (err) {}
+    }
+    return isBuilt
+  },
+
+  registeringIosIpa: async function(dir, scheme, configuration, expireAfter) {
+    const appPath = await this.findingIosAppPath(dir, scheme, configuration)
+    if (!this.hasIosApp) return false
+
+    const ipaPath = this.getIosIpaPath(dir, scheme, configuration)
+    if (!this.isIosIpaCurrent(ipaPath, appPath)) {
+      const isBuilt = await this.buildingIosIpa(ipaPath, appPath)
+      if (!isBuilt) return false
+    }
+
+    if (!expireAfter) expireAfter = '1h'
+    let isRegistered = false
+    try {
+      await sh.execAsync(`approov registration -add ${ipaPath} -expireAfter ${expireAfter}`, {silent:false})
+      isRegistered = true
+    } catch (err) {}
+    return isRegistered
+  },
+
+  deployingIosIpa: async function(dir, scheme, configuration) {
+    const appPath = await this.findingIosAppPath(dir, scheme, configuration)
+    if (!this.hasIosApp) return false
+
+    const ipaPath = this.getIosIpaPath(dir, scheme, configuration)
+    if (!this.isIosIpaCurrent(ipaPath, appPath)) {
+      const isBuilt = await this.buildingIosIpa(ipaPath, appPath)
+      if (!isBuilt) return false
+    }
+
+    let isDeployed = false
+    try {
+      await sh.execAsync(`ios-deploy -b ${this.ios.build.appPath}`)
+      isDeployed = true
+    } catch (err) {}
+    return isDeployed
+  },
 }
 
 module.exports = tasks

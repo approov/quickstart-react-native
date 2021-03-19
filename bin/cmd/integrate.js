@@ -128,7 +128,7 @@ const command = (new Command())
 
     await project.installingApproovPackage()
     await project.installingAndroidFiles(props)
-    // await project.installingIosFiles(props)
+    await project.installingIosFiles(props)
   } catch (err) {
     project.handleError(err)
   }

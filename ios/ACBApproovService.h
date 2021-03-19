@@ -24,7 +24,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// Reccomended actions after an attestation request.
+/// Recommended actions after an attestation request.
 typedef NS_ENUM(NSInteger, ACBAttestationAction) {
     ACBAttestationActionProceed,
     ACBAttestationActionRetry,

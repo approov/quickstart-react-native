@@ -34,7 +34,7 @@ const specs = {
   ios: {
     minDeployTarget: '10.0',
     useBitcode: false,
-    debugConfiguration: 'Debug',
+    defaultConfiguration: 'Debug',
   },
   reg: {
     defaultExpireAfter: '1h',

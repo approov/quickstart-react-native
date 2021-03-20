@@ -23,7 +23,6 @@ const chalk = require('chalk')
 const config = require('./config')
 const task = require('./task')
 const { Log, LogError } = require('../util')
-const { findingIosAppPath, hasIosApproovConfig, buildingIosIpa } = require('./task')
 
 class Project {
   constructor(dir = process.cwd()) {
@@ -383,20 +382,21 @@ class Project {
   }
 
   async registeringIosIpa(configuration, expireAfter) {
-    const scheme = this.getIosScheme(this.dir)
+    const scheme = task.getIosScheme(this.dir)
     if (!configuration) configuration = 'Debug'
 
     this.log.spin(`Checking for iOS ${configuration} IPA...`)
-    const appPath = await findingIosAppPath(this.dir, scheme, configuration)
-    if (!hasIosApp(appPath)) {
+    const appPath = await task.findingIosAppPath(this.dir, scheme, configuration)
+    console.log(`appPath: ${appPath} (${task.hasIosApp(appPath)})`)
+    if (!task.hasIosApp(appPath)) {
       this.errors++
       this.log.fail(`iOS ${configuration} APP not found.`)
       this.log.info(`Has \`react-native run-ios --device ${configuration!=='debug'? ` --configuration=${configuration}`:''}\` been run?`)
       throw new LogError(`iOS ${configuration} APP not found.`)
     }
     const ipaPath = task.getIosIpaPath(this.dir, scheme, configuration)
-    if (task.isIosIpaCurrent(appPath, ipaPath)) {
-      const isBuilt = await buildingIosIpa(appPath, ipaPath)
+    if (!task.isIosIpaCurrent(ipaPath, appPath)) {
+      const isBuilt = await task.buildingIosIpa(ipaPath, appPath)
       if (!isBuilt) {
         this.errors++
         this.log.fatal('Failed to build iOS ${configuration} IPA.', this.ref('contactSupport'))
@@ -416,33 +416,27 @@ class Project {
     this.log.succeed(`Registered the ${configuration} IPA for ${expireAfter}.`)
   }
 
-  async deployingIosIpa(configuration, expireAfter) {
-    const scheme = this.getIosScheme(this.dir)
+  async deployingIosApp(configuration, expireAfter) {
+    const scheme = task.getIosScheme(this.dir)
     if (!configuration) configuration = 'Debug'
 
+    if (!task.hasEnvIosDeploy()) {
+      this.warnings++
+      this.log.fatal('Missing iOS deployment tool (ios-deploy).', this.ref('approovReg'))
+    }
+
     this.log.spin(`Checking for iOS ${configuration} IPA...`)
-    const appPath = await findingIosAppPath(this.dir, scheme, configuration)
-    if (!hasIosApp(appPath)) {
+    const appPath = await task.findingIosAppPath(this.dir, scheme, configuration)
+    console.log(`appPath: ${appPath} (${task.hasIosApp(appPath)})`)
+    if (!task.hasIosApp(appPath)) {
       this.errors++
       this.log.fail(`iOS ${configuration} APP not found.`)
       this.log.info(`Has \`react-native run-ios --device ${configuration!=='debug'? ` --configuration=${configuration}`:''}\` been run?`)
       throw new LogError(`iOS ${configuration} APP not found.`)
     }
-    const ipaPath = task.getIosIpaPath(this.dir, scheme, configuration)
-    if (task.isIosIpaCurrent(appPath, ipaPath)) {
-      const isBuilt = await buildingIosIpa(appPath, ipaPath)
-      if (!isBuilt) {
-        this.errors++
-        this.log.fatal('Failed to build iOS ${configuration} IPA.', this.ref('contactSupport'))
-      } else {
-        this.log.succeed(`Found the iOS ${configuration} IPA.`)
-      }
-    } else {
-      this.log.succeed(`Found the iOS ${configuration} IPA.`)
-    }
 
-    this.log.note(`Deploying iOS ${configuration} IPA.`)
-    const isDeployed = await task.deployingIosIpa(this.dir, scheme, configuration)
+    this.log.note(`Deploying iOS ${configuration} app.`)
+    const isDeployed = await task.deployingIosApp(this.dir, scheme, configuration)
     if (!isDeployed) {
       this.errors++
       this.log.fatal(`Unable to deploy the ${configuration} IPA; check for active device.`)

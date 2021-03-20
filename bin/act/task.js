@@ -32,7 +32,7 @@ const { fsx, sh } = require('../util')
 //   synchronous: can, get, has, is
 //   asynchronous: checking, finding, installing
 
-const tasks = {
+const task = {
 
   // host environment
 
@@ -314,7 +314,7 @@ const tasks = {
     return scheme
   },
 
-  getIosWorkspacePath(dir, scheme) {
+  getIosWorkspacePath: function(dir, scheme) {
     if (!scheme) scheme = this.getIosScheme(dir)
 
     return path.join(this.getIosPath(dir), `${scheme}.xcworkspace`)
@@ -458,10 +458,10 @@ const tasks = {
       }
     } catch (err) {}
     if (!buildDir) return null
-    return path.join(buildDir, `${name}.app`)
+    return path.join(buildDir, `${scheme}.app`)
   },
 
-  hasIoSApp: function(appPath) {
+  hasIosApp: function(appPath) {
     return fsx.isDirectory(appPath)
   },
 
@@ -469,14 +469,14 @@ const tasks = {
     if (!scheme) scheme = this.getIosScheme(dir)
     if (!configuration) configuration = 'Debug'
 
-    return path.join(this.dir, 'node_modules', '@approov', 'react-native-approov', 'ios', 'build', configuration, `${scheme}.ipa`)
+    return path.join(dir, 'node_modules', '@approov', 'react-native-approov', 'build', 'ios', configuration, `${scheme}.ipa`)
   },
 
-  isIoSIpaCurrent: function(appPath, ipaPath) {
+  isIosIpaCurrent: function(ipaPath, appPath) {
     return fsx.isFile(ipaPath) && this.hasIosApp(appPath) && (fsx.compareMtimes(ipaPath, appPath) > 0)
   },
-
-  buildingIosIpa: async function(appPath, ipaPath) {
+  
+  buildingIosIpa: async function(ipaPath, appPath) {
     const payPath = path.join(path.dirname(ipaPath), 'Payload')
 
     let isBuilt = false
@@ -493,17 +493,19 @@ const tasks = {
       await sh.execAsync(ipaCreate, {silent:true})
       isBuilt = true
     } catch (err) {
-      console.log(err)
+      console.log(`1: ${err}`)
       try {
         await sh.execAsync(`rm -rf ${payPath} ${ipaPath}`)
-      } catch (err) {}
+      } catch (err) { 
+        console.log(`2: ${err}`)
+      }
     }
     return isBuilt
   },
 
   registeringIosIpa: async function(dir, scheme, configuration, expireAfter) {
     const appPath = await this.findingIosAppPath(dir, scheme, configuration)
-    if (!this.hasIosApp) return false
+    if (!this.hasIosApp(appPath)) return false
 
     const ipaPath = this.getIosIpaPath(dir, scheme, configuration)
     if (!this.isIosIpaCurrent(ipaPath, appPath)) {
@@ -520,23 +522,17 @@ const tasks = {
     return isRegistered
   },
 
-  deployingIosIpa: async function(dir, scheme, configuration) {
+  deployingIosApp: async function(dir, scheme, configuration) {
     const appPath = await this.findingIosAppPath(dir, scheme, configuration)
-    if (!this.hasIosApp) return false
-
-    const ipaPath = this.getIosIpaPath(dir, scheme, configuration)
-    if (!this.isIosIpaCurrent(ipaPath, appPath)) {
-      const isBuilt = await this.buildingIosIpa(ipaPath, appPath)
-      if (!isBuilt) return false
-    }
+    if (!this.hasIosApp(appPath)) return false
 
     let isDeployed = false
     try {
-      await sh.execAsync(`ios-deploy -b ${this.ios.build.appPath}`)
+      await sh.execAsync(`ios-deploy -b ${appPath}`)
       isDeployed = true
     } catch (err) {}
     return isDeployed
   },
 }
 
-module.exports = tasks
+module.exports = task

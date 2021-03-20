@@ -47,7 +47,7 @@ const registeringIos = async (opts) => {
   try {
     await project.checkingReactNative()
     await project.checkingApproovCli()
-    await project.registeringIosIPA(opts.configuration, opts.expireAfter)
+    await project.registeringIosIpa(opts.configuration, opts.expireAfter)
   } catch (err) { 
     project.handleError(err)
   }
@@ -55,14 +55,13 @@ const registeringIos = async (opts) => {
   project.complete(`Registration successful, expiring after ${opts.expireAfter}.`)
 }
 
-
 const deployingIos = async (opts) => {
   const project = new Project(process.cwd())
 
   try {
     await project.checkingReactNative()
     await project.checkingApproovCli()
-    await project.registeringIosIPA(opts.configuration, opts.expireAfter)
+    await project.deployingIosApp(opts.configuration, opts.expireAfter)
   } catch (err) { 
     project.handleError(err)
   }

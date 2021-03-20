@@ -85,8 +85,8 @@ module.exports = {
     if (!path1) return -1
     if (!path2) return 1
 
-    const stat1 = fsx.statsSync(path1)
-    const stat2 = fsx.statsSync(path2)
+    const stat1 = fs.statSync(path1)
+    const stat2 = fs.statSync(path2)
 
     if (!stat1 && !stat2) return 0
     if (!stat1) return -1

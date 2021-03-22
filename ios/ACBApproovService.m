@@ -246,7 +246,7 @@ NSString *const UpdateConfigKey = @"approov-config";
         }
     }
     NSString *status = [Approov stringFromApproovTokenFetchStatus:[result status]];
-    ACBLogD(@"Attestation for domain %@: %@ (%@)", host, result.loggableToken, status);
+    ACBLogI(@"Attestation for domain %@: %@ (%@)", host, result.loggableToken, status);
 
     // decorate attestation result request if success
     if ([result status] == ApproovTokenFetchStatusSuccess) {

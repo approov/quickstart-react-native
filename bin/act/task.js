@@ -349,7 +349,7 @@ const task = {
   },
 
   getIosApproovSdkPath: function(dir) {
-    return path.join(dir, 'node_modules', '@approov', 'react-native-approov', 'ios', 'Approov.framework')
+    return path.join(dir, 'node_modules', '@approov', 'react-native-approov', 'ios', 'Approov.xcframework')
   },
 
   hasIosApproovSdk: function(dir) {
@@ -357,6 +357,27 @@ const task = {
   },
 
   installingIosApproovSdk: async function(dir) {
+    let isInstalled = false
+    const sdkPath = this.getIosApproovSdkPath(dir)
+    if (fsx.isDirectory(path.dirname(sdkPath))) {
+      if (fsx.isDirectory(sdkPath)) {
+        try {
+          await sh.execAsync(`rm -f ${sdkPath}`)
+        } catch (err) {}
+      }
+      try {
+        await sh.execAsync(`approov sdk -getLibrary ${sdkPath}`)
+        isInstalled = true
+      } catch (err) {
+        try {
+          await sh.execAsync(`rm -f ${sdkPath}`)
+        } catch (err) {}
+      }
+    }
+    return isInstalled
+  },
+
+  installingIosApproovSdk0: async function(dir) {
     let isInstalled = false
     const sdkPath = this.getIosApproovSdkPath(dir)
     if (fsx.isDirectory(path.dirname(sdkPath))) {

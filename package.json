@@ -34,12 +34,12 @@
     "react-native-approov": "bin/index.js"
   },
   "peerDependencies": {
-    "react": "^16.8.1",
+    "react": "^17.0.1",
     "react-native": ">=0.60.0-rc.0 <1.0.x"
   },
   "devDependencies": {
-    "react": "^16.9.0",
-    "react-native": "^0.61.5"
+    "react": "^17.0.1",
+    "react-native": "^0.64.0"
   },
   "dependencies": {
     "chalk": "^4.1.0",
@@ -47,11 +47,11 @@
     "commander": "^7.1.0",
     "compare-versions": "^3.6.0",
     "dotenv": "^8.2.0",
-    "fs-extra": "^9.0.1",
+    "fs-extra": "^9.1.0",
     "jsonfile": "^6.1.0",
-    "log-symbols": "^4.0.0",
+    "log-symbols": "^4.1.0",
     "n-readlines": "^1.0.1",
-    "ora": "^5.1.0",
+    "ora": "^5.4.0",
     "prompts": "^2.4.0",
     "shelljs": "^0.8.4",
     "simple-plist": "^1.1.1",

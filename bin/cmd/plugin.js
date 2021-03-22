@@ -66,7 +66,7 @@ const deployingIos = async (opts) => {
     project.handleError(err)
   }
 
-  project.complete(`Deployment successful, expiring after ${opts.expireAfter}.`)
+  project.complete(`Deployment successful. Manually launch app.`)
 }
 
 module.exports = {

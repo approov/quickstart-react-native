@@ -493,11 +493,9 @@ const task = {
       await sh.execAsync(ipaCreate, {silent:true})
       isBuilt = true
     } catch (err) {
-      console.log(`1: ${err}`)
       try {
         await sh.execAsync(`rm -rf ${payPath} ${ipaPath}`)
       } catch (err) { 
-        console.log(`2: ${err}`)
       }
     }
     return isBuilt

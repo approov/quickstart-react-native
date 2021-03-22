@@ -387,7 +387,6 @@ class Project {
 
     this.log.spin(`Checking for iOS ${configuration} IPA...`)
     const appPath = await task.findingIosAppPath(this.dir, scheme, configuration)
-    console.log(`appPath: ${appPath} (${task.hasIosApp(appPath)})`)
     if (!task.hasIosApp(appPath)) {
       this.errors++
       this.log.fail(`iOS ${configuration} APP not found.`)
@@ -396,12 +395,13 @@ class Project {
     }
     const ipaPath = task.getIosIpaPath(this.dir, scheme, configuration)
     if (!task.isIosIpaCurrent(ipaPath, appPath)) {
+      this.log.spin(`Building iOS ${configuration} IPA...`)
       const isBuilt = await task.buildingIosIpa(ipaPath, appPath)
       if (!isBuilt) {
         this.errors++
         this.log.fatal('Failed to build iOS ${configuration} IPA.', this.ref('contactSupport'))
       } else {
-        this.log.succeed(`Found the iOS ${configuration} IPA.`)
+        this.log.succeed(`Built the iOS ${configuration} IPA.`)
       }
     } else {
       this.log.succeed(`Found the iOS ${configuration} IPA.`)
@@ -425,9 +425,8 @@ class Project {
       this.log.fatal('Missing iOS deployment tool (ios-deploy).', this.ref('approovReg'))
     }
 
-    this.log.spin(`Checking for iOS ${configuration} IPA...`)
+    this.log.spin(`Checking for iOS ${configuration} APP...`)
     const appPath = await task.findingIosAppPath(this.dir, scheme, configuration)
-    console.log(`appPath: ${appPath} (${task.hasIosApp(appPath)})`)
     if (!task.hasIosApp(appPath)) {
       this.errors++
       this.log.fail(`iOS ${configuration} APP not found.`)
@@ -435,13 +434,13 @@ class Project {
       throw new LogError(`iOS ${configuration} APP not found.`)
     }
 
-    this.log.note(`Deploying iOS ${configuration} app.`)
+    this.log.note(`Deploying iOS ${configuration} APP.`)
     const isDeployed = await task.deployingIosApp(this.dir, scheme, configuration)
     if (!isDeployed) {
       this.errors++
-      this.log.fatal(`Unable to deploy the ${configuration} IPA; check for active device.`)
+      this.log.fatal(`Unable to deploy the ${configuration} APP; check for active device.`)
     }
-    this.log.succeed(`Deployed the ${configuration} IPA.`)
+    this.log.succeed(`Deployed the ${configuration} APP.`)
   }
 }
 

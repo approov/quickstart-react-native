@@ -59,7 +59,7 @@ const approovAxiosInterceptor = {
             const url = (new URL(config.url, config.baseURL)).href
 
             // authenticate the app with Approov servers and fetch an Approov token
-            const result = await Approov.fetchApproovToken(config.url);
+            const result = await Approov.fetchApproovToken(url);
             console.log("Fetched Approov token: " + result.loggableToken);
 
             // store the result locally so we can handle request errors later

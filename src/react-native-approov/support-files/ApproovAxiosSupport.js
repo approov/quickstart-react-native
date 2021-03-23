@@ -54,6 +54,10 @@ const approovAxiosInterceptor = {
                 }
             }
 
+            // build absolute url from axios config
+            // note: error thrown if url is null or if baseURL is null and url is not absolute
+            const url = (new URL(config.url, config.baseURL)).href
+
             // authenticate the app with Approov servers and fetch an Approov token
             const result = await Approov.fetchApproovToken(config.url);
             console.log("Fetched Approov token: " + result.loggableToken);

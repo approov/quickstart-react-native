@@ -29,7 +29,7 @@ const updatingProps = async (project, opts) => {
   let tokenPrefix = opts['token.prefix']
   let bindingName = opts['binding.name']
   let usePrefetch = opts['init.prefetch']
-  let saveDir = opts['save']
+  let useBitcode = opts['bitcode']
 
   const onPromptsCancel = (prompt, answers) => {
     project.errors++
@@ -93,6 +93,20 @@ const updatingProps = async (project, opts) => {
       }
     ], { onCancel: onPromptsCancel })
     usePrefetch = response.usePrefetch
+
+    // use bitcode
+
+    response = await prompts([  
+      {
+        type: 'toggle',
+        name: 'useBitcode',
+        message: 'Use bitcode for iOS builds (not typical)?',
+        initial: usePrefetch,
+        active: 'yes',
+        inactive: 'no'
+      }
+    ], { onCancel: onPromptsCancel })
+    useBitcode = response.useBitcode
   }
 
   return {
@@ -100,6 +114,7 @@ const updatingProps = async (project, opts) => {
     tokenPrefix,
     bindingName,
     usePrefetch,
+    useBitcode,
   }
 }
 
@@ -112,9 +127,8 @@ const command = (new Command())
 .option('--token.prefix <string>', 'prefix prepended to Approov token string', '')
 .option('--binding.name <name>', 'name of binding field', '')
 .option('--init.prefetch', 'start token fetch at app launch', false)
+.option('--bitcode', 'use bitcode for iOS builds', false)
 .option('--no-prompt', 'do not prompt for user input', false)
-.option('--no-sync', 'do not synchronize integration files into the app', false)
-.option('--save <dir>', 'save Approov integration files into this directory', '')
 
 .action(async (opts) => {
   const project = new Project(process.cwd())

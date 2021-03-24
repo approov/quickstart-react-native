@@ -337,13 +337,15 @@ class Project {
 
   async installingIosFiles(props) {
     if (task.hasIosPath(this.dir)) {
-      this.log.note(`Installing iOS Approov SDK library...`)
-      let isInstalled = await task.installingIosApproovSdk(this.dir)
+      const bitcode = !!props.useBitcode
+      const usingBitcode = bitcode? ' (bitcode)' : ''
+      this.log.note(`Installing iOS Approov SDK library${usingBitcode}...`)
+      let isInstalled = await task.installingIosApproovSdk(this.dir, bitcode)
       if (!isInstalled) {
         this.errors++
         this.log.fatal('Failed to install iOS Approov SDK library.', this.ref('contactSupport'))
       }
-      this.log.succeed(`Installed iOS Approov SDK library.`)
+      this.log.succeed(`Installed iOS Approov SDK library${usingBitcode}.`)
 
       this.log.note(`Installing iOS Approov config file...`)
       isInstalled = await task.installingIosApproovConfig(this.dir)
@@ -376,8 +378,9 @@ class Project {
         }
       }
 
-      this.log.info('NOTE: Approov integrated apps will only attest properly on a physical device.')
-      this.log.info('      Running on a physical device requires a team be specified for code signing.')
+      this.log.warn('Approov integrated apps will only attest properly on a physical device oor whitelisted simulator.')
+      this.log.warn('When targeting a device, ensure a development team is specified in xcoode and the device is properly provisioned.')
+      if (bitcode) this.log.warn('Ensure that your xcode project enables bitcode for all configurations you build.')
     }
   }
 

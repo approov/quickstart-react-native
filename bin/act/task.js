@@ -356,7 +356,7 @@ const task = {
     return fsx.isDirectory(this.getIosApproovSdkPath(dir))
   },
 
-  installingIosApproovSdk: async function(dir) {
+  installingIosApproovSdk: async function(dir, bitcode) {
     let isInstalled = false
     const sdkPath = this.getIosApproovSdkPath(dir)
     if (fsx.isDirectory(path.dirname(sdkPath))) {
@@ -365,42 +365,16 @@ const task = {
           await sh.execAsync(`rm -f ${sdkPath}`)
         } catch (err) {}
       }
+      const library = bitcode ? `${sdkPath} -bitcode` : sdkPath
       try {
-        await sh.execAsync(`approov sdk -getLibrary ${sdkPath}`)
+        console.log(`approov sdk -getLibrary ${library}`)
+        await sh.execAsync(`approov sdk -getLibrary ${library}`)
         isInstalled = true
       } catch (err) {
         try {
           await sh.execAsync(`rm -f ${sdkPath}`)
         } catch (err) {}
       }
-    }
-    return isInstalled
-  },
-
-  installingIosApproovSdk0: async function(dir) {
-    let isInstalled = false
-    const sdkPath = this.getIosApproovSdkPath(dir)
-    if (fsx.isDirectory(path.dirname(sdkPath))) {
-      const zipPath = path.join(path.dirname(sdkPath), 'Approov.zip')
-      let isZipped = false
-      try {
-        await sh.execAsync(`approov sdk -getLibrary ${zipPath}`)
-        isZipped = true
-      } catch (err) {
-        try {
-          await sh.execAsync(`rm -f ${zipPath}`)
-        } catch (err) {}
-      }
-      if (isZipped) {
-        try {
-          await sh.execAsync(`rm -rf ${sdkPath} && unzip ${zipPath} -d ${path.dirname(zipPath)} && rm -f ${zipPath}`)
-          isInstalled = true
-        } catch (err) {
-          try {
-            await sh.execAsync(`rm -f ${zipPath}`)
-          } catch (err) {}
-        }
-      } 
     }
     return isInstalled
   },

@@ -1,9 +1,13 @@
 <h1 align="center">React-Native Approov Quickstart</h1>
 <h2 align="center" style="color:red;">WARNING: THIS PACKAGE IS PRE-RELEASE ONLY</h2>
 <p align="center">
+<<<<<<< HEAD
     <a href="https://approov.io">
       <img style="margin:0;" src="assets/approov-icon.png" alt=""/>
     </a>
+=======
+    <img margin-top=".25rem" src="assets/approov-icon.png" alt=""/>
+>>>>>>> 5a4f784537ca9f44a7dca5c6a911adf18e4b23d7
     <a href="https://www.npmjs.com/package/@approov/react-native-approov">
       <img alt="npm" src="https://img.shields.io/npm/v/@approov/react-native-approov" />
     </a>
@@ -13,6 +17,7 @@
     <a href="https://approov.io/docs">
       <img alt="Approov docs" src="https://img.shields.io/badge/approov-docs-blue" />
     </a>
+<<<<<<< HEAD
     <a href="https://reactnative.dev">
       <img style="margin:0;" src="assets/react-icon.png" alt=""/>
     </a>
@@ -23,6 +28,16 @@
   <a href="#approov-integration">Approov Integration</a> •
   <a href="#common-scenarios">Common Scenarios</a> •
   <a href="#release-notes">Release Notes</a>
+=======
+    <img src="assets/react-icon.png" alt=""/>
+</p>
+<p align="center">
+  <a href="#Basic Usage">Usage</a> •
+  <a href="#Requirements and Setup">Requirements</a> •
+  <a href="#Approov Integration">Approov Integration</a> •
+  <a href="#Common Scenarios">Common Scenarios</a> •
+  <a href="#Release Notes">Release Notes</a>
+>>>>>>> 5a4f784537ca9f44a7dca5c6a911adf18e4b23d7
 </p>
 
 ---

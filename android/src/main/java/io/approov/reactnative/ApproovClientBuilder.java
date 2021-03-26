@@ -70,13 +70,14 @@ public class ApproovClientBuilder implements CustomClientBuilder, ApproovService
         pinner = ApproovCertificatePinner.build(approovService);
     }
 
+    @Override
     public void apply(OkHttpClient.Builder builder) {
         if (builder == null) return;
 
         Log.d(TAG, "Applying Approov custom client builder");
 
-        builder.cookieJar(new ReactCookieJarContainer())
-        .addInterceptor(interceptor)
-        .certificatePinner(pinner);
+        builder
+            .addInterceptor(interceptor)
+            .certificatePinner(pinner);
     }
 }

@@ -378,9 +378,9 @@ class Project {
         }
       }
 
-      this.log.warn('Approov integrated apps will only attest properly on a physical device oor whitelisted simulator.')
-      this.log.warn('When targeting a device, ensure a development team is specified in xcoode and the device is properly provisioned.')
-      if (bitcode) this.log.warn('Ensure that your xcode project enables bitcode for all configurations you build.')
+      this.log.warn('on iOS, Approov integrated apps will only attest properly on a physical device oor whitelisted simulator.')
+      this.log.warn('on iOS, when targeting a device, ensure a development team is specified in xcoode and the device is properly provisioned.')
+      if (bitcode) this.log.warn('on iOS, ensure that your xcode project enables bitcode for all configurations you build.')
     }
   }
 

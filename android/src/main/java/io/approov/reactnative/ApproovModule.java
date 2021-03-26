@@ -23,6 +23,7 @@ package io.approov.reactnative;
 
 import android.util.Log;
 
+import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
@@ -115,14 +116,11 @@ public class ApproovModule extends ReactContextBaseJavaModule {
         // initialize and set custom approov okhttp client builder
         NetworkingModule.setCustomClientBuilder(new ApproovClientBuilder(reactContext, approovService));
     }
-    
-    /**
-     * Logs a debug message to the Android log.
-     * 
-     * @param message the debug message.
-     */ 
+
+    // Native moodules seem to need at least one bridged method to be recognized
+    // on the javascript side, so a module description was added.
     @ReactMethod
-    public void debug(String message) {
-        Log.d(TAG, message != null? message : "");
+    public void fetchDescription(Promise promise) {
+        promise.resolve("Approov Native Module for React Native");
     }
 }

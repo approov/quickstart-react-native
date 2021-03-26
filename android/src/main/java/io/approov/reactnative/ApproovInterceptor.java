@@ -89,7 +89,7 @@ public class ApproovInterceptor implements Interceptor {
             tokenName = value;
         } else {
             tokenName = "Approov-Token";
-            Log.e(TAG, "Illegal token.type in " + PROPS_NAME + "; using " + tokenName + " type.");
+            Log.e(TAG, "Illegal token.name in " + PROPS_NAME + "; using " + tokenName + " type.");
         }
         Log.i(TAG, "token.name: \'" + tokenName + "\'");
 

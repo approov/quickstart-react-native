@@ -1,41 +1,13 @@
-<h1 align="center">React-Native Approov Quickstart</h1>
-<h2 align="center" style="color:red;">WARNING: THIS PACKAGE IS PRE-RELEASE ONLY</h2>
-<p align="center">
-    <img margin-top=".25rem" src="assets/approov-icon.png" alt=""/>
-    <a href="https://www.npmjs.com/package/@approov/react-native-approov">
-      <img alt="npm" src="https://img.shields.io/npm/v/@approov/react-native-approov" />
-    </a>
-    <a href="https://github.com/approov/quickstart-react-native/issues?q=is%3Aopen+is%3Aissue">
-      <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/approov/quickstart-react-native" />
-    </a>
-    <a href="https://approov.io/docs">
-      <img alt="Approov docs" src="https://img.shields.io/badge/approov-docs-blue" />
-    </a>
-    <img src="assets/react-icon.png" alt=""/>
-</p>
-<p align="center">
-  <a href="#Basic Usage">Usage</a> •
-  <a href="#Requirements and Setup">Requirements</a> •
-  <a href="#Approov Integration">Approov Integration</a> •
-  <a href="#Common Scenarios">Common Scenarios</a> •
-  <a href="#Release Notes">Release Notes</a>
-</p>
+# react-native-approov
 
----
+## WARNINGS
 
-The React Native Approov Quickstart provides an easy integration of Approov API threat protection into most React Native apps.
-
-You will learn how to:
-
-- Check that your React Native app meets the minimum requirements for Approov integration,
-- Integrate Approov into your app
-- Register and successfully deploy your app oonto Android and iOS devices
-
-Start with your own React Native app or try one of the available examples.
+**This package is under beta.**
+**Android and iOS support are being tested.**
 
 ## Basic Usage
 
-### 0. Check that your development environment is properly set up
+### 0. Basic Requirements
 
 Make sure you have recent versions of `node` with `npx`, and `yarn` installed on your machine.
 
@@ -46,7 +18,7 @@ For Android, make sure Android Studio is installed.
 For Approov, make sure you have installed and can run the `approov` CLI tool. See the
 [Approov installation instructions](https://approov.io/docs/latest/approov-installation/) for more detail.
 
-### 1. Start with a working React Native app
+### 1. Working React Native App
 
 Start with a working react native app. If you do not have one, you may install an example from the 
 `@approov/react-native-approov` package. We'll use the `shapes_fetch` example in our instructions. To install it, do:
@@ -75,7 +47,7 @@ $ react-native run-ios
 
 You should see a running Approov Shapes app on an android emulator without Approov installed.
 
-### 2. Integrate Approov into the app
+### 2. Approov Integration
 
 Next, we'll run the `check` command too see if the app is ready for Approov integration.
 
@@ -158,9 +130,7 @@ Pod installation complete! There are 29 dependencies from the Podfile and 28 tot
 ✔ Integration completed successfully
 ```
 
-### Run and verify your Approoov integrated app
-
-#### Android
+### Android
 
 And once that's completed, rerun android:
 
@@ -198,7 +168,7 @@ You should now see your react native app, protected by Approov, successfully mak
 
 If the app is still blocking API calls, you can relaunch the app pr wait 5 minutes for new tokens to be issued.
 
-#### iOS
+### iOS
 
 On iOS, Approov only attests successfully when running on a physical device and not using the interactive packager. So, on iOS, plug in a device and do:
 
@@ -220,146 +190,10 @@ $ react-native deploy-ios
 
 This will install the app on your device. Launch the app, and Approov should be protecting APi calls from the app.
 
-## Requirements and Setup
+## React-Native and Approov Topics
 
-### Development Environment
+### Topic 1
 
-Follow the recommended React Native setup for your host OS and target platform at [https://reactnative.dev/docs/environment-setup](https://reactnative.dev/docs/environment-setup).
+- various topics, some of which are referenced in the command output...
 
-The `react-native-approov` command line tools use both `npx` and `yarn`. `npx` is installed with your `node` environment. Please ensure that `yarn 1 (classic)` is installed. See [https://www.npmjs.com/package/yarn](https://www.npmjs.com/package/yarn).
-
-For Android, no additional tooling is required.
-
-For iOS, the `ios-deploy` command is required to deploy app archives onto iOS devices. TYpically, this utility can be installed using `brew install ios-deploy`. See [https://github.com/ios-control/ios-deploy](https://github.com/ios-control/ios-deploy) for more information.
-
-###App Requirements
-
-####Javascript
-
-XHR compliant network calls
-
-currently no explicit expo support
-
-#### Android Requirements
-
-using normal app setup (cra compatible)
-
-minsdk requirements
-
-network permissions
-
-#### iOS Requirements
-
-normal workspace structure (cra compatible)
-
-scheme matches workspace name
-
-flipper not supported - disable
-
-signing and provisioning set for device operation
-
-if bitcode required, enabled in workspace
-
-#### Approov Requirements
-
-Active Approov Account
-
-sign up for free trial here
-
-CLI Access w/ developer permissions
-
-Enabled using roles or management tokens
-
-Approov API Domains
-
-set independently; requires admin privileges
-
-## Approov Integration
-
-### React-Native-Approov Commands
-
-all run by npx @approov... or after APproov package installed, using yarn run ...
-
-#### example
-
-#### check
-
-checks requirements are met
-
-#### integrate
-
-properties
-
-bitcode (ios only)
-
-### React-Native Plugin Commands
-
-extend the basic react-native commands
-
-#### reg-android
-#### reg-ios
-#### deploy-ios
-
-### Manual Integration
-
-WHy? if your project has unusual structure or wish to make changes without running a full reintegration
-
-#### Install Approov package
-
-#### Install Android files
-
-#### Install iOS files
-
-## Common Scenarios
-
-### Updating Android min SDK
-
-### Updating Android Network Permissions
-
-### Running in an Android Emulator
-
-### Disabling Flipper on iOS
-
-### Running on an iOS simulator
-
-### Running on an iOS device
-
-### Using Bitcode with iOS
-
-### Customizing Approov Token Passing
-
-### Prefetching an Approov Token at Launch
-
-### Binding Authorization to Approov Tokens
-
-### Which Javascript Network Libraries are supported?
-
-### Handling Network Errors
-
-### Why apps launched with run-ios apps fail to attest properly
-
-### Next Steps with Approov
-
-### Troubleshooting Approov Rejections
-
-(what if I don;t get shapes)
-
-### Contact Support
-
-submit an issue (bugs or feature requests)
-
-ask a question
-
-getting access to approov
-
-## Release Notes
-
-### Version 1.x
-
-### Version 2.x
-
-### Feature Requests
-
-### License
-
----
+And much more...

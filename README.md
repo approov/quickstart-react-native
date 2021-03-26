@@ -88,7 +88,7 @@ Here are the Shapes start up, successful hello API call, and unsuccessful shapes
 
 ### 2. Integrate Approov into the app
 
-Next, we'll run the `react-native-approov check` command to see if the app is ready for Approov integration.
+First, we'll run the `react-native-approov check` command to see if the app is ready for Approov integration.
 
 Here's a sample Android check:
 
@@ -177,13 +177,17 @@ Pod installation complete! There are 29 dependencies from the Podfile and 28 tot
 ✔ Integration completed successfully
 ```
 
-The newly integrated apps will run on an Android emulator or an iOS simulator, but default security policies require API calls to be made from real devices, so even though Approov is properly integrated, APi calls will still fail. Refer to [Running on an Android emulator]() or [Running on an iOS simulator] for instructions on how to workaround this. 
+### 3. Run your Approov integrated app
 
-For our example, we will switch to physical devices to complete and check that Approov is truly protecting our API calls. Because of differences between Android and iOS, the instructions diverge.
+(build (run) your app  - register your app - launch your app)
+
+The newly integrated apps will run on an Android emulator or an iOS simulator, but default Approov security policies require API calls to be made from real devices. Even though Approov is properly integrated, the protected APi calls will not succeed. Refer to [Running on an Android emulator]() or [Running on an iOS simulator] for instructions on how to workaround this.
+
+For our shapes example, we will switch to physical devices to check that Approov is truly protecting our API calls. Because of differences between Android and iOS, the instructions diverge.
 
 #### Android Devices
 
-And once that's completed, rerun android:
+... once that's completed, rerun android:
 
 ```
 $ react-native run-android
@@ -335,37 +339,71 @@ WHy? if your project has unusual structure or wish to make changes without runni
 
 ## Common Scenarios
 
+These are scenarios you may encounter whne inetgarting Approoov into your app.
+
 ### Establishing an active Approov session
+
+....
 
 ### Checking and Updating Approov-protected API domains
 
+....
+
 ### Updating Android min SDK
+
+....
 
 ### Updating Android Network Permissions
 
+....
+
 ### Running in an Android Emulator
+
+....
 
 ### Disabling Flipper on iOS
 
+....
+
 ### Running on an iOS simulator
+
+....
 
 ### Running on an iOS device
 
+....
+
 ### Using Bitcode with iOS
+
+....
 
 ### Customizing Approov Token Passing
 
+....
+
 ### Prefetching an Approov Token at Launch
+
+....
 
 ### Binding Authorization to Approov Tokens
 
+....
+
 ### Which Javascript Network Libraries are supported?
+
+....
 
 ### Handling Network Errors
 
+....
+
 ### Why apps launched with run-ios apps fail to attest properly
 
+....
+
 ### Next Steps with Approov
+
+....
 
 ### Troubleshooting Approov Rejections
 
@@ -383,10 +421,20 @@ getting access to approov
 
 ### Version 1.x
 
+....
+
 ### Version 2.x
+
+....
 
 ### Feature Requests
 
+....
+
 ### License
+
+![GitHub](https://img.shields.io/github/license/approov/quickstart-react-native)
+
+Copyright © 2021 CriticalBlue, Ltd.
 
 ---

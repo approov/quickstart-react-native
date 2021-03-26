@@ -8,12 +8,12 @@
   "description": "Approov API Threat Protection for ReactNative",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/approov/react-native-approov.git",
-    "baseUrl": "https://github.com/approov/react-native-approov"
+    "url": "git+https://github.com/approov/quickstart-react-native.git",
+    "baseUrl": "https://github.com/approov/quickstart-react-native"
   },
-  "homepage": "https://github.com//approov/react-native-approov",
+  "homepage": "https://github.com/approov/quickstart-react-native",
   "bugs": {
-    "url": "https://github.com//approov/react-native-approov/issues"
+    "url": "https://github.com/approov/quickstart-react-native/issues"
   },
   "keywords": [
     "react-native",

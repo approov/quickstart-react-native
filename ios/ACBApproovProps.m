@@ -53,6 +53,7 @@ NSString *const PropsExtension = @"plist";
         [NSException raise:@"ApproovPropsInitFailure" format:@"Approov props failed to initialize."];
     }
 
+    // read in props
     NSURL *propsURL = [[NSBundle mainBundle] URLForResource:PropsResource withExtension:PropsExtension];
     if (propsURL) {
         NSError *error = nil;

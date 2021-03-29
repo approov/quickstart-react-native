@@ -540,7 +540,7 @@ If you do require bitcode, it is generally easier to develop your app and integr
 
 React Native setup iOS projects using workspaces, so when opening a React Native iOS project in xcode, always open it by selecting the `<project>.xcworkspace` and not the project.
 
-The `react-native-approov` commands assume that the name of the iOS workspace is also used as the project's only scheme name. Multiple configurations, such as `Debug` and `Release` are supported but not multiple schemes. PLease [contact support](#getting-additional-help) if this is a problem.
+The `react-native-approov` commands assume that the name of the iOS workspace is also used as the project's only scheme name. Multiple configurations, such as `Debug` and `Release` are supported but not multiple schemes. Please [contact support](#getting-additional-help) if this is a problem.
 
 ### Next steps with Approov
 

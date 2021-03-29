@@ -18,10 +18,9 @@
     </a>
 </p>
 <p align="center">
-  <a href="#basic-usage">Usage</a> •
-  <a href="#requirements-and-setup">Requirements</a> •
-  <a href="#approov-integration">Approov Integration</a> •
-  <a href="#common-scenarios">Common Scenarios</a> •
+  <a href="#basic-usage">Basic Usage</a> •
+  <a href="#common-issues-and-questions">Common Issues</a> •
+  <a href="#command-reference">Command Reference</a> •
   <a href="#release-notes">Release Notes</a>
 </p>
 
@@ -32,7 +31,7 @@ The React Native Approov Quickstart provides an easy integration of Approov API 
 You will learn how to:
 
 - Check that your React Native app meets the minimum requirements for Approov integration,
-- Integrate Approov into your app without no additional code required,
+- Integrate Approov into your app without writing additional code,
 - Register and successfully deploy your app onto Android and iOS devices.
 
 Start with your own React Native app or try one of the available examples.
@@ -41,22 +40,20 @@ Start with your own React Native app or try one of the available examples.
 
 ### 0. Check that your development environment is properly set up
 
-Ensure that you have a recent version of `React Native` (>= 0.60) installed (see [installing react native](https://reactnative.dev/docs/environment-setup)). You also need `yarn` classic (1.x) (see [installing yarn](https://www.npmjs.com/package/yarn). If you can build the default `react-native init` app, your React Native environment is all set up. 
+Ensure that you have a recent version of `React Native` (>= 0.60) installed (see [installing react native](https://reactnative.dev/docs/environment-setup)). You also need `yarn` classic (1.x) (see [installing yarn](https://www.npmjs.com/package/yarn)). If you can build the default `react-native init` app, your React Native environment is likely set up properly.
 
-For Android, you will also want access to `adb` for identifying device IDs and running `logcat` (see [Android Debug Bridge (adb)](https://developer.android.com/studio/command-line/adb). For iOS, you should also install `ios-deploy` to run on iOS devices (see [installing ios-deploy](https://github.com/ios-control/ios-deploy)).
+For Android, you will also want access to `adb` for identifying device IDs and running `logcat` (see [Android Debug Bridge ](https://developer.android.com/studio/command-line/adb)). For iOS, you should also install `ios-deploy` to run on iOS devices (see [installing ios-deploy](https://github.com/ios-control/ios-deploy)).
 
 For Approov, make sure you have installed and can run the `approov` CLI tool (see [installing Approov](https://approov.io/docs/latest/approov-installation/)). If you do not have access to Approov, you can sign up for a free trial at [https://www.approov.io/signup](https://www.approov.io/signup).
 
-Refer to [development requirements and set up](#requirements-and-setup) for additional details.
-
 ### 1. Start with a working React Native app
 
-You can start with any React Native app using the standard (non-expo) runtime and standard react-native networking (fetch, axios, frisbee...).
+You can start with any React Native app using the default runtime and standard react-native networking (fetch, axios, frisbee...).
 Start with your own React Native app, or use one of the Approov-provided examples.
 
 We will use the Approov `shapes_fetch` example to illustrate the remaining steps to integrate Approov into a simple React Native app. To copy a pre-packaged example, start a command-line terminal, run the `react-native-approov example` command, and select an example and directory to install into:
 
-```
+```shell
 $ npx @approov/react-native-approov example
 ✔ Select example app to copy › shapes_fetch
 ✔ Specify destination path … .
@@ -68,14 +65,14 @@ The example react-native project is downloaded, npm packages are installed, and,
 
 To test the app on Android, change into the `shapes_fetch` directory and run android:
 
-```
+```shell
 $ cd shapes_fetch
 $ yarn run react-native run-android
 ```
 
 Or to test the app on iOS, run iOS from the same `shapes_fetch` directory:
 
-```
+```shell
 $ cd shapes_fetch
 $ yarn run react-native run-ios
 ```
@@ -220,13 +217,13 @@ The app will be recognized by Approov within five minutes. Relaunch the app will
 
 ![Android Shapes](assets/shapes-android.png)
 
-Congratulations oon successfully protecting your API calls with Approov!
+Congratulations on successfully protecting your API calls with Approov!
 
 #### iOS Devices
 
-Connect a single iOS device to your host platform over USB. See [Run an Appon a device](https://help.apple.com/xcode/mac/current/#/dev5a825a1ca) for setup instructions. Note that you must set up a development team to set up code signing and establish teh device provisioning profile.
+Connect a single iOS device to your host platform over USB. See [Run an App on a device](https://help.apple.com/xcode/mac/current/#/dev5a825a1ca) for setup instructions. **Important**: you must set up a development team to set up code signing and establish the device provisioning profile.
 
-Once set, run React Native on Android with an extra `--device` flag:
+Once set, run React Native on iOS with an extra `--device` flag:
 
 ```
 $ yarn run react-native run-ios --device
@@ -262,195 +259,489 @@ This will deploy but not launch the app. Launch the app by hand on your device, 
 
 ![iOS Shapes](assets/shapes-ios.png)
 
-Congratulations oon successfully protecting your API calls with Approov!
+Congratulations on successfully protecting your API calls with Approov!
 
-## Requirements and Setup
+## Common Issues and Questions
 
-### Development Environment
-
-The `react-native-approov` command line tools use `node`, `npx` and `yarn`. `npx` is installed with your `node` environment. Please ensure that `yarn 1 (classic)` is installed. See [https://www.npmjs.com/package/yarn](https://www.npmjs.com/package/yarn).
-
-Follow the recommended React Native setup for your host OS and target platform at [https://reactnative.dev/docs/environment-setup](https://reactnative.dev/docs/environment-setup). React Native should be at version 0.60; the latest version is recommended.
-
-For Android, no additional tooling is required.
-
-For iOS, the `ios-deploy` command is required to deploy app archives onto iOS devices. TYpically, this utility can be installed using `brew install ios-deploy`. See [https://github.com/ios-control/ios-deploy](https://github.com/ios-control/ios-deploy) for more information.
-
-### App Requirements
-
-#### Javascript
-
-XHR compliant network calls
-
-currently no explicit expo support
-
-#### Android
-
-using normal app setup (cra compatible)
-
-minsdk requirements
-
-network permissions
-
-#### iOS
-
-normal workspace structure (cra compatible)
-
-scheme matches workspace name
-
-flipper not supported - disable
-
-signing and provisioning set for device operation
-
-if bitcode required, enabled in workspace
-
-### Approov Requirements
-
-As mentioned elsewhere...
-
-Active Approov Account
-
-sign up for free trial here
-
-CLI Access w/ developer permissions
-
-Enabled using roles or management tokens
-
-Approov API Domains set by admin
-
-set independently; requires admin privileges
-
-## Approov Integration
-
-### React-Native-Approov Commands
-
-all run by npx @approov... or after APproov package installed, using yarn run ...
-
-#### react-native-approov example
-
-#### react-native-approov check
-
-checks requirements are met
-
-#### react-native-approov integrate
-
-properties
-
-bitcode (ios only)
-
-### React-Native Plugin Commands
-
-extend the basic react-native commands
-
-#### reg-android
-#### reg-ios
-#### deploy-ios
-
-### Manual Integration
-
-WHy? if your project has unusual structure or wish to make changes without running a full reintegration
-
-#### Install Approov package
-
-#### Install Android files
-
-#### Install iOS files
-
-## Common Scenarios
-
-These are scenarios you may encounter whne inetgarting Approoov into your app.
+These are some common issues or questions you may have about Approov integration.
 
 ### Establishing an active Approov session
 
-....
+The React Native Approov `check` and `integrate` command and the React Native plugin `reg-android` and `reg-ios` commands require an active Approov session to run.
 
-### Checking and Updating Approov-protected API domains
+First, you must have access to Approov. For a free 30-day trial, sign up at [https://www.approov.io/signup](https://www.approov.io/signup). You will receive an email with instructions on how to activate and setup your Approv account.
 
-....
+You must have an Approov session active with at least `developer` role capabilities. More information about roles and sessions can be found at [installing Approov](https://approov.io/docs/latest/approov-installation/).
 
-### Updating Android min SDK
+Once a session is established, each react-native-approoov command will extend your session for one hour.
 
-....
+### How do I setup my backend service to check for approved API calls?
 
-### Updating Android Network Permissions
+API calls protected by Approov will include an Approov token which must be checked. Backeend quickstarts for common server frameworks, lanquages, and API gateways can be accessed at [Backend APIs](https://approov.io/docs/v2.6/approov-integration-examples/backend-api/).
 
-....
+### Checking and updating Approov-protected API domains
 
-### Running on an Android Emulator
+Before integrating Approov into your React Native app, you should add all API domains to your account which need API protection. For our shapes service examples, there is one API domain to protect, `shapes.approov.io`. You can check which API domains are protected using the `approov CLI:
 
-....
+```shell
+$ approov api --list
+1 API domain:
+ shapes.approov.io          type:restricted, alg:HS256
+```
+
+If you need to add API domains to your account, your Approov `admin` role is required.
+
+### Certificate pinning is fully supported by Approov
+
+Approov provides built in support for automatic pinning of any Approov-protected API domains. Once integrated, Approov will independently check the certificates used by your API domains and use them to pin your API connections. Certificates can be updated and rotated using the `approov` CLI without requiring any changes to your deployed apps.
+
+See [Approov Public Key Pinning Configuration](https://approov.io/docs/v2.6/approov-usage-documentation/#public-key-pinning-configuration) for more information.
+
+### Customizing Approov token passing
+
+When making API calls, Approov tokens are usually passed in headers. It is important that your React Native app and your backend API coordinate on the name of the header which carries the token. The `react-native-approov integrate` command will prompt you for a header name:
+
+```shell
+$ npx @approov/react-native-approov integrate
+   
+✔ Found project...
+...
+✔ Specify Approov token header name … Approov-Token
+✔ Specify prefix to add to the Approov token string, if any … Bearer
+...   
+
+✔ Approov integration completed successfully
+```
+
+The default header name is `Approov-Token`. You may specify prefix string, for example, `Bearer`, to prefix the token string. The default prefix is nothing.
+
+### Binding authorization to Approov tokens
+
+You may bind an Approov token to the value of any other header field. This is almost always used to bind Approov and Authorization tokens. WHen bound, the backend service verifies the Approov token and further that the Approov token was bound to only that authorization data value. See [Token Binding](https://approov.io/docs/v2.6/approov-usage-documentation/#token-binding) for additional information.
+
+To enable token binding, specify the binding header data name in the in the `react-native-approov integrate` command:
+
+```shell
+$ npx @approov/react-native-approov integrate
+   
+✔ Found project...
+...
+✔ Specify binding header data name, if any … Authorization
+...   
+
+✔ Approov integration completed successfully
+```
+
+The default is an empty name which means token binding is not being used.
+
+The shapes service example will check for data binding using the `Authorization` header data if it is specified.
+
+### Prefetching an Approov token at app launch
+
+Approov will typically attest a running app instance every five minutes. Each attestation fetches a new Approov token and requires communication between the app instance and the Approov service. By default, the first Approov token fetch occurs at the first API call after launch. Alternatively, you may elect to prefetch an Approov token immediately after launch by saying `yes` at the prefetch prompt in the `react-native-approov integrate` command:
+
+```shell
+$ npx @approov/react-native-approov integrate
+   
+✔ Found project...
+...
+✔ Start token prefetch during app launch? … yes
+...   
+
+✔ Approov integration completed successfully
+```
+
+### Troubleshooting Approov rejections
+
+What can you do if you have integrated and registered your app with Approov and your API calls are still being blocked? Coonsider the following steps:
+
+1. Your app is attested every five minutes when active. If you recently registered an app which is running, the new Approov token may not have been fetched yet. Relaunching the app may be all that is required.
+
+2. Have you made any changes to your app, rebuilt it, and then forgotten to update your Approov registration?
+
+3. Has your Approov registration expired? The default `react-native reg-android` and  `react-native reg-ios` registrations expire after 1 hour.
+
+4. Is the device you are using consistent with your [Security Policies](https://approov.io/docs/latest/approov-usage-documentation/#security-policies)? For example, apps running on an Android emulator will be rejected by the default security policy. You may change devices or [check the approov security policies](https://approov.io/docs/v2.6/approov-usage-documentation/#changing-security-policy) and/or [change security policies for an individual device](https://approov.io/docs/v2.6/approov-usage-documentation/#adding-a-device-security-policy).
+
+5. Approov token data is logged to the console, and [additional annotations can be added](https://approov.io/docs/v2.6/approov-usage-documentation/#annotation-policies) to help explain why a particular Approov token is invalid and your app is not correctly authenticated with the Approov Cloud Service. The various forms of annotations are described here.
+
+6. You can also check [live metrics](https://approov.io/docs/v2.6/approov-usage-documentation/#live-metrics) to identify the cause of attestation failures.
+
+7. If still stumped, contact [Approov support] for further assistance.
+
+### Handling network errors
+
+Networking calls are not 100% reliable, and regardless of Approov, you should have a strategy in place fro when your API calls fail.
+
+Your app will periodically make calls to teh Approov service before making your API calls. These calls will periodically fail, and Approov may retry these calls a few times before reporting a networking error. When Approov reports an error, it will be reported at the source of teh API call - a `fetch()` or `axios` call for example. If Approov believes the failure is temporary, for example, poor networking connectivity, the calls will return an HTTP response status code of `503` suggesting that the service is unavailable. If the networking appears to be permanently unavailable, for example, no networking permissions, then the service will throw an error. This is consistent with `fetch()` idioms, and should be compatible with your existing network failure handling strategy.
+
+### Updating Android minimum SDK
+
+Approov requires an Android API minimum SDK of 21. Prior to React Native `0.64`, the minimum SDK was `16`, so it is likely this value needs to be updated when integrating Approov. To update the minimum SDK, open the top-level `build.gradle` file at `<project>/android/build.gradle`, and find and change the `minSdkVersion` value to `21`:
+
+```groovy
+// Top-level build file where you can add configuration options common to all sub-projects/modules.
+
+buildscript {
+    ext {
+        buildToolsVersion = "29.0.3"
+        minSdkVersion = 21
+        compileSdkVersion = 29
+        targetSdkVersion = 29
+        ndkVersion = "20.1.5948944"
+    }
+
+    ...
+}
+```
+
+This value is checked by the `@react-native-approov check` command.
+
+### Updating Android network permissions
+
+On Android, Approoov requires both  `INTERNET` and `ACCESS_NETWORK_STATE` permissions. It is likely that your React Native app will need to add the `ACCESS_NETWORK_STATE` permission. Open the `<project>/android/src/main/AndroidManifest.xml` file, and add the extra permission like this:
+
+```xml
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+  package="com.shapes_axios">
+
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    ...
+</manifest>
+```
+
+These permissions are checked by the `@react-native-approov check` command.
+
+### Running on an Android emulator
+
+It is likely you developed your React Native project running on an Android emulator, and after Approov integration, your project will still run on an Android emulator. However, Approov's default security policies will reject any app running in an Android emulator. You can workaround this behavior in several ways:
+
+1. Run your ap on a physical device.
+
+2. Whitelist the emulator so the Approov service always returns a valid token.
+
+This requires you to first identify the app's device ID running on the emulator (see [Extracting the Device ID](https://approov.io/docs/v2.6/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to set add the device whitelisting:
+
+```shell
+approov device -add 123-deviceID-abc== -policy default,whitelist,all
+
+```
+
+Once the app is whitelisted on teh emulator, you do not have to register your app before receiving valid Approov tokens.
+
+3. Change your account's rejection policies to allow emulators.
+
+With this approach, Approov will attest the app running on the emulator the same as any other device. You must register your app each time it changes in order to receive valid tokens. If you forget to revoke this rejection policy when you deploy your app to production, you may be running with looser security than you intended. To learn more about this approach, see [Rejection Policies](https://approov.io/docs/v2.6/approov-usage-documentation/#rejection-policies).
+
+Note, it is strongly recommended that you test your Approov-integrated app on multiple physical devices before deploying to production.
+
+### Changing your deployment target on iOS
+
+Both React Native and Approov require a minimum deployment target OS of `10.0`, so it is unlikely you need to change this value.
+
+To set the deployment target, open the `iOS` project in xcode and go to the `General` settings for your app. In the `Deployment Info` section, you will see a checked `iPhone` tab with a deployment value next to it. Select the deployment value and change as needed.
+
+The minimum deployment target is checked by the `@react-native-approov check` command.
 
 ### Disabling Flipper on iOS
 
-....
+[Flipper](https://fbflipper.com/) is a mobile debugger which is included by default in React Native apps.. Unfoortunately, it is not currently compatible with physical iOS devices, and it tends too break most React Native builds. To disable flipper, go into the iOS podfile at `<project>/ios/podfile` and ensure that the `use_flipper!()` call is commented out (has a `#` preceding it on the same line) like this:
+
+```ruby
+require_relative '../node_modules/react-native/scripts/react_native_pods'
+require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
+
+install! 'cocoapods', :deterministic_uuids => false, :warn_for_unused_master_specs_repo => false
+
+platform :ios, '10.0'
+
+target 'shapes_axios' do
+
+  ...
+
+  # Enables Flipper.
+  #
+  # Note that if you have use_frameworks! enabled, Flipper will not work and
+  # you should disable the next line.
+  # use_flipper!()
+
+  ...
+
+end
+```
 
 ### Running on an iOS simulator
 
-....
+It is likely you developed your React Native project running on an iOS simulator, and after Approov integration, your project will still run on an iOS simulator. However, Approov is unable to properly attest apps running on an iOS simulator, so it will always return an invalid Approov token. You can workaround this behavior in several ways:
+
+1. Run your ap on a physical device.
+
+2. Whitelist the simulator so the Approov service always returns a valid token.
+
+This requires you to first identify your app's device ID on the simulator (see [Extracting the Device ID](https://approov.io/docs/v2.6/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to add the device whitelisting:
+
+```shell
+approov device -add 123-deviceID-abc== -policy default,whitelist,all
+```
+
+Once your app is whitelisted on the emulator, you do not have to register your app before receiving valid Approov tokens.
+
+Note, it is strongly recommended that you test your Approov-integrated app on multiple physical devices before deploying to production.
 
 ### Running on an iOS device
 
-....
+To truly test Approov API proetction, you should be running your integrated app on a real device. Unlike running in on a simulator, running on a physical device requires code signing and device provisioning.
+
+Connect a single iOS device to your host platform over USB and follow the instructions to [Run an App on a device](https://help.apple.com/xcode/mac/current/#/dev5a825a1ca) You must set up a development team; learn more on the [Signing & Capabilities Workflow](https://help.apple.com/xcode/mac/current/#/dev60b6fbbc7).
+
+After integrating with Approov, there is a subtle problem running your app using `react-native run-ios --device`. Everything builds and runs properly, but because `react native run-ios` uses `lldb` to launch your app, Approov will always reject the app since it launcheded in a debugger. To work around this, after building your app with `run-ios`, you must then register your updated app, deploy the app, and finally launch it manually on the device. Here's the command sequence:
+
+```shell
+$ yarn run react-native run-ios --device
+$ yarn run react-native reg-ios
+$ yarn run react-native deploy-ios
+```
+
+This can get tedious if you are doing frequent debug loops. Consider whitelisting your app on your development device. This requires you to first identify the app's device ID running on the device (see [Extracting the Device ID](https://approov.io/docs/v2.6/approov-usage-documentation/#extracting-the-device-id)). After you have extracted the device ID, run an Approov device command to set add the device whitelisting:
+
+```shell
+approov device -add 123-deviceID-abc== -policy default,whitelist,all
+
+```
+
+Once your app is whitelisted on the device, you do not have to register your app before receiving valid Approov tokens. Though this does not test Approov attestation, you can now just use the single `react-native run-ios --device` command to build and run your app.
+
+You can use this same approach when developing on a simulator; see [Running on an iOS simulator](#running-on-an-iOs-simulator).
 
 ### Using Bitcode with iOS
 
-....
+We recommend that you use the native version of the Approov SDK unless you have to use bitcode for other reasons in your release process. The bitcode version can be installed during Approov integration by saying `yes` at the bitcode prompt:
 
-### Customizing Approov Token Passing
+```shell
+$ npx @approov/react-native-approov integrate
+   
+✔ Found project...
+...
+✔ Use bitcode for iOS builds (not typical)? … yes
+...   
 
-....
+✔ Approov integration completed successfully
+```
 
-### Prefetching an Approov Token at Launch
+For React Native, the Approov SDK is always delivered ass an XCFramework. See [Getting the iOS SDK as an XCFramework](https://approov.io/docs/v2.6/approov-usage-documentation/#getting-the-ios-sdk-as-an-xcframework) for additional information on the Approov SDK and bitcode.
 
-....
+Make sure you enable bitcode for all configurations in your project. To enable bitcode, open the `iOS` project in xcode and go to the `Build Settings` tab for your app. In the `Build Options` section, checked `Enable Bitcode` for all configurations.
 
-### Binding Authorization to Approov Tokens
+If you do require bitcode, it is generally easier to develop your app and integrate Approov without it, and then switch to bitcode when you are closer to release.
 
-....
+### Other iOS considerations
 
-### Which Javascript Network Libraries are supported?
+React Native setup iOS projects using workspaces, so when opening a React Native iOS project in xcode, always open it by selecting the `<project>.xcworkspace` and not the project.
 
-....
+The `react-native-approov` commands assume that the name of the iOS workspace is also used as the project's only scheme name. Multiple configurations, such as `Debug` and `Release` are supported but not multiple schemes. PLease [contact support](#getting-additional-help) if this is a problem.
 
-### Handling Network Errors
+### Next steps with Approov
 
-....
+Other Approov features you might want to explore:
 
-### Why apps launched with run-ios apps fail to attest properly
+- Managing your app [registrations](https://approov.io/docs/latest/approov-usage-documentation/#managing-registrations)
+- Managing the [pins](https://approov.io/docs/latest/approov-usage-documentation/#public-key-pinning-configuration) on the API domains to ensure that no Man-in-the-Middle attacks on your app's communication are possible.
+- Updating your [Security Policy](https://approov.io/docs/latest/approov-usage-documentation/#security-policies) that determines the conditions under which an app will be given a valid Approov token.
+* Learning how to [Manage Devices](https://approov.io/docs/latest/approov-usage-documentation/#managing-devices) that allows you to change the policies on specific devices.
+* Understanding how to provide access for other [Users](https://approov.io/docs/latest/approov-usage-documentation/#user-management) of your Approov account.
+* Using the [Metrics Graphs](https://approov.io/docs/latest/approov-usage-documentation/#metrics-graphs) to see live and accumulated metrics of devices using your account and any reasons for devices being rejected and not being provided with valid Approov tokens. You can also see your billing usage which is based on the total number of unique devices using your account each month.
+* Using [Service Monitoring](https://approov.io/docs/latest/approov-usage-documentation/#service-monitoring) emails to receive monthly (or, optionally, daily) summaries of your Approov usage.
+* Learning about [automated approov CLI usage](https://approov.io/docs/latest/approov-usage-documentation/#automated-approov-cli-usage).
+* Investigating other advanced features, such as [Offline Security Mode](https://approov.io/docs/latest/approov-usage-documentation/#offline-security-mode), [DeviceCheck Integration](https://approov.io/docs/latest/approov-usage-documentation/#apple-devicecheck-integration), [SafetyNet Integration](https://approov.io/docs/latest/approov-usage-documentation/#google-safetynet-integration) and [Android Automated Launch Detection](https://approov.io/docs/latest/approov-usage-documentation/#android-automated-launch-detection).
 
-....
+### Removing Approov from your App
 
-### Next Steps with Approov
+Removing Approov integration for your app just requires removing the `@approov/react-native-approov` package:
 
-....
+```shell
+$ yarn remove @approov/react-native-approov
+```
 
-### Troubleshooting Approov Rejections
+In addition to the package, the Approov SDKs, base configurations, and property files will be removed.
 
-(what if I don't get shapes)
+### Which Javascript network libraries are supported?
 
-### Contact Support
+React Native natively implements the `XMLHttpRequest` (XHR) object. The built in `fetch()` call uses XHR calls as to popular networking libraries such as `axios` and `frisbee`. Any networking calls using XHR route through native React Native and are fully supported by Approov integration.
 
-submit an issue (bugs or feature requests)
+Networking libraries which are implemented using independent networking stacks rather than XHR do not use React Native networking and are not supported by Approov out of the box. One example is the [rn-fetch-blob](https://github.com/joltup/rn-fetch-blob) package, though there is some experimental work to make it compatible. If you have a need to use such a library, [contact support](#getting-additional-help), and we will work with you to complete the integration.
 
-ask a question
+### Why isn't Expo supported?
 
-getting access to approov
+Expo is a framework and a platform for universal React applications. There are two expo workflows - `managed` and `bare`. Managed apps are built with the expo-cli and are not compatible with React Native native modules. Because of this limitation, Approov cannot function properly in the expo managed environment.
+
+Expo's bare environment provides support for Expo SDKs without the restrictions imposed by the managed environment. This workflow may be compatible with Approov, and we are investigating future support for Approov in this environment.
+
+### Getting additional help
+
+If you encounter issues when using `react-native-approov` which you cannot resolve using this document, please review the [React Native developer docs](https://reactnative.dev) and the [Approov user docs](https://approov.io/docs) for more detailed information.
+
+If you are still stuck, please file an issue at [https://github.com/approov/quickstart-react-native/issues](https://github.com/approov/quickstart-react-native/issues), or contact support at [https://approov.zendesk.com/hc/en-gb/requests/new](https://approov.zendesk.com/hc/en-gb/requests/new).
+
+## Command Reference
+
+Approov integration is controlled by the `react-native-approov` command and several plugins to the `react-native` CLI.
+
+### React-Native-Approov Commands
+
+THe command by-itself lists the available sub-commands:
+
+```shell
+$ npx @approov/react-native-approov
+
+Usage: react-native-approov [options] [command]
+
+Options:
+  -V, --version                  output the version number
+  -h, --help                     display help for command
+
+Commands:
+  check                          Check Approov integration in the current app (special)
+  example [options] [app] [dir]  Copy a quickstart example app into a new directory
+  integrate [options]            Integrate Approov into the current app
+  help [command]                 display help for command
+```
+
+#### react-native-approov example
+
+Copy a prepared example into your filesystem using the `example` sub-command:
+
+```shell
+$ npx @approov/react-native-approov example --help
+
+Usage: react-native-approov example [options] [app] [dir]
+
+Copy a quickstart example app into a new directory
+
+Options:
+  --no-prompt  do not prompt for user input
+  -h, --help   display help for command
+```
+
+#### react-native-approov check
+
+Check that your React Native project is ready for Approov integration or is already properly integrated using the  `check` sub-command:
+
+```shell
+bsim:shapes_fetch skiph$ npx @approov/react-native-approov check --help
+Usage: react-native-approov check [options]
+
+Check Approov integration in the current app (special)
+
+Options:
+  -h, --help  display help for command
+```
+
+#### react-native-approov integrate
+
+Integrate Approov into your React Native project using the  `integrate` sub-command:
+
+```shell
+$ npx @approov/react-native-approov integrate --help
+
+Usage: react-native-approov integrate [options]
+
+Integrate Approov into the current app
+
+Options:
+  --token.name <name>      name of Approov token field (default: "Approov-Token")
+  --token.prefix <string>  prefix prepended to Approov token string (default: "")
+  --binding.name <name>    name of binding field (default: "")
+  --init.prefetch          start token fetch at app launch (default: false)
+  --bitcode                use bitcode for iOS builds (default: false)
+  --no-prompt              do not prompt for user input
+  -h, --help               display help for command
+```
+
+### React-Native Plugin Commands
+
+Several sub-commands are added to the `react-native` CLi to support Approov.
+
+#### react-native reg-android
+
+Register the latest Android app with Approov:
+
+```
+react-native reg-android 
+
+register Android debug APK
+
+Options:
+  --variant <variant>       select build variant (default: "debug")
+  --expireAfter <duration>  expire registration after duration (default: "1h")
+  -h, --help                output usage information
+
+Example usage:
+  register Android debug APK for 1h (default): 
+  react-native reg-android
+
+  register Android debug APK for 1 year, 2 days, 3 hours, and 4 minutes: 
+  react-native reg-android --expireAfter 1y2d3h4m
+```
+
+#### react-native reg-ios
+
+Register the latest iOS app with Approov:
+
+```
+register iOS debug device IPA
+
+Options:
+  --configuration <configuration>  select build configuration (default: "Debug")
+  --expireAfter <duration>         expire registration after duration (default: "1h")
+  -h, --help                       output usage information
+
+Example usage:
+  register iOS debug device IPA for 1h (default): 
+  react-native reg-ios
+
+  register iOS debug device IPA for 1 year, 2 days, 3 hours, and 4 minutes: 
+  react-native reg-ios --expireAfter 1y2d3h4m
+```
+
+#### react-native deploy-ios
+
+Deploy the latest iOS app to a device without launching it:
+
+```
+react-native deploy-ios 
+
+deploy iOS debug app to device
+
+Options:
+  --configuration <configuration>  select build configuration (default: "Debug")
+  -h, --help                       output usage information
+
+Example usage:
+  deploy iOS Release app to device:
+  react-native deploy-android --configuration Release
+```
 
 ## Release Notes
 
+These are release notes; request new features through issue requests...
+
+### Version 2.2.0
+
+- Provides an easy integration of Approov API threat protection into most React Native apps.
+- Checks that your React Native app meets the minimum requirements for Approov integration,
+- Integrates Approov into your app without writing additional code,
+- Registers and successfully deploys your app onto Android and iOS devices.
+- Supports all XMLHttpRequest networking such as `fetch`, `axios`, and `frisbee`.
+- Adds on-the-fly certificate pinning updates not requiring an App restart.
+- Provides several React Native examples interfacing with an Approov-enabled backend service.
+
 ### Version 1.x
 
-....
+- Supports manual integration of Approov into react native devices.
 
-### Version 2.x
-
-....
-
-### Feature Requests
-
-....
-
-### License
+## License
 
 ![GitHub](https://img.shields.io/github/license/approov/quickstart-react-native)
 

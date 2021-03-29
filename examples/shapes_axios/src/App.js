@@ -49,16 +49,25 @@ const imgAssets = {
 
 const api = {
   version: 'protected API (v2)',
+  // the base url
+  baseUrl: `https://shapes.approov.io/v2`,
   // the check endpoint should always work
-  checkUrl: `https://shapes.approov.io/v2/hello`,
+  checkUrl: `/hello`,
   // the fetch endpoint should only succeed if approov is integrated
-  fetchUrl: `https://shapes.approov.io/v2/shapes`,
+  fetchUrl: `/shapes`,
 }
-console.log(`${api.msg}, using ${api.version}`)
+console.log(`Using ${api.version}`)
 
 // set an example user authorization header
 
 const headers = { 'Authorization': 'Bearer <example-auth-token>', }
+
+// create an axios instance
+
+const shapesService = axios.create({
+  baseURL: api.baseUrl,
+  headers: headers,
+})
 
 // define App screen
 
@@ -72,9 +81,7 @@ const App = () => {
 
   const checkConnection = () => {
     setResult({shape: 'none', status: ''})
-    axios.get(api.checkUrl, { 
-      headers: headers,
-    })
+    shapesService.get(api.checkUrl)
     .then((response) => {
       if (response.status != 200) {
         throw new Error(`Status ${response.status}: ${response.statusText}`)
@@ -95,9 +102,7 @@ const App = () => {
 
   const fetchShape = () => {
     setResult({shape: 'none', status: ''})
-    axios.get(api.fetchUrl, {
-      headers: headers,
-    })
+    shapesService.get(api.fetchUrl)
     .then((response) => {
       if (response.status != 200) {
         throw new Error(`Status ${response.status}: ${response.statusText}`)

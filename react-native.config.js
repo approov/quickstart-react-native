@@ -74,11 +74,11 @@ module.exports = {
       examples: [
         {
           desc: `register iOS debug device IPA for ${plugin.optionDefaults.expireAfter} (default)`,
-          cmd: 'react-native reg-android',
+          cmd: 'react-native reg-ios',
         },
         {
           desc: 'register iOS debug device IPA for 1 year, 2 days, 3 hours, and 4 minutes',
-          cmd: 'react-native reg-android --expireAfter 1y2d3h4m',
+          cmd: 'react-native reg-ios --expireAfter 1y2d3h4m',
         },
       ],
     },
@@ -98,8 +98,8 @@ module.exports = {
       },
       examples: [
         {
-          desc: `deploy iOS debug app to device`,
-          cmd: 'react-native reg-android',
+          desc: `deploy iOS Release app to device`,
+          cmd: 'react-native deploy-android --configuration Release',
         },
       ],
     },

@@ -25,7 +25,7 @@ const { Project } = require('../act')
 const command = (new Command())
 
 .name('check')
-.description('Check Approov integration in the current app (special)')
+.description('Check Approov integration in the current app')
 
 .action(async (opts) => {
   const project = new Project(process.cwd())

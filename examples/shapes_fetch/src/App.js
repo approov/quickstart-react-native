@@ -53,7 +53,7 @@ const api = {
   // the fetch endpoint should only succeed if approov is integrated
   fetchUrl: `https://shapes.approov.io/v2/shapes`,
 }
-console.log(`${api.msg}, using ${api.version}`)
+console.log(`Using ${api.version}`)
 
 // set an example user authorization header
 

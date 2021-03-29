@@ -725,7 +725,7 @@ Example usage:
 
 ## Release Notes
 
-These are release notes; request new features through issue requests...
+Please use [https://github.com/approov/quickstart-react-native/issues](https://github.com/approov/quickstart-react-native/issues) to request assistance or suggest new features.
 
 ### Version 2.2.0
 

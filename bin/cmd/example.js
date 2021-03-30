@@ -189,7 +189,7 @@ const command = (new Command())
       log.warn(`Skipping ${appName} iOS pod dependencies; pod install not found in PATH.`)
     }
   } else {
-    log.warn(`Pod installation for iOS not available on ${task.getPlatform()}`)
+    log.warn(`Pod installation for iOS not available on ${task.getEnvPlatform()}`)
   }
 })
 

@@ -148,7 +148,7 @@ class Project {
         }
       } else {
         this.warnings++
-        this.log.warn(`Skipping iOS pod dependencies; pod installation for iOS not available on ${task.getPlatform()}`)
+        this.log.warn(`Skipping iOS pod dependencies; pod installation for iOS not available on ${task.getEnvPlatform()}`)
       }
     
     } else {
@@ -366,21 +366,22 @@ class Project {
       if (!task.isIosSupported()){
         this.warnings++
         this.log.warn(`iOS pods not updated; ${task.getEnvPlatform()} does not support iOS development.`)
-      } else if (!task.hasEnvPod()) {
-        this.warnings++
-        this.log.warn('iOS pods not updated; missing cocoapod command line tool (pod).')
       } else {
-        this.log.succeed(`Found iOS project.`)
-        isInstalled = await task.installingIosPods(this.dir)
-        if (!isInstalled) {
-          this.errors++
-          this.log.fatal('Failed to update iOS pods.', this.ref('contactSupport'))
+        if (!task.hasEnvPod()) {
+          this.warnings++
+          this.log.warn('iOS pods not updated; missing cocoapod command line tool (pod).')
+        } else {
+          this.log.succeed(`Found iOS project.`)
+          isInstalled = await task.installingIosPods(this.dir)
+          if (!isInstalled) {
+            this.errors++
+            this.log.fatal('Failed to update iOS pods.', this.ref('contactSupport'))
+          }
         }
+        this.log.warn('on iOS, Approov integrated apps will only attest properly on a physical device or whitelisted simulator.')
+        this.log.warn('on iOS, when targeting a device, ensure a development team is specified in xcode and the device is properly provisioned.')
+        if (bitcode) this.log.warn('on iOS, ensure that your xcode project enables bitcode for all configurations you build.')
       }
-
-      this.log.warn('on iOS, Approov integrated apps will only attest properly on a physical device or whitelisted simulator.')
-      this.log.warn('on iOS, when targeting a device, ensure a development team is specified in xcode and the device is properly provisioned.')
-      if (bitcode) this.log.warn('on iOS, ensure that your xcode project enables bitcode for all configurations you build.')
     }
   }
 

@@ -1,7 +1,7 @@
 {
-  "name": "shapes_fetch",
+  "name": "shapes_frisbee",
   "version": "1.2.1",
-  "description": "shapes demo app using fetch",
+  "description": "shapes demo app using frisbee",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
@@ -11,6 +11,7 @@
     "lint": "eslint ."
   },
   "dependencies": {
+    "frisbee": "^3.1.4",
     "react": "17.0.1",
     "react-native": "0.64.0"
   },

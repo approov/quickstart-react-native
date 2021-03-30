@@ -1,3 +1,5 @@
+- Does really mention how to get the alternative shapes examples, like axios?
+
 <h1 align="center">React-Native Approov Quickstart</h1>
 <h2 align="center" style="color:red;">WARNING: THIS PACKAGE IS PRE-RELEASE ONLY</h2>
 <p align="center">
@@ -51,6 +53,7 @@ For Approov, make sure you have installed and can run the `approov` CLI tool (se
 You can start with any React Native app using the default runtime and standard react-native networking (fetch, axios, frisbee...).
 Start with your own React Native app, or use one of the Approov-provided examples.
 
+Three examples: `shapes_axios`, `shapes_fetch`, and `shapes_frisbee` all work with a publicly available shapes service at `shapes.approov.io`.
 We will use the Approov `shapes_fetch` example to illustrate the remaining steps to integrate Approov into a simple React Native app. To copy a pre-packaged example, start a command-line terminal, run the `react-native-approov example` command, and select an example and directory to install into:
 
 ```shell
@@ -277,7 +280,7 @@ Once a session is established, each react-native-approoov command will extend yo
 
 ### How do I setup my backend service to check for approved API calls?
 
-API calls protected by Approov will include an Approov token which must be checked. Backeend quickstarts for common server frameworks, lanquages, and API gateways can be accessed at [Backend APIs](https://approov.io/docs/v2.6/approov-integration-examples/backend-api/).
+API calls protected by Approov will include an Approov token which must be checked. Backend quickstarts for common server frameworks, lanquages, and API gateways can be accessed at [Backend APIs](https://approov.io/docs/latest/approov-integration-examples/backend-api/).
 
 ### Checking and updating Approov-protected API domains
 
@@ -289,13 +292,20 @@ $ approov api --list
  shapes.approov.io          type:restricted, alg:HS256
 ```
 
-If you need to add API domains to your account, your Approov `admin` role is required.
+If you need to add API domains to your account:
 
-### Certificate pinning is fully supported by Approov
+```shell
+$ approov api -add shapes.approov.io
+WARNING: active role is for account your-account
+WARNING: adding the API will have an immediate impact on your apps in production. If you wish to continue then please enter YES and return: YES
+added new API domain shapes.approov.io with type:restricted, alg:HS256
+```
 
-Approov provides built in support for automatic pinning of any Approov-protected API domains. Once integrated, Approov will independently check the certificates used by your API domains and use them to pin your API connections. Certificates can be updated and rotated using the `approov` CLI without requiring any changes to your deployed apps.
+### Certificate public key pinning is built in
 
-See [Approov Public Key Pinning Configuration](https://approov.io/docs/v2.6/approov-usage-documentation/#public-key-pinning-configuration) for more information.
+Approov provides built in support for automatic public key pinning of any Approov-protected API domains. Once integrated, Approov will independently check the certificates used by your API domains and use them to pin your API connections. Certificates can be updated and rotated using the `approov` CLI without requiring any changes to your deployed apps.
+
+See [Approov Public Key Pinning Configuration](https://approov.io/docs/latest/approov-usage-documentation/#public-key-pinning-configuration) for more information.
 
 ### Customizing Approov token passing
 
@@ -317,7 +327,7 @@ The default header name is `Approov-Token`. You may specify prefix string, for e
 
 ### Binding authorization to Approov tokens
 
-You may bind an Approov token to the value of any other header field. This is almost always used to bind Approov and Authorization tokens. WHen bound, the backend service verifies the Approov token and further that the Approov token was bound to only that authorization data value. See [Token Binding](https://approov.io/docs/v2.6/approov-usage-documentation/#token-binding) for additional information.
+You may bind an Approov token to the value of any other header field. This is almost always used to bind Approov and Authorization tokens. WHen bound, the backend service verifies the Approov token and further that the Approov token was bound to only that authorization data value. See [Token Binding](https://approov.io/docs/latest/approov-usage-documentation/#token-binding) for additional information.
 
 To enable token binding, specify the binding header data name in the in the `react-native-approov integrate` command:
 
@@ -353,7 +363,7 @@ $ npx @approov/react-native-approov integrate
 
 ### Troubleshooting Approov rejections
 
-What can you do if you have integrated and registered your app with Approov and your API calls are still being blocked? Coonsider the following steps:
+What can you do if you have integrated and registered your app with Approov and your API calls are still being blocked? Consider the following steps:
 
 1. Your app is attested every five minutes when active. If you recently registered an app which is running, the new Approov token may not have been fetched yet. Relaunching the app may be all that is required.
 
@@ -361,17 +371,17 @@ What can you do if you have integrated and registered your app with Approov and 
 
 3. Has your Approov registration expired? The default `react-native reg-android` and  `react-native reg-ios` registrations expire after 1 hour.
 
-4. Is the device you are using consistent with your [Security Policies](https://approov.io/docs/latest/approov-usage-documentation/#security-policies)? For example, apps running on an Android emulator will be rejected by the default security policy. You may change devices or [check the approov security policies](https://approov.io/docs/v2.6/approov-usage-documentation/#changing-security-policy) and/or [change security policies for an individual device](https://approov.io/docs/v2.6/approov-usage-documentation/#adding-a-device-security-policy).
+4. Is the device you are using consistent with your [Security Policies](https://approov.io/docs/latest/approov-usage-documentation/#security-policies)? For example, apps running on an Android emulator will be rejected by the default security policy. You may change devices or [check the approov security policies](https://approov.io/docs/latest/approov-usage-documentation/#changing-security-policy) and/or [change security policies for an individual device](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy).
 
-5. Approov token data is logged to the console, and [additional annotations can be added](https://approov.io/docs/v2.6/approov-usage-documentation/#annotation-policies) to help explain why a particular Approov token is invalid and your app is not correctly authenticated with the Approov Cloud Service. The various forms of annotations are described here.
+5. Approov token data is logged to the console, and [additional annotations can be added](https://approov.io/docs/latest/approov-usage-documentation/#annotation-policies) to help explain why a particular Approov token is invalid and your app is not correctly authenticated with the Approov Cloud Service. The various forms of annotations are described here.
 
-6. You can also check [live metrics](https://approov.io/docs/v2.6/approov-usage-documentation/#live-metrics) to identify the cause of attestation failures.
+6. You can also check [live metrics](https://approov.io/docs/latest/approov-usage-documentation/#live-metrics) to identify the cause of attestation failures.
 
 7. If still stumped, contact [Approov support] for further assistance.
 
 ### Handling network errors
 
-Networking calls are not 100% reliable, and regardless of Approov, you should have a strategy in place fro when your API calls fail.
+Networking calls are not 100% reliable, and regardless of Approov, you should have a strategy in place for when your API calls fail.
 
 Your app will periodically make calls to teh Approov service before making your API calls. These calls will periodically fail, and Approov may retry these calls a few times before reporting a networking error. When Approov reports an error, it will be reported at the source of teh API call - a `fetch()` or `axios` call for example. If Approov believes the failure is temporary, for example, poor networking connectivity, the calls will return an HTTP response status code of `503` suggesting that the service is unavailable. If the networking appears to be permanently unavailable, for example, no networking permissions, then the service will throw an error. This is consistent with `fetch()` idioms, and should be compatible with your existing network failure handling strategy.
 
@@ -422,18 +432,18 @@ It is likely you developed your React Native project running on an Android emula
 
 2. Whitelist the emulator so the Approov service always returns a valid token.
 
-This requires you to first identify the app's device ID running on the emulator (see [Extracting the Device ID](https://approov.io/docs/v2.6/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to set add the device whitelisting:
+This requires you to first identify the app's device ID running on the emulator (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to set add the device whitelisting:
 
 ```shell
 approov device -add 123-deviceID-abc== -policy default,whitelist,all
 
 ```
 
-Once the app is whitelisted on teh emulator, you do not have to register your app before receiving valid Approov tokens.
+Once the app is whitelisted on the emulator, you do not have to register your app before receiving valid Approov tokens.
 
 3. Change your account's rejection policies to allow emulators.
 
-With this approach, Approov will attest the app running on the emulator the same as any other device. You must register your app each time it changes in order to receive valid tokens. If you forget to revoke this rejection policy when you deploy your app to production, you may be running with looser security than you intended. To learn more about this approach, see [Rejection Policies](https://approov.io/docs/v2.6/approov-usage-documentation/#rejection-policies).
+With this approach, Approov will attest the app running on the emulator the same as any other device. You must register your app each time it changes in order to receive valid tokens. If you forget to revoke this rejection policy when you deploy your app to production, you may be running with looser security than you intended. To learn more about this approach, see [Rejection Policies](https://approov.io/docs/latest/approov-usage-documentation/#rejection-policies).
 
 Note, it is strongly recommended that you test your Approov-integrated app on multiple physical devices before deploying to production.
 
@@ -447,7 +457,7 @@ The minimum deployment target is checked by the `@react-native-approov check` co
 
 ### Disabling Flipper on iOS
 
-[Flipper](https://fbflipper.com/) is a mobile debugger which is included by default in React Native apps.. Unfoortunately, it is not currently compatible with physical iOS devices, and it tends too break most React Native builds. To disable flipper, go into the iOS podfile at `<project>/ios/podfile` and ensure that the `use_flipper!()` call is commented out (has a `#` preceding it on the same line) like this:
+[Flipper](https://fbflipper.com/) is a mobile debugger which is included by default in React Native apps.. Unfortunately, it is not currently compatible with physical iOS devices, and it tends to break most React Native builds. To disable flipper, go into the iOS podfile at `<project>/ios/podfile` and ensure that the `use_flipper!()` call is commented out (has a `#` preceding it on the same line) like this:
 
 ```ruby
 require_relative '../node_modules/react-native/scripts/react_native_pods'
@@ -480,7 +490,7 @@ It is likely you developed your React Native project running on an iOS simulator
 
 2. Whitelist the simulator so the Approov service always returns a valid token.
 
-This requires you to first identify your app's device ID on the simulator (see [Extracting the Device ID](https://approov.io/docs/v2.6/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to add the device whitelisting:
+This requires you to first identify your app's device ID on the simulator (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to add the device whitelisting:
 
 ```shell
 approov device -add 123-deviceID-abc== -policy default,whitelist,all
@@ -504,7 +514,7 @@ $ yarn run react-native reg-ios
 $ yarn run react-native deploy-ios
 ```
 
-This can get tedious if you are doing frequent debug loops. Consider whitelisting your app on your development device. This requires you to first identify the app's device ID running on the device (see [Extracting the Device ID](https://approov.io/docs/v2.6/approov-usage-documentation/#extracting-the-device-id)). After you have extracted the device ID, run an Approov device command to set add the device whitelisting:
+This can get tedious if you are doing frequent debug loops. Consider whitelisting your app on your development device. This requires you to first identify the app's device ID running on the device (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). After you have extracted the device ID, run an Approov device command to set add the device whitelisting:
 
 ```shell
 approov device -add 123-deviceID-abc== -policy default,whitelist,all
@@ -530,7 +540,7 @@ $ npx @approov/react-native-approov integrate
 ✔ Approov integration completed successfully
 ```
 
-For React Native, the Approov SDK is always delivered ass an XCFramework. See [Getting the iOS SDK as an XCFramework](https://approov.io/docs/v2.6/approov-usage-documentation/#getting-the-ios-sdk-as-an-xcframework) for additional information on the Approov SDK and bitcode.
+For React Native, the Approov SDK is always delivered ass an XCFramework. See [Getting the iOS SDK as an XCFramework](https://approov.io/docs/latest/approov-usage-documentation/#getting-the-ios-sdk-as-an-xcframework) for additional information on the Approov SDK and bitcode.
 
 Make sure you enable bitcode for all configurations in your project. To enable bitcode, open the `iOS` project in xcode and go to the `Build Settings` tab for your app. In the `Build Options` section, checked `Enable Bitcode` for all configurations.
 

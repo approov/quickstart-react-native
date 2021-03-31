@@ -62,7 +62,7 @@ console.log(`Using ${api.version}`)
 
 const headers = { 'Authorization': 'Bearer <example-auth-token>', }
 
-// create an frisbee instance
+// create a frisbee instance
 
 const shapesService = new Frisbee({
   baseURI: api.baseUrl,

@@ -191,6 +191,8 @@ const command = (new Command())
   } else {
     log.warn(`Pod installation for iOS not available on ${task.getEnvPlatform()}`)
   }
+
+  log.succeed(`Example ${appName} is installed.`)
 })
 
 module.exports = command

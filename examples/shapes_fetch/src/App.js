@@ -29,7 +29,6 @@ import {
   Text,
   View,
 } from 'react-native'
-import Frisbee from 'frisbee'
 import { NativeModules } from 'react-native'
 
 const appTitle = 'Approov Shapes'
@@ -49,25 +48,16 @@ const imgAssets = {
 
 const api = {
   version: 'protected API (v2)',
-  // the base url
-  baseUrl: `https://shapes.approov.io/v2`,
   // the check endpoint should always work
-  checkUrl: `/hello`,
+  checkUrl: `https://shapes.approov.io/v2/hello`,
   // the fetch endpoint should only succeed if approov is integrated
-  fetchUrl: `/shapes`,
+  fetchUrl: `https://shapes.approov.io/v2/shapes`,
 }
-console.log(`Using ${api.version}`)
+console.log(`${api.msg}, using ${api.version}`)
 
 // set an example user authorization header
 
 const headers = { 'Authorization': 'Bearer <example-auth-token>', }
-
-// create an frisbee instance
-
-const shapesService = new Frisbee({
-  baseURI: api.baseUrl,
-  headers: headers,
-})
 
 // define App screen
 
@@ -81,12 +71,15 @@ const App = () => {
 
   const checkConnection = () => {
     setResult({shape: 'none', status: ''})
-    shapesService.get(api.checkUrl)
+    fetch(api.checkUrl, {
+      method: 'GET',
+      headers: headers,
+    })
     .then((response) => {
       if (!response.ok) {
         throw new Error(`Status ${response.status}`)
       }
-      return response.body
+      return response.json()
     })
     .then((data) => {
       console.log('Connection check passed')
@@ -102,18 +95,21 @@ const App = () => {
 
   const fetchShape = () => {
     setResult({shape: 'none', status: ''})
-    shapesService.get(api.fetchUrl)
+    fetch(api.fetchUrl, {
+      headers: headers,
+    })
     .then((response) => {
       if (!response.ok) {
         throw new Error(`Status ${response.status}`)
       }
-      return response.body
+      return response.json()
     })
     .then((data) => {
       console.log(`Shape fetch: ${data.shape}`)
       setResult({shape: data.shape, status: data.status})
     })
     .catch((error) => {
+      console.log(`Shape fetch failed: ${JSON.stringify(error, null, 2)}`)
       setResult({shape: 'confused', status: error.message})
     });
   }
@@ -143,6 +139,7 @@ const App = () => {
     </>
   );
 };
+
 
 // screen styles
 

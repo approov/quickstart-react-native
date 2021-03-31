@@ -1,6 +1,6 @@
 {
   "name": "@approov/react-native-approov",
-  "version": "2.2.0-Rc2",
+  "version": "2.2.0-RC3",
   "publishConfig": {
     "access": "public"
   },

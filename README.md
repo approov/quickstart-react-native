@@ -1,5 +1,3 @@
-- Does really mention how to get the alternative shapes examples, like axios?
-
 <h1 align="center">React-Native Approov Quickstart</h1>
 <h2 align="center" style="color:red;">WARNING: THIS PACKAGE IS PRE-RELEASE ONLY</h2>
 <p align="center">
@@ -313,6 +311,8 @@ WARNING: adding the API will have an immediate impact on your apps in production
 added new API domain shapes.approov.io with type:restricted, alg:HS256
 ```
 
+Refer to [Managing API domains](https://approov.io/docs/latest/approov-usage-documentation/#managing-api-domains) for more information.
+
 ### Certificate public key pinning is built in
 
 Approov provides built in support for automatic public key pinning of any Approov-protected API domains. Once integrated, Approov will independently check the certificates used by your API domains and use them to pin your API connections. Certificates can be updated and rotated using the `approov` CLI without requiring any changes to your deployed apps.
@@ -447,8 +447,7 @@ It is likely you developed your React Native project running on an Android emula
 This requires you to first identify the app's device ID running on the emulator (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to set add the device whitelisting:
 
 ```shell
-approov device -add 123-deviceID-abc== -policy default,whitelist,all
-
+$ approov device -add 123-deviceID-abc== -policy default,whitelist,all
 ```
 
 Once the app is whitelisted on the emulator, you do not have to register your app before receiving valid Approov tokens.
@@ -505,7 +504,7 @@ It is likely you developed your React Native project running on an iOS simulator
 This requires you to first identify your app's device ID on the simulator (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to add the device whitelisting:
 
 ```shell
-approov device -add 123-deviceID-abc== -policy default,whitelist,all
+$ approov device -add 123-deviceID-abc== -policy default,whitelist,all
 ```
 
 Once your app is whitelisted on the emulator, you do not have to register your app before receiving valid Approov tokens.
@@ -612,7 +611,7 @@ Approov integration is controlled by the `react-native-approov` command and seve
 
 ### React-Native-Approov Commands
 
-THe command by-itself lists the available sub-commands:
+The command by-itself lists the available sub-commands:
 
 ```shell
 $ npx @approov/react-native-approov

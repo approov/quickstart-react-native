@@ -44,18 +44,26 @@ const specs = {
 // Default registration expiration
 
 // reference links
-const readme = 'https://github.com/approov/quickstart-react-native/blob/master/README.md'
+//const readme = 'https://github.com/approov/quickstart-react-native/blob/master/README.md'
+const readme = 'https://gitlab.com/criticalblue/playground/quickstart-react-native/-/tree/v64-update'
 const refs = {
-  contactSupport: `${readme}#contact-support`,
-  reactNativeProject: `${readme}#react-native-project`,
-  approovCLI: `${readme}#approov-cli`,  
-  approovAPIDomains: `https://approov.io/docs/latest/approov-usage-documentation/#managing-api-domains`,
-  approovPackage: `${readme}#approov-package `,
-  androidProject: `${readme}#android-project`,
-  androidApproov: `${readme}#android-approov`,
-  iosProject: `${readme}#ios-project`,
-  iosApproov: `${readme}#ios-approov`,
-  approovReg: `${readme}#approov-reg`,
+  contactSupport: `${readme}#getting-additional-help`,
+  devEnviron: `${readme}#0-check-that-your-development-environment-is-properly-set-up`,
+  reactNativeApp: `${readme}#1-start-with-a-working-react-native-app`,
+  integrateApproov: `${readme}#2-integrate-approov-into-your-app`,
+  runRegAndroidApp: `${readme}#android-devices`,
+  runRegIosApp: `${readme}#ios-devices`,
+  approovSession: `${readme}#establishing-an-active-approov-session`,
+  apiDomains: `${readme}#checking-and-updating-approov-protected-api-domains`,
+  androidMinSdk: `${readme}#updating-android-minimum-sdk`,
+  androidNetworkPermission: `${readme}#updating-android-network-permissions`,
+  androidEmulator: `${readme}#running-on-an-android-emulator`,
+  iosDeployTarget: `${readme}#changing-your-deployment-target-on-ios`,
+  iosFlipper: `${readme}#disabling-flipper-on-ios`,
+  iosSimulator: `${readme}#running-on-an-ios-simulator`,
+  iosDevice: `${readme}#running-on-an-ios-device`,
+  iosOther: `${readme}#other-ios-considerations`,
+  cmdIntegrate: `${readme}#react-native-approov-integrate`,
 }
 
 // error messages

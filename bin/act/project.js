@@ -68,7 +68,7 @@ class Project {
     this.log.spin('Checking Project...')
     if (!task.hasReactNativePackageSpec(this.dir)) {
       this.errors++
-      this.log.fatal(`No project.json found in ${this.dir}.`, this.ref('reactNativeProject'))
+      this.log.fatal(`No project.json found in ${this.dir}.`, this.ref('reactNativeApp'))
     }
     this.log.succeed(`Found project.json in ${this.dir}.`)
 
@@ -84,7 +84,7 @@ class Project {
     if (!task.isReactNativeVersionSupported(version, minVersion)) {
       this.errors++
       this.log.succeed(`Found React Native version ${version}.`)
-      this.log.fatal(`Approov requires a React Native version >= ${minVersion}.`, this.ref('reactNativeProject'))
+      this.log.fatal(`Approov requires a React Native version >= ${minVersion}.`, this.ref('devEnviron'))
     }
     this.log.succeed(`Found React Native version ${version}.`)
   }
@@ -93,11 +93,11 @@ class Project {
     this.log.spin(`Checking for Approov CLI...`)
     if (!task.hasEnvApproov()) {
       this.errors++
-      this.log.fatal('Approov CLI not found in PATH.', this.ref('approovCLI'))
+      this.log.fatal('Approov CLI not found in PATH.', this.ref('approovSession'))
     }
     if (!await task.checkingEnvApproovSessionActive()) {
       this.errors++
-      this.log.fatal('Approov CLI found, but no active session. Ensure a role is set and a session is active, entering a password if necessary.', this.ref('approovCLI'))
+      this.log.fatal('Approov CLI found, but no active session. Ensure a role is set and a session is active, entering a password if necessary.', this.ref('approovSession'))
     }
     this.log.succeed(`Found Approov CLI with active session.`)
   }
@@ -112,7 +112,7 @@ class Project {
       this.log.info(`Approov is currently protecting these API domains:`)
       apiDomains.forEach(domain => this.log.info(chalk.green(`  ${domain}`)))
     }
-    this.log.info(`To add or remove API domains, see ${this.ref('approovAPIDomains')}`)
+    this.log.info(`To add or remove API domains, see ${this.ref('apiDomains')}`)
   }
 
   async checkingApproovPackage() {
@@ -161,7 +161,7 @@ class Project {
     if (!task.hasAndroidPath(this.dir)) {
       this.warnings++
       this.log.warn('No Android project found.')
-      this.log.info('Skipping additional Android checks.', this.ref('androidProject'))
+      this.log.info('Skipping additional Android checks.', this.ref('reactNativeApp'))
     } else {
       this.log.succeed(`Found Android project.`)
 
@@ -170,10 +170,10 @@ class Project {
       const minSdk = await task.findingAndroidMinSdk(this.dir)
       if (!minSdk) {
         this.errors++
-        this.log.fail(`Found no Android minimum SDK; >= ${project.android.minMinSdk} required.`, this.ref('androidProject'))
+        this.log.fail(`Found no Android minimum SDK; >= ${project.android.minMinSdk} required.`, this.ref('androidMinSdk'))
       } else if (!task.isAndroidMnSdkSupported(minSdk, minMinSdk)) {
         this.errors++
-        this.log.fail(`Found Android minimum SDK ${minSdk}; >= ${minMinSdk} required.`, this.ref('androidProject'))
+        this.log.fail(`Found Android minimum SDK ${minSdk}; >= ${minMinSdk} required.`, this.ref('androidMinSdk'))
       } else {
         this.log.succeed(`Found Android minimum SDK ${minSdk}.`)
       }
@@ -186,7 +186,7 @@ class Project {
         if (!permissions.includes(p)) {
           hasPermissions = false
           this.errors++
-          this.log.fail(`Missing required ${p} in Android manifest.`, this.ref('androidProject'))
+          this.log.fail(`Missing required ${p} in Android manifest.`, this.ref('androidNetworkPermission'))
         }
       })
       if (hasPermissions) {
@@ -197,19 +197,19 @@ class Project {
         this.log.spin(`Checking for Android Approov components...`)
         if (!task.hasAndroidApproovSdk(this.dir)) {
           this.errors++
-          this.log.fail('Missing Android Approov SDK.', this.ref('androidApproov'))
+          this.log.fail('Missing Android Approov SDK.', this.ref('cmdIntegrate'))
         } else {
           this.log.succeed('Found Android Approov SDK.')
         }
         if (!task.hasAndroidApproovConfig(this.dir)) {
           this.errors++
-          this.log.fail('Missing Android Approov config file.', this.ref('androidApproov'))
+          this.log.fail('Missing Android Approov config file.', this.ref('cmdIntegrate'))
         } else {
           this.log.succeed('Found Android Approov config file.')
         }
         if (!task.hasAndroidApproovProps(this.dir)) {
           this.errors++
-          this.log.fail('Missing Android Approov properties file.', this.ref('androidApproov'))
+          this.log.fail('Missing Android Approov properties file.', this.ref('cmdIntegrate'))
         } else {
           this.log.succeed('Found Android Approov properties file.')
         }
@@ -259,7 +259,7 @@ class Project {
     const isRegistered = await task.registeringAndroidApk(this.dir, variant, expireAfter)
     if (!isRegistered) {
       this.errors++
-      this.log.fatal(`Unable to register the ${variant} APK.`, this.ref('approovReg'))
+      this.log.fatal(`Unable to register the ${variant} APK.`, this.ref('runRegAndroidApp'))
     }
     this.log.succeed(`Registered the ${variant} APK for ${expireAfter}.`)
   }
@@ -269,11 +269,11 @@ class Project {
     if (!task.hasIosPath(this.dir)) {
       this.warnings++
       this.log.warn('No iOS project found.')
-      this.log.info('Skipping additional iOS checks.', this.ref('iosProject'))
+      this.log.info('Skipping additional iOS checks.', this.ref('reactNativeApp'))
     } else if (!task.isIosSupported()){
       this.warnings++
       this.log.warn(`iOS project found but ${task.getEnvPlatform()} does not support iOS development.`)
-      this.log.info('Skipping additional iOS checks.', this.ref('iosProject'))
+      this.log.info('Skipping additional iOS checks.')
     } else if (!task.hasEnvXcodebuild() || !task.hasEnvIosDeploy()) {
       log.succeed(`Found iOS project.`)
       if (!task.hasEnvXcodebuild()) {
@@ -284,13 +284,13 @@ class Project {
         this.warnings++
         this.log.warn('Missing iOS deployment tool (ios-deploy).')
       }
-      this.log.info('Skipping additional iOS checks.', this.ref('iosProject'))
+      this.log.info('Skipping additional iOS checks.')
     } else {
       this.log.succeed(`Found iOS project.`)
       const scheme = task.getIosScheme(this.dir)
       if (!scheme) {
         this.errors++
-        this.log.fatal('Failed to find iOS workspace.', this.ref('iosProject'))
+        this.log.fatal('Failed to find iOS workspace.', this.ref('iosOther'))
       }
       this.log.succeed(`Found iOS workspace - ${scheme}`)
 
@@ -298,12 +298,12 @@ class Project {
       const target = await task.findingIosDeployTarget(this.dir, scheme)
       if (!target) {
         this.errors++
-        this.log.fatal('Failed to find iOS deploy target.', this.ref('iosProject'))
+        this.log.fatal('Failed to find iOS deploy target.', this.ref('iosDeployTarget'))
       }
       const minTarget = config.specs.ios.minDeployTarget
       if (!task.isIosDeployTargetSupported(target, minTarget)) {
         this.errors++
-        this.log.fail(`Found iOS deployment target ${target}; >= ${minTarget} required.`, this.ref('iosProject'))
+        this.log.fail(`Found iOS deployment target ${target}; >= ${minTarget} required.`, this.ref('iosDeployTarget'))
       } else {
         this.log.succeed(`Found iOS deployment target ${target}.`)
       }
@@ -312,19 +312,19 @@ class Project {
         this.log.spin(`Checking for iOS Approov components...`)
         if (!task.hasIosApproovSdk(this.dir)) {
           this.errors++
-          this.log.fail('Missing iOS Approov SDK.', this.ref('iosApproov'))
+          this.log.fail('Missing iOS Approov SDK.', this.ref('cmdIntegrate'))
         } else {
           this.log.succeed('Found iOS Approov SDK.')
         }
         if (!task.hasIosApproovConfig(this.dir)) {
           this.errors++
-          this.log.fail('Missing iOS Approov config file.', this.ref('iosApproov'))
+          this.log.fail('Missing iOS Approov config file.', this.ref('cmdIntegrate'))
         } else {
           this.log.succeed('Found iOS Approov config file.')
         }
         if (!task.hasIosApproovProps(this.dir)) {
           this.errors++
-          this.log.fail('Missing iOS Approov properties file.', this.ref('iosApproov'))
+          this.log.fail('Missing iOS Approov properties file.', this.ref('cmdIntegrate'))
         } else {
           this.log.succeed('Found iOS Approov properties file.')
         }
@@ -415,7 +415,7 @@ class Project {
     const isRegistered = await task.registeringIosIpa(this.dir, scheme, configuration, expireAfter)
     if (!isRegistered) {
       this.errors++
-      this.log.fatal(`Unable to register the ${configuration} IPA`, this.ref('approovReg'))
+      this.log.fatal(`Unable to register the ${configuration} IPA`, this.ref('runRegIosApp'))
     }
     this.log.succeed(`Registered the ${configuration} IPA for ${expireAfter}.`)
   }
@@ -426,7 +426,7 @@ class Project {
 
     if (!task.hasEnvIosDeploy()) {
       this.warnings++
-      this.log.fatal('Missing iOS deployment tool (ios-deploy).', this.ref('approovReg'))
+      this.log.fatal('Missing iOS deployment tool (ios-deploy).', this.ref('runRegIosApp'))
     }
 
     this.log.spin(`Checking for iOS ${configuration} APP...`)

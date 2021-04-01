@@ -70,11 +70,15 @@ The example react-native project is downloaded, npm packages are installed, and,
 
 Depending on your platform, before building your app, you may need to explicitly start the metro packager in the top-level React Native project directory as well as starting an emulator/simulator or connecting a physical device.
 
-To run the app on an Android emulator, change into the `shapes_fetch` directory and run android:
-
 ```shell
 $ cd shapes_fetch
 $ yarn run react-native start
+```
+
+To run the app on an Android emulator, in a separate process or terminal window, change into the `shapes_fetch` directory and run android:
+
+```shell
+$ cd shapes_fetch
 $ yarn run react-native run-android
 ```
 
@@ -82,7 +86,6 @@ To test the app on the iOS simulator, run iOS from the same `shapes_fetch` direc
 
 ```shell
 $ cd shapes_fetch
-$ yarn run react-native start
 $ yarn run react-native run-ios
 ```
 
@@ -200,7 +203,7 @@ For our shapes example, we will switch to physical devices to check that Approov
 
 #### Android Devices
 
-Connect a physical Android device to your host platform over USB. See [Run apps on a hardware device](https://developer.android.com/studio/run/device) for full instructions. Use `adb devices` to verify that this device is connected and no other device or emulator is running. Then run the `run-android` command as before:
+Connect a physical Android device to your host platform over USB. See [Run apps on a hardware device](https://developer.android.com/studio/run/device) for full instructions. Use `adb devices` to verify that this device is connected and no other device or emulator is running. Then run the `run-android` command as before to build the inetgrated app:
 
 ```
 $ yarn run react-native run-android
@@ -219,8 +222,8 @@ yarn run v1.22.5
 ✔ Found Approov management token.
 ✔ Registered debug app for 1h:
 registering app Shapes
-0ryxGWdWRXGcFJO26vqV9dJzU5Fo/XZ81ccF9ihK9mg=com.shapes-1.0[1]-2974  SDK:Android(2.5.0)
-registration successful, expires 2020-12-31 00:59:04
+0ryxGxdWRXGcFJO27vqV9dJzQ5Fo/XZ81cdF9ihK9mg=com.shapes-1.0[1]-2974  SDK:Android(2.6.1)
+registration successful, expires 2021-03-14 15:92:65
 ✨  Done in 4.76s.
 ```
 
@@ -255,14 +258,14 @@ yarn run v1.22.5
 ✔ Found Approov management token.
 ✔ Registered debug app for 1h:
 registering app Shapes
-0ryxGWdWRXGcFJO26vqV9dJzU5Fo/XZ81ccF9ihK9mg=com.shapes-1.0[1]-2974  SDK:Android(2.5.0)
-registration successful, expires 2020-12-31 00:59:04
+0ryxzWdWtXGcFKO26vqV8dJzU5Fo/XZ82cdF9ihK9mg=com.shapes-1.0[1]-3742  SDK:iOS(2.6.0)
+registration successful, expires 2021-03-14 15:92:65
 ✨  Done in 4.76s.
 ```
 
 By default, the `Debug` configuration is registered with Approov for one hour, useful for debug and testing.
 
-The app will be recognized by Approov within five minutes. Unfortunately, rerunning the app with the `run-ios` command will not work because it uses the `lldb` debugger to launch the app, and the default Approov security policy will block an app running in a debugger from making prootected API calls. Instead, run the `deploy-ios` command:
+The app will be recognized by Approov within five minutes. Unfortunately, rerunning the app with the `run-ios` command will not work as expected because react-native uses the `lldb` debugger to launch the app, and the default Approov security policy will block an app running in a debugger from making protected API calls. Instead, run the `deploy-ios` command:
 
 ```
 $ yarn run react-native deploy-ios

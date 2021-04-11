@@ -40,6 +40,11 @@ const task = {
     return process.platform
   },
 
+  hasEnvNodeSnap: function() {
+    const whichNode = sh.which('node')
+    return !!(whichNode && whichNode.includes('snap'))
+  },
+
   hasEnvYarn: function() {
     return !!sh.which('yarn')
   },

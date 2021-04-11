@@ -24,7 +24,7 @@ const path = require('path')
 const os = require('os')
 const prompts = require('prompts')
 const chalk = require('chalk')
-const { task } = require('../act')
+const { config, task } = require('../act')
 const { Log, fsx, sh } = require('../util')
 
 const command = (new Command())
@@ -41,6 +41,10 @@ const command = (new Command())
 
 .action(async (app, dir, opts) => {
   const log = new Log()
+
+  const getHelp = (id) => {
+    return config.refs[id] || config.refs['contactSupport']
+  }
 
   const defaults = { 
     appName: 'shapes-fetch', 
@@ -170,6 +174,9 @@ const command = (new Command())
     await sh.execAsync('yarn install', {silent:false})
     log.succeed(`Installed ${appName} npm dependencies`)
   } catch (err) {
+    if (task.hasEnvNodeSnap()) {
+      log.warn('Detected Node installed as a Snap package', getHelp('nodeSnap'))
+    }
     log.exit(`Failed to install ${appName} npm dependencies`)
   }
 

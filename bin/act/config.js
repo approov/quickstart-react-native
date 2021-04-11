@@ -44,8 +44,7 @@ const specs = {
 // Default registration expiration
 
 // reference links
-//const readme = 'https://github.com/approov/quickstart-react-native/blob/master/README.md'
-const readme = 'https://gitlab.com/criticalblue/playground/quickstart-react-native/-/tree/v64-update'
+const readme = 'https://github.com/approov/quickstart-react-native'
 const refs = {
   contactSupport: `${readme}#getting-additional-help`,
   devEnviron: `${readme}#0-check-that-your-development-environment-is-properly-set-up`,
@@ -64,6 +63,7 @@ const refs = {
   iosDevice: `${readme}#running-on-an-ios-device`,
   iosOther: `${readme}#other-ios-considerations`,
   cmdIntegrate: `${readme}#react-native-approov-integrate`,
+  nodeSnap: `${readme}#integration-may-fail-on-linux-when-node-installed-as-a-snap-package`,
 }
 
 // error messages

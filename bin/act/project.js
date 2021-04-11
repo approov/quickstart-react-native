@@ -129,6 +129,10 @@ class Project {
     if (!task.hasReactNativeApproovPackage(this.dir)) {
       this.log.note(`Installing the @approov/react-native-approov package...`)
       if (!await task.installingReactNativeApproovPackage(this.dir)) {
+        if (task.hasEnvNodeSnap()) {
+          this.warnings++
+          this.log.warn('Detected Node installed as a Snap package', this.ref('nodeSnap'))
+        }
         this.errors++
         this.log.fatal(`Failed to install @approov/react-native-approov package`, this.ref('contactSupport'))
       }

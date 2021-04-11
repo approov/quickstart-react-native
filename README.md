@@ -602,6 +602,10 @@ Expo is a framework and a platform for universal React applications. There are t
 
 Expo's bare environment provides support for Expo SDKs without the restrictions imposed by the managed environment. This workflow may be compatible with Approov, and we are investigating future support for Approov in this environment.
 
+### Integration may fail on Linux when Node installed as a Snap package
+
+There have been issues reported on Linux after installing Node using the Snap package, for example, [child_process spawn missing stdout](https://github.com/nodejs/node/issues/32430). This may cause package installations to fail when running `react-native-approov example` and `integrate` commands. The suggested workaround is to remove the snap node package and reinstall node using the linux distribution's package manager, for example, [installing node on ubuntu 20.04](https://dev.to/katerakeren/a-step-by-step-guide-to-installing-node-js-on-ubuntu-45h).
+
 ### Getting additional help
 
 If you encounter issues when using `react-native-approov` which you cannot resolve using this document, please review the [React Native developer docs](https://reactnative.dev) and the [Approov user docs](https://approov.io/docs) for more detailed information.

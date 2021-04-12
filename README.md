@@ -1,5 +1,4 @@
 <h1 align="center">React-Native Approov Quickstart</h1>
-<h2 align="center" style="color:red;">WARNING: THIS PACKAGE IS PRE-RELEASE ONLY</h2>
 <p align="center">
     <a href="https://approov.io">
       <img style="margin:0;" src="assets/approov-icon.png" alt=""/>

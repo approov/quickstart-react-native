@@ -133,7 +133,16 @@ Watch for a few things:
 
 3. Fix any errors reported by the `check` command. Approov often requires a few version updates or extra permissions. On Android, for example, the minimum SDK is 21, and the additional `ACCESS_NETWORK_STATE` permission is required. Look up reported errors in the [common scenarios](#common-scenarios) section or follow help links included in the command output.
 
-Once all issues are fixed, you should rerun your app to verify it is working as before. You are now ready to integrate Approov.
+Once all issues are fixed, you should rerun your app to verify it is working as before. You are now ready to add Approov API protection.
+
+Before integrating Approov into your React Native app, add all API domains to your account which need API protection. For our shapes service examples, there is one API domain to protect, `shapes.approov.io`. Add an API domain to your account:
+
+```shell
+$ approov api -add shapes.approov.io
+WARNING: active role is for account <your-account>
+WARNING: adding the API will have an immediate impact on your apps in production. If you wish to continue then please enter YES and return: YES
+added new API domain shapes.approov.io with type:restricted, alg:HS256
+```
 
 Run the `react-native-approov integrate` command. It will prompt you to make some choices such as the name of the Approov header field and whether to bind authorization and approov tokens. Some of these values require coordination with your backend service. Refer to the [react-native-approov integrate command](#react-native-approov-integrate) for all options.
 
@@ -290,13 +299,13 @@ You must have an Approov session active with at least `developer` role capabilit
 
 Once a session is established, each react-native-approoov command will extend your session for one hour.
 
-### How do I setup my backend service to check for approved API calls?
-
-API calls protected by Approov will include an Approov token which must be checked. Backend quickstarts for common server frameworks, lanquages, and API gateways can be accessed at [Backend APIs](https://approov.io/docs/latest/approov-integration-examples/backend-api/).
-
 ### Checking and updating Approov-protected API domains
 
 Before integrating Approov into your React Native app, you should add all API domains to your account which need API protection. For our shapes service examples, there is one API domain to protect, `shapes.approov.io`. You can check which API domains are protected using the `approov CLI:
+
+### How do I setup my backend service to check for approved API calls?
+
+API calls protected by Approov will include an Approov token which must be checked. Backend quickstarts for common server frameworks, lanquages, and API gateways can be accessed at [Backend APIs](https://approov.io/docs/latest/approov-integration-examples/backend-api/).
 
 ```shell
 $ approov api --list
@@ -308,7 +317,7 @@ If you need to add API domains to your account:
 
 ```shell
 $ approov api -add shapes.approov.io
-WARNING: active role is for account your-account
+WARNING: active role is for account <your-account>
 WARNING: adding the API will have an immediate impact on your apps in production. If you wish to continue then please enter YES and return: YES
 added new API domain shapes.approov.io with type:restricted, alg:HS256
 ```
@@ -341,7 +350,7 @@ The default header name is `Approov-Token`. You may specify prefix string, for e
 
 ### Binding authorization to Approov tokens
 
-You may bind an Approov token to the value of any other header field. This is almost always used to bind Approov and Authorization tokens. WHen bound, the backend service verifies the Approov token and further that the Approov token was bound to only that authorization data value. See [Token Binding](https://approov.io/docs/latest/approov-usage-documentation/#token-binding) for additional information.
+You may bind an Approov token to the value of any other header field. This is almost always used to bind Approov and Authorization tokens. When bound, the backend service verifies the Approov token and further that the Approov token was bound to only that authorization data value. See [Token Binding](https://approov.io/docs/latest/approov-usage-documentation/#token-binding) for additional information.
 
 To enable token binding, specify the binding header data name in the in the `react-native-approov integrate` command:
 

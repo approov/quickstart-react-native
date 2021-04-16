@@ -279,7 +279,7 @@ class Project {
       this.log.warn(`iOS project found but ${task.getEnvPlatform()} does not support iOS development.`)
       this.log.info('Skipping additional iOS checks.')
     } else if (!task.hasEnvXcodebuild() || !task.hasEnvIosDeploy()) {
-      log.succeed(`Found iOS project.`)
+      this.log.succeed(`Found iOS project.`)
       if (!task.hasEnvXcodebuild()) {
         this.warnings++
         this.log.warn('Missing Xcode command line tools (xcodebuild).')

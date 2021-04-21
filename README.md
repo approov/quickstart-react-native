@@ -297,7 +297,7 @@ First, you must have access to Approov. For a free 30-day trial, sign up at [htt
 
 You must have an Approov session active with at least `developer` role capabilities. More information about roles and sessions can be found at [installing Approov](https://approov.io/docs/latest/approov-installation/).
 
-Once a session is established, each react-native-approoov command will extend your session for one hour.
+Once a session is established, each react-native-approov command will extend your session for one hour.
 
 ### Checking and updating Approov-protected API domains
 
@@ -432,7 +432,7 @@ This value is checked by the `@react-native-approov check` command.
 
 ### Updating Android network permissions
 
-On Android, Approoov requires both  `INTERNET` and `ACCESS_NETWORK_STATE` permissions. It is likely that your React Native app will need to add the `ACCESS_NETWORK_STATE` permission. Open the `<project>/android/src/main/AndroidManifest.xml` file, and add the extra permission like this:
+On Android, Approov requires both  `INTERNET` and `ACCESS_NETWORK_STATE` permissions. It is likely that your React Native app will need to add the `ACCESS_NETWORK_STATE` permission. Open the `<project>/android/src/main/AndroidManifest.xml` file, and add the extra permission like this:
 
 ```xml
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
@@ -451,7 +451,7 @@ These permissions are checked by the `@react-native-approov check` command.
 
 It is likely you developed your React Native project running on an Android emulator, and after Approov integration, your project will still run on an Android emulator. However, Approov's default security policies will reject any app running in an Android emulator. You can workaround this behavior in several ways:
 
-1. Run your ap on a physical device.
+1. Run your app on a physical device.
 
 2. Whitelist the emulator so the Approov service always returns a valid token.
 

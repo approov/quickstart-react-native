@@ -109,13 +109,13 @@ NSString *const UpdateConfigKey = @"approov-config";
         if (error) {
             ACBLogE(@"Approov base configuration read failed");
             [NSException raise:@"ApproovBaseConfigReadFailed" format:@"Approov base config read failed: %@. \
-             Please make sure you have the file '%@.%@' available in your app's root directory.", error, BaseConfigResource, BaseConfigExtension];
+            Please make sure you have the file '%@.%@' available in your app's root directory.", error, BaseConfigResource, BaseConfigExtension];
         }
     }
     else {
         ACBLogE(@"Approov base configuration not found");
         [NSException raise:@"ApproovBaseConfigNotFound" format:@"Approov base config not found: \
-         Please make sure you have the file '%@.%@' available in your app's root directory.", BaseConfigResource, BaseConfigExtension];
+        Please make sure you have the file '%@.%@' available in your app's root directory.", BaseConfigResource, BaseConfigExtension];
     }
 
     return config;
@@ -403,7 +403,7 @@ NSDictionary<NSString *, NSDictionary<NSNumber *, NSData *> *> *sSPKIHeaders;
         
         // match pins on the receivers host
         if ([pins objectForKey:host] != nil){
-            // We have on or more cert hashes matching the receivers host, compare them
+            // We have one or more cert hashes matching the receivers host, compare them
             NSArray<NSString*>* certHashList = [pins objectForKey:host];
             for (NSString* certHash in certHashList) {
                 if ([certHash isEqualToString:publicKeyHashBase64]) {

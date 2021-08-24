@@ -193,13 +193,13 @@ public class ApproovService {
         if (approovResults.getStatus() == Approov.TokenFetchStatus.SUCCESS) {
             // on success, return token
             return approovResults.getToken();
-        } else if ((approovResults.getStatus() == Approov.TokenFetchStatus.NO_APPROOV_SERVICE) &&
-                (approovResults.getStatus() == Approov.TokenFetchStatus.UNKNOWN_URL) &&
+        } else if ((approovResults.getStatus() == Approov.TokenFetchStatus.NO_APPROOV_SERVICE) ||
+                (approovResults.getStatus() == Approov.TokenFetchStatus.UNKNOWN_URL) ||
                 (approovResults.getStatus() == Approov.TokenFetchStatus.UNPROTECTED_URL)) {
             // on no approov service or domain not registered with Approov, return empty string
             return "";
-        } else if  ((approovResults.getStatus() == Approov.TokenFetchStatus.NO_NETWORK) &&
-                (approovResults.getStatus() == Approov.TokenFetchStatus.POOR_NETWORK) &&
+        } else if  ((approovResults.getStatus() == Approov.TokenFetchStatus.NO_NETWORK) ||
+                (approovResults.getStatus() == Approov.TokenFetchStatus.POOR_NETWORK) ||
                 (approovResults.getStatus() == Approov.TokenFetchStatus.MITM_DETECTED)) {
             // on transient failures, signal retry
             return "RETRY";

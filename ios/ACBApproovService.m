@@ -371,7 +371,7 @@ NSDictionary<NSString *, NSDictionary<NSNumber *, NSData *> *> *sSPKIHeaders;
     }
     NSDictionary* pins = [Approov getPins:@"public-key-sha256"];
     // if no pins are defined then we trust the connection
-    if (pins == nil) {
+    if (pins == nil || [pins objectForKey:host] == nil) {
         ACBLogD(@"ServerTrust not pinned");
         return ACBTrustDecisionNotPinned;
     }

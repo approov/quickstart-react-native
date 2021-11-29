@@ -382,7 +382,7 @@ class Project {
             this.log.fatal('Failed to update iOS pods.', this.ref('contactSupport'))
           }
         }
-        this.log.warn('on iOS, Approov integrated apps will only attest properly on a physical device or whitelisted simulator.')
+        this.log.warn('on iOS, Approov integrated apps will only attest properly on a physical device or simulator set to always pass.')
         this.log.warn('on iOS, when targeting a device, ensure a development team is specified in xcode and the device is properly provisioned.')
         if (bitcode) this.log.warn('on iOS, ensure that your xcode project enables bitcode for all configurations you build.')
       }

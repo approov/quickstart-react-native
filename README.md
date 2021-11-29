@@ -195,7 +195,7 @@ Downloading dependencies
 Generating Pods project
 Integrating client project
 Pod installation complete! There are 31 dependencies from the Podfile and 30 total pods installed.
-⚠ on iOS, Approov integrated apps will only attest properly on a physical device or whitelisted simulator.
+⚠ on iOS, Approov integrated apps will only attest properly on a physical device or simulator set to always pass.
 ⚠ on iOS, when targeting a device, ensure a development team is specified in xcode and the device is properly provisioned.
    
 ✔ Approov integration completed successfully
@@ -453,15 +453,15 @@ It is likely you developed your React Native project running on an Android emula
 
 1. Run your app on a physical device.
 
-2. Whitelist the emulator so the Approov service always returns a valid token.
+2. Ensure the emulator so the Approov service always returns a valid token.
 
-This requires you to first identify the app's device ID running on the emulator (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to set add the device whitelisting:
+This requires you to first identify the app's device ID running on the emulator (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to ensure the device always passes:
 
 ```shell
 $ approov device -add 123-deviceID-abc== -policy default,whitelist,all
 ```
 
-Once the app is whitelisted on the emulator, you do not have to register your app before receiving valid Approov tokens.
+Once the app is set to always pass on the emulator, you do not have to register your app before receiving valid Approov tokens.
 
 3. Change your account's rejection policies to allow emulators.
 
@@ -510,15 +510,15 @@ It is likely you developed your React Native project running on an iOS simulator
 
 1. Run your ap on a physical device.
 
-2. Whitelist the simulator so the Approov service always returns a valid token.
+2. Ensure the simulator device is set to always pass so the Approov service always returns a valid token.
 
-This requires you to first identify your app's device ID on the simulator (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to add the device whitelisting:
+This requires you to first identify your app's device ID on the simulator (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to ensure the device always passes:
 
 ```shell
 $ approov device -add 123-deviceID-abc== -policy default,whitelist,all
 ```
 
-Once your app is whitelisted on the emulator, you do not have to register your app before receiving valid Approov tokens.
+Once your app is set to always pass on the simulator, you do not have to register your app before receiving valid Approov tokens.
 
 Note, it is strongly recommended that you test your Approov-integrated app on multiple physical devices before deploying to production.
 
@@ -536,16 +536,16 @@ $ yarn run react-native reg-ios
 $ yarn run react-native deploy-ios
 ```
 
-This can get tedious if you are doing frequent debug loops. Consider whitelisting your app on your development device. This requires you to first identify the app's device ID running on the device (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). After you have extracted the device ID, run an Approov device command to set add the device whitelisting:
+This can get tedious if you are doing frequent debug loops. Consider ensuring your app [always passes](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy) on your development device. This requires you to first identify the app's device ID running on the device (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). After you have extracted the device ID, run an Approov device command to make the device always pass:
 
 ```shell
 approov device -add 123-deviceID-abc== -policy default,whitelist,all
 
 ```
 
-Once your app is whitelisted on the device, you do not have to register your app before receiving valid Approov tokens. Though this does not test Approov attestation, you can now just use the single `react-native run-ios --device` command to build and run your app.
+Once your app is set to always pass on the device, you do not have to register your app before receiving valid Approov tokens. Though this does not test Approov attestation, you can now just use the single `react-native run-ios --device` command to build and run your app.
 
-You can use this same approach when developing on a simulator; see [Running on an iOS simulator](#running-on-an-iOs-simulator).
+You can use this same approach when developing on a simulator; see [Running on an iOS simulator](#running-on-an-ios-simulator).
 
 ### Using Bitcode with iOS
 

@@ -447,6 +447,12 @@ On Android, Approov requires both  `INTERNET` and `ACCESS_NETWORK_STATE` permiss
 
 These permissions are checked by the `@react-native-approov check` command.
 
+Note that the minimum SDK version you can use with the Approov package is 21 (Android 5.0). 
+
+Please [read this](https://approov.io/docs/latest/approov-usage-documentation/#targetting-android-11-and-above) section of the reference documentation if targetting Android 11 (API level 30) or above.
+
+Note you may need to apply specific [Android Obfuscation](https://approov.io/docs/latest/approov-usage-documentation/#android-obfuscation) rules for your app when releasing it.
+
 ### Running on an Android emulator
 
 It is likely you developed your React Native project running on an Android emulator, and after Approov integration, your project will still run on an Android emulator. However, Approov's default security policies will reject any app running in an Android emulator. You can workaround this behavior in several ways:
@@ -458,7 +464,7 @@ It is likely you developed your React Native project running on an Android emula
 This requires you to first identify the app's device ID running on the emulator (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to ensure the device always passes:
 
 ```shell
-$ approov device -add 123-deviceID-abc== -policy default,whitelist,all
+$ approov device -add 123-deviceID-abc== -policy default,always-pass,all
 ```
 
 Once the app is set to always pass on the emulator, you do not have to register your app before receiving valid Approov tokens.
@@ -515,7 +521,7 @@ It is likely you developed your React Native project running on an iOS simulator
 This requires you to first identify your app's device ID on the simulator (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to ensure the device always passes:
 
 ```shell
-$ approov device -add 123-deviceID-abc== -policy default,whitelist,all
+$ approov device -add 123-deviceID-abc== -policy default,always-pass,all
 ```
 
 Once your app is set to always pass on the simulator, you do not have to register your app before receiving valid Approov tokens.
@@ -539,7 +545,7 @@ $ yarn run react-native deploy-ios
 This can get tedious if you are doing frequent debug loops. Consider ensuring your app [always passes](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy) on your development device. This requires you to first identify the app's device ID running on the device (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). After you have extracted the device ID, run an Approov device command to make the device always pass:
 
 ```shell
-approov device -add 123-deviceID-abc== -policy default,whitelist,all
+approov device -add 123-deviceID-abc== -policy default,always-pass,all
 
 ```
 
@@ -586,7 +592,7 @@ Other Approov features you might want to explore:
 * Using the [Metrics Graphs](https://approov.io/docs/latest/approov-usage-documentation/#metrics-graphs) to see live and accumulated metrics of devices using your account and any reasons for devices being rejected and not being provided with valid Approov tokens. You can also see your billing usage which is based on the total number of unique devices using your account each month.
 * Using [Service Monitoring](https://approov.io/docs/latest/approov-usage-documentation/#service-monitoring) emails to receive monthly (or, optionally, daily) summaries of your Approov usage.
 * Learning about [automated approov CLI usage](https://approov.io/docs/latest/approov-usage-documentation/#automated-approov-cli-usage).
-* Investigating other advanced features, such as [Offline Security Mode](https://approov.io/docs/latest/approov-usage-documentation/#offline-security-mode), [DeviceCheck Integration](https://approov.io/docs/latest/approov-usage-documentation/#apple-devicecheck-integration), [SafetyNet Integration](https://approov.io/docs/latest/approov-usage-documentation/#google-safetynet-integration) and [Android Automated Launch Detection](https://approov.io/docs/latest/approov-usage-documentation/#android-automated-launch-detection).
+* Investigating other advanced features, such as [Offline Security Mode](https://approov.io/docs/latest/approov-usage-documentation/#offline-security-mode), [DeviceCheck Integration](https://approov.io/docs/latest/approov-usage-documentation/#apple-devicecheck-integration), [AppAttest Integration](https://approov.io/docs/latest/approov-usage-documentation/#apple-appattest-integration), [SafetyNet Integration](https://approov.io/docs/latest/approov-usage-documentation/#google-safetynet-integration) and [Android Automated Launch Detection](https://approov.io/docs/latest/approov-usage-documentation/#android-automated-launch-detection).
 
 ### Removing Approov from your App
 

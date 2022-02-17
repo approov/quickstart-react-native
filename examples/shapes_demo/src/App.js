@@ -53,7 +53,7 @@ const api = NativeModules.Approov? {
   fetchUrl: `https://shapes.approov.io/v2/shapes`,
 } : {
   msg: 'Approov not installed',
-  version: 'unproetcted API (v1)',
+  version: 'initial API (v1)',
   checkUrl: `https://shapes.approov.io/v1/hello`,
   fetchUrl: `https://shapes.approov.io/v1/shapes`,
 }

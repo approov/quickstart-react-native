@@ -2,16 +2,16 @@
  * MIT License
  *
  * Copyright (c) 2016-present, CriticalBlue Ltd.
- * 
+ *
  * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
  * associated documentation files (the "Software"), to deal in the Software without restriction,
  * including without limitation the rights to use, copy, modify, merge, publish, distribute,
  * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
  * furnished to do so, subject to the following conditions:
- * 
+ *
  * The above copyright notice and this permission notice shall be included in all copies or
  * substantial portions of the Software.
- * 
+ *
  * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
  * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
  * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
@@ -19,7 +19,7 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import React, { useState, useEffect } from 'react'
+import React, {useState, useEffect} from 'react';
 import {
   Button,
   Image,
@@ -28,22 +28,22 @@ import {
   StyleSheet,
   Text,
   View,
-} from 'react-native'
-import Frisbee from 'frisbee'
-import { NativeModules } from 'react-native'
+} from 'react-native';
+import Frisbee from 'frisbee';
+import {NativeModules} from 'react-native';
 
-const appTitle = 'Approov Shapes'
-const checkTitle = 'check'
-const fetchTitle = 'fetch'
+const appTitle = 'Approov Shapes';
+const checkTitle = 'check';
+const fetchTitle = 'fetch';
 const imgAssets = {
-  'logo': require('./assets/approov_largelogo.png'),
-  'hello': require('./assets/hello.png'),
-  'confused': require('./assets/confused.png'),
-  'Rectangle': require('./assets/rectangle.png'),
-  'Square': require('./assets/square.png'),
-  'Triangle': require('./assets/triangle.png'),
-  'Circle': require('./assets/circle.png'),
-}
+  logo: require('./assets/approov_largelogo.png'),
+  hello: require('./assets/hello.png'),
+  confused: require('./assets/confused.png'),
+  Rectangle: require('./assets/rectangle.png'),
+  Square: require('./assets/square.png'),
+  Triangle: require('./assets/triangle.png'),
+  Circle: require('./assets/circle.png'),
+};
 
 // determine which api to use
 
@@ -55,68 +55,76 @@ const api = {
   checkUrl: `/hello`,
   // the fetch endpoint should only succeed if approov is integrated
   fetchUrl: `/shapes`,
-}
-console.log(`Using ${api.version}`)
+  // the API key used for v1 endpoints (this should not be stored in source code in production apps)
+  key: 'yXClypapWNHIifHUWmBIyPFAm',
+};
+console.log(`Using ${api.version}`);
 
 // set an example user authorization header
 
-const headers = { 'Authorization': 'Bearer <example-auth-token>', }
+const headers = {
+  Authorization: 'Bearer <example-auth-token>',
+  'api-key': api.key,
+};
 
 // create a frisbee instance
 
 const shapesService = new Frisbee({
   baseURI: api.baseUrl,
   headers: headers,
-})
+});
 
 // define App screen
 
 const App = () => {
-
   // define state
 
-  const [result, setResult] = useState({shape: 'logo', status: ''})
+  const [result, setResult] = useState({shape: 'logo', status: ''});
 
   // define check connection handler
 
   const checkConnection = () => {
-    setResult({shape: 'none', status: ''})
-    shapesService.get(api.checkUrl)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Status ${response.status}`)
-      }
-      return response.body
-    })
-    .then((data) => {
-      console.log('Connection check passed')
-      setResult({shape: 'hello', status: data.text})
-    })
-    .catch((error) => {
-      console.log(`Connection check failed: ${JSON.stringify(error, null, 2)}`)
-      setResult({shape: 'confused', status: error.message})
-    });
-  }
+    setResult({shape: 'none', status: ''});
+    shapesService
+      .get(api.checkUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Status ${response.status}`);
+        }
+        return response.body;
+      })
+      .then(data => {
+        console.log('Connection check passed');
+        setResult({shape: 'hello', status: data.text});
+      })
+      .catch(error => {
+        console.log(
+          `Connection check failed: ${JSON.stringify(error, null, 2)}`,
+        );
+        setResult({shape: 'confused', status: error.message});
+      });
+  };
 
   // define fetch shape handler
 
   const fetchShape = () => {
-    setResult({shape: 'none', status: ''})
-    shapesService.get(api.fetchUrl)
-    .then((response) => {
-      if (!response.ok) {
-        throw new Error(`Status ${response.status}`)
-      }
-      return response.body
-    })
-    .then((data) => {
-      console.log(`Shape fetch: ${data.shape}`)
-      setResult({shape: data.shape, status: data.status})
-    })
-    .catch((error) => {
-      setResult({shape: 'confused', status: error.message})
-    });
-  }
+    setResult({shape: 'none', status: ''});
+    shapesService
+      .get(api.fetchUrl)
+      .then(response => {
+        if (!response.ok) {
+          throw new Error(`Status ${response.status}`);
+        }
+        return response.body;
+      })
+      .then(data => {
+        console.log(`Shape fetch: ${data.shape}`);
+        setResult({shape: data.shape, status: data.status});
+      })
+      .catch(error => {
+        setResult({shape: 'confused', status: error.message});
+      });
+  };
 
   // return the screen for rendering
 
@@ -151,7 +159,7 @@ const styles = StyleSheet.create({
     flex: 1,
     flexDirection: 'column',
     backgroundColor: 'white',
-    margin:  10,
+    margin: 10,
   },
   titleBox: {
     flex: 2,

@@ -1,11 +1,9 @@
 require_relative '../node_modules/react-native/scripts/react_native_pods'
 require_relative '../node_modules/@react-native-community/cli-platform-ios/native_modules'
 
-install! 'cocoapods', :deterministic_uuids => false, :warn_for_unused_master_specs_repo => false
+platform :ios, '11.0'
 
-platform :ios, '10.0'
-
-target 'shapes_fetch' do
+target 'shapes' do
   config = use_native_modules!
 
   use_react_native!(
@@ -14,7 +12,7 @@ target 'shapes_fetch' do
     :hermes_enabled => false
   )
 
-  target 'shapes_fetchTests' do
+  target 'shapesTests' do
     inherit! :complete
     # Pods for testing
   end
@@ -23,9 +21,10 @@ target 'shapes_fetch' do
   #
   # Note that if you have use_frameworks! enabled, Flipper will not work and
   # you should disable the next line.
-  # use_flipper!()
+  use_flipper!()
 
   post_install do |installer|
     react_native_post_install(installer)
+    __apply_Xcode_12_5_M1_post_install_workaround(installer)
   end
 end

@@ -574,6 +574,12 @@ Make sure you enable bitcode for all configurations in your project. To enable b
 
 If you do require bitcode, it is generally easier to develop your app and integrate Approov without it, and then switch to bitcode when you are closer to release.
 
+### Command `react native run-ios` fails initial run
+
+Some projects have difficulty building directly using `yarn run react-native run-ios`. This sometimes happens in the first build after Approov integration.
+
+If this occurs, try running your react native iOS project directly in xcode. Open your iOS project by selecting the `<project>.xcworkspace` and not the project. If this succeeds, builds after this should run normally using `yarn run react-native run-ios`.
+
 ### Other iOS considerations
 
 React Native setup iOS projects using workspaces, so when opening a React Native iOS project in xcode, always open it by selecting the `<project>.xcworkspace` and not the project.

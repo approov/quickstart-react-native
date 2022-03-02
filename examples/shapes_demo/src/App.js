@@ -46,20 +46,6 @@ const imgAssets = {
 
 // determine which api to use
 
-<<<<<<< HEAD
-const api = NativeModules.Approov? {
-  msg: 'Approov installed',
-  version: 'protected API (v2)',
-  checkUrl: `https://shapes.approov.io/v2/hello`,
-  fetchUrl: `https://shapes.approov.io/v2/shapes`,
-} : {
-  msg: 'Approov not installed',
-  version: 'initial API (v1)',
-  checkUrl: `https://shapes.approov.io/v1/hello`,
-  fetchUrl: `https://shapes.approov.io/v1/shapes`,
-}
-console.log(`${api.msg}, using ${api.version}`)
-=======
 const api = NativeModules.Approov
   ? {
       msg: 'Approov installed',
@@ -76,7 +62,6 @@ const api = NativeModules.Approov
       key: 'yXClypapWNHIifHUWmBIyPFAm',
     };
 console.log(`${api.msg}, using ${api.version}`);
->>>>>>> release
 
 // set an example user authorization header
 

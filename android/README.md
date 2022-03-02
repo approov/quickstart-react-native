@@ -1,6 +1,14 @@
 README
 ======
 
+**MAVEN publishing NOT WORKING with this release**
+
+The maven publishing option is not working with this release because of changes in gradle.
+
+Ignore the instructions below.
+
+---
+
 If you want to publish the lib as a maven dependency, follow these steps before publishing a new version to npm:
 
 1. Be sure to have the Android [SDK](https://developer.android.com/studio/index.html) and [NDK](https://developer.android.com/ndk/guides/index.html) installed

@@ -23,16 +23,20 @@ package io.approov.reactnative;
 
 import android.util.Log;
 
+import com.RNFetchBlob.RNFetchBlob;
 import com.facebook.react.bridge.Promise;
 import com.facebook.react.bridge.ReactApplicationContext;
 import com.facebook.react.bridge.ReactContextBaseJavaModule;
 import com.facebook.react.bridge.ReactMethod;
 import com.facebook.react.modules.network.NetworkingModule;
 
+import com.RNFetchBlob.RNFetchBlob;
+
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.lang.reflect.Method;
 import java.util.Properties;
 
 import io.approov.service.ApproovService;
@@ -97,6 +101,32 @@ public class ApproovModule extends ReactContextBaseJavaModule {
         }
     }
 
+    private void configureRNFetchBlobIfFound(ApproovClientBuilder acb) {
+        try {
+            Class<?> clazz = Class.forName("com.RNFetchBlob.RNFetchBlob");
+
+            Class<?>[] ctypes = { ReactApplicationContext.class };
+            Object[] cparams = new Object[] { reactContext };
+            Method cmethod = clazz.getMethod("getInstance", ctypes);
+            Object instance = cmethod.invoke(null, cparams);
+
+            Class<?>[] itypes = {NetworkingModule.CustomClientBuilder.class};
+            Object[] iparams = new Object[] { acb };
+            Method imethod = clazz.getMethod("addCustomClientBuilder", itypes);
+            imethod.invoke(instance, iparams);
+        }
+        catch (ClassNotFoundException e) {
+            Log.i(TAG, "rn-fetch-blob package not installed");
+            return;
+        }
+        catch (Exception e) {
+            Log.w(TAG, "The installed version of the rn-fetch-blob package is not compatible with Approov, so any fetch-blob requests will not be protected by Approov. See the Approov react native quickstart for more information.");
+            return;
+        }
+
+        Log.i(TAG, "rn-fetch-blob package found and Approov protection added");
+    }
+
     public ApproovModule(ReactApplicationContext reactContext) {
         super(reactContext);
         this.reactContext = reactContext;
@@ -114,7 +144,11 @@ public class ApproovModule extends ReactContextBaseJavaModule {
         if (shouldPrefetch) approovService.prefetchToken();
 
         // initialize and set custom approov okhttp client builder
-        NetworkingModule.setCustomClientBuilder(new ApproovClientBuilder(reactContext, approovService));
+        ApproovClientBuilder acb = new ApproovClientBuilder(reactContext, approovService);
+        NetworkingModule.setCustomClientBuilder(acb);
+
+        // add approov client builder to rn-fetch-blob instances
+        configureRNFetchBlobIfFound(acb);
     }
 
     // Native moodules seem to need at least one bridged method to be recognized

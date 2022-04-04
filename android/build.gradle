@@ -69,7 +69,10 @@ repositories {
 dependencies {
     //noinspection GradleDynamicVersion
     implementation fileTree(dir: "libs", include: ["*.aar"])
-    implementation 'com.facebook.react:react-native:+'  // From node_modules
+    implementation 'com.facebook.react:react-native:+'
+    if (project(path: ':rn-fetch-blob')) {
+        implementation project(path: ':rn-fetch-blob')  // From node_modules
+    }
 }
 
 def configureReactNativePom(def pom) {

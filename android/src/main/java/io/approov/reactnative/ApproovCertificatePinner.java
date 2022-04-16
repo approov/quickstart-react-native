@@ -40,12 +40,24 @@ public class ApproovCertificatePinner {
      * @return the certificate pinner.
      */
     public static CertificatePinner build(ApproovService approovService) {
-        CertificatePinner.Builder builder = new CertificatePinner.Builder();
-        Map<String, List<String>> pins = approovService.getPins("public-key-sha256");
-        for (Map.Entry<String, List<String>> entry : pins.entrySet()) {
-            for (String pin : entry.getValue()) {
-                builder = builder.add(entry.getKey(), "sha256/" + pin);
-                Log.i(TAG, "Adding OkHttp pin " + entry.getKey() + ":sha256/" + pin);
+        CertificatePinner.Builder pinBuilder = new CertificatePinner.Builder();
+        Map<String, List<String>> allPins = approovService.getPins("public-key-sha256");
+        for (Map.Entry<String, List<String>> entry : allPins.entrySet()) {
+            String domain = entry.getKey();
+            if (!domain.equals("*")) {
+                // the * domain is for managed trust roots and should
+                // not be added directly
+                List<String> pins = entry.getValue();
+
+                // if there are no pins then we try and use any managed trust roots
+                if (pins.isEmpty() && (allPins.get("*") != null))
+                    pins = allPins.get("*");
+
+                // add the required pins for the domain
+                for (String pin: pins)
+                    pinBuilder = pinBuilder.add(domain, "sha256/" + pin);
+                    Log.i(TAG, "Adding OkHttp pin " + entry.getKey() + ":sha256/" + pin);
+                }
             }
         }
 

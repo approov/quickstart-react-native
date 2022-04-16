@@ -70,8 +70,10 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation fileTree(dir: "libs", include: ["*.aar"])
     implementation 'com.facebook.react:react-native:+'
-    if (project(path: ':rn-fetch-blob')) {
+    if (findProject(':rn-fetch-blob') != null) {
         implementation project(path: ':rn-fetch-blob')  // From node_modules
+    } else {
+        println 'optional rn-fetch-blob dependency not found'
     }
 }
 

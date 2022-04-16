@@ -61,6 +61,6 @@ public class ApproovCertificatePinner {
             }
         }
 
-        return builder.build();
+        return pinBuilder.build();
     }
 }

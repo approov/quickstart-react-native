@@ -54,7 +54,7 @@ public class ApproovCertificatePinner {
                     pins = allPins.get("*");
 
                 // add the required pins for the domain
-                for (String pin: pins)
+                for (String pin: pins) {
                     pinBuilder = pinBuilder.add(domain, "sha256/" + pin);
                     Log.i(TAG, "Adding OkHttp pin " + entry.getKey() + ":sha256/" + pin);
                 }

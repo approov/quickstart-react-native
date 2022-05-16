@@ -23,7 +23,7 @@ Once all issues are fixed, you should rerun your app to verify it is working as 
 Simply add the Approov package with the following command:
 
 ```
-npm install @approov/react-native-approov check
+npm install @approov/react-native-approov
 ```
 
 ## INITIALIZING THE APPROOV SERVICE
@@ -42,7 +42,7 @@ ApproovService.initialize("<enter-your-config-string-here>")
   // initialization successful
 })
 .catch(error => {
-  // initialization error - see error.message
+  // initialization error with reason in error.message
 });
 ```
 
@@ -64,6 +64,6 @@ To actually protect your APIs there are some further steps. Approov provides two
 
 Note that it is possible to use both approaches side-by-side in the same app, in case your app uses a mixture of 1st and 3rd party APIs.
 
-See [FAQ](https://github.com/approov/quickstart-react-native/blob/main/FAQ.md) for a answers to common questions about the integration and troubleshooting.
+See [FAQ](https://github.com/approov/quickstart-react-native/blob/main/FAQ.md) for answers to common questions about the integration and troubleshooting.
 
 See [REFERENCE](https://github.com/approov/quickstart-react-native/blob/main/REFERENCE.md) for a complete list of all of the Approov related methods.

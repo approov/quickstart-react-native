@@ -95,7 +95,6 @@ The `react-native-approov` package adds a convenient registration command `reg-i
 
 ```
 yarn run react-native reg-ios
-
 ```
 
 ou can use the `approov` CLI registration command as follows:
@@ -149,11 +148,11 @@ ApproovService.fetchSecureString(key, newDef)
     // provided `key` is not defined
 })
 .catch(error => {
-    if (error.type == "rejection")
+    if (error.userInfo.type == "rejection")
         // failure due to the attestation being rejected, see error.message. error.userInfo.rejectionARC and error.userInfo.rejectionReasons
         // may be used to present information to the user (note error.userInfo.rejectionReasons is only available if the feature is enabled,
         // otherwise it is always an empty string)
-    else if (error.type == "network")
+    else if (error.userInfo.type == "network")
         // failure due to a potentially temporary networking issue, allow for a user initiated retry, see error.message
     else
         // a more permanent error, see error.message
@@ -186,11 +185,11 @@ ApproovService.precheck()
     // the precheck completed okay
 })
 .catch(error => {
-    if (error.type == "rejection")
+    if (error.userInfo.type == "rejection")
         // failure due to the attestation being rejected, see error.message. error.userInfo.rejectionARC and error.userInfo.rejectionReasons
         // may be used to present information to the user (note error.userInfo.rejectionReasons is only available if the feature is enabled,
         // otherwise it is always an empty string)
-    else if (error.type == "network")
+    else if (error.userInfo.type == "network")
         // failure due to a potentially temporary networking issue, allow for a user initiated retry, see error.message
     else
         // a more permanent error, see error.message

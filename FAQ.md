@@ -18,7 +18,7 @@
 </p>
 <p align="center">
   <a href="#common-issues-and-questions">Common Issues</a> •
-  <a href="#command-reference">Command Reference</a> •
+  <a href="#command-reference">Command Reference</a>
 </p>
 
 ---

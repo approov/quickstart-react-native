@@ -32,7 +32,7 @@ ApproovService.setProceedOnNetworkFail();
 Note that this should be used with *CAUTION* because it may allow a connection to be established before any dynamic pins have been received via Approov, thus potentially opening the channel to a MitM.
 
 ## SetTokenHeader
-Sets the header that the Approov token is added on, as well as an optional prefix String (such as "`Bearer `"). By default the token is provided on `Approov-Token` with no prefix.
+Sets the header that the Approov token is added on, as well as an optional prefix String (such as "`Bearer `"). Pass in an empty string if you do not wish to have a prefix. By default the token is provided on `Approov-Token` with no prefix.
 
 ```Javascript
 ApproovService.setTokenHeader(header, prefix);

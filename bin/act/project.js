@@ -199,7 +199,7 @@ class Project {
   async installingAndroidFiles(props) {
     if (task.hasAndroidPath(this.dir)) {
       this.log.note(`Installing Android Approov config file...`)
-      isInstalled = await task.installingAndroidApproovConfig(this.dir)
+      let isInstalled = await task.installingAndroidApproovConfig(this.dir)
       if (!isInstalled) {
         this.errors++
         this.log.fatal('Failed to install Android Approov config file.', this.ref('contactSupport'))

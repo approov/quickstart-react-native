@@ -6,14 +6,6 @@ This quickstart provides the basic steps for integrating Approov into your app. 
 
 To follow this guide you should have received an onboarding email for a trial or paid Approov account.
 
-## ADDING THE APPROOV PACKAGE
-
-Add the Approov package to your existing App with the following command:
-
-```
-npm install @approov/react-native-approov
-```
-
 ## CHECK INTEGRATION COMPATIBILITY
 
 The Approov npm package provides a special check command to see if the app is ready for integration. Execute this using [npx](https://www.npmjs.com/package/npx) in the top level directory of your app:
@@ -22,9 +14,19 @@ The Approov npm package provides a special check command to see if the app is re
 npx @approov/react-native-approov check
 ```
 
+> Note, although the `npx` command may ask to install the package it is not permanently added to your app.
+
 The output provides a checklist and reports any issues. Fix any errors reported, such as version updates or extra permissions. On Android, for example, the minimum SDK is 21, and the additional `ACCESS_NETWORK_STATE` permission is required. Please [read this](https://approov.io/docs/latest/approov-usage-documentation/#targeting-android-11-and-above) section of the reference documentation if targeting Android 11 (API level 30) or above.
 
 Once all issues are fixed, you should rerun your app to verify it is working as before. You are now ready to add Approov protection.
+
+## ADDING THE APPROOV PACKAGE
+
+Add the Approov package to your existing App with the following command:
+
+```
+npm install @approov/react-native-approov
+```
 
 ## INITIALIZING THE APPROOV SERVICE
 

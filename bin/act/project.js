@@ -289,7 +289,7 @@ class Project {
   async installingIosFiles(props) {
     if (task.hasIosPath(this.dir)) {
       this.log.note(`Installing iOS Approov config file...`)
-      isInstalled = await task.installingIosApproovConfig(this.dir)
+      let isInstalled = await task.installingIosApproovConfig(this.dir)
       if (!isInstalled) {
         this.errors++
         this.log.fatal('Failed to install iOS Approov config file.', this.ref('contactSupport'))

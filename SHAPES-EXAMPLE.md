@@ -40,6 +40,8 @@ Depending on your platform, before building your app, you may need to explicitly
 yarn run react-native start
 ```
 
+### Android
+
 If you wish to run on a physical Android device then connect it to your host platform over USB. See [Run apps on a hardware device](https://developer.android.com/studio/run/device) for full instructions. Use `adb devices` to verify that this device is connected and no other device or emulator is running.
 
 To actually run the app on an Android emulator or device, in a separate process or terminal window, ensure you are in the `shapes_fetch` directory and run android:
@@ -48,19 +50,33 @@ To actually run the app on an Android emulator or device, in a separate process 
 yarn run react-native run-android
 ```
 
+### iOS
+
 To test the app on the iOS simulator, run it from the same `shapes_fetch` directory:
 
 ```
 yarn run react-native run-ios
 ```
 
-If you wish to run on a physical iOS device then connct it to your host platform over USB. See [Run an App on a device](https://help.apple.com/xcode/mac/current/#/dev5a825a1ca) for setup instructions. **Important**: you must set up a development team to set up code signing and establish the device provisioning profile. Run it from the same `shapes_fetch` directory:
+If you wish to run on a physical iOS device then connct it to your host platform over USB. See [Run an App on a device](https://help.apple.com/xcode/mac/current/#/dev5a825a1ca) for setup instructions.
+
+You must set up a development team to set up code signing and establish the device provisioning profile. Open the Xcode project as follows:
+
+```
+open ios/shapes.xcworkspace
+```
+
+and navigate to the `shapes` project and select the `Signing & Capabilities` tab where signing can be configured.
+
+Now run the app from the same `shapes_fetch` directory:
 
 ```
 yarn run react-native run-ios --device
 ```
 
-You should see an Approov Shapes app running. This is a plain React Native app; Approov is not installed.
+### Android and iOS
+
+You should see an Approov Shapes app running. This is a plain React Native app as Approov is not installed.
 
 ![Initial App Screens](assets/basic-screens.png)
 
@@ -121,6 +137,7 @@ Remember to comment out the previous definition of `fetchUrl`.
 Now run the app again on your chosen platform, using the previous instructions, to ensure that the generated build outputs are up to date.
 
 ### Android
+
 To register the Android app with Approov, the `react-native-approov` package adds a convenient registration command `reg-android` to the normal react native command line interface.
 
 ```
@@ -130,6 +147,7 @@ yarn run react-native reg-android
 By default, the `debug` variant is registered with Approov for one hour, useful for debug and testing.
 
 ### iOS
+
 To register the iOS app with Approov, the `react-native-approov` package adds a convenient registration command `reg-ios` to the normal react native command line interface.
 
 ```

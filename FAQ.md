@@ -43,7 +43,7 @@ Start with your own React Native app, or use one of the Approov-provided example
 Three examples `shapes_axios`, `shapes_fetch`, and `shapes_frisbee` all work with a publicly available shapes service at `shapes.approov.io`.
 We will use the Approov `shapes_fetch` example to illustrate the remaining steps to integrate Approov into a simple React Native app. To copy a pre-packaged example, start a command-line terminal, run the `react-native-approov example` command, and select an example and directory to install into:
 
-```shell
+```
 $ npx @approov/react-native-approov example
 ✔ Select example app to copy › shapes_fetch
 ✔ Specify destination path … .
@@ -79,7 +79,7 @@ Before integrating Approov into your React Native app, you should add all API do
 
 API calls protected by Approov will include an Approov token which must be checked. Backend quickstarts for common server frameworks, lanquages, and API gateways can be accessed at [Backend APIs](https://approov.io/docs/latest/approov-integration-examples/backend-api/).
 
-```shell
+```
 $ approov api --list
 1 API domain:
  shapes.approov.io          type:restricted, alg:HS256
@@ -87,7 +87,7 @@ $ approov api --list
 
 If you need to add API domains to your account:
 
-```shell
+```
 $ approov api -add shapes.approov.io
 WARNING: active role is for account <your-account>
 WARNING: adding the API will have an immediate impact on your apps in production. If you wish to continue then please enter YES and return: YES
@@ -211,7 +211,7 @@ It is likely you developed your React Native project running on an Android emula
 
 This requires you to first identify the app's device ID running on the emulator (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to ensure the device always passes:
 
-```shell
+```
 approov device -add 123-deviceID-abc== -policy default,always-pass,all
 ```
 
@@ -268,7 +268,7 @@ It is likely you developed your React Native project running on an iOS simulator
 
 This requires you to first identify your app's device ID on the simulator (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to ensure the device always passes:
 
-```shell
+```
 approov device -add 123-deviceID-abc== -policy default,always-pass,all
 ```
 
@@ -286,7 +286,7 @@ After integrating with Approov, there is a subtle problem running your app using
 
 To work around this, after building your app with `run-ios`, you must then register your updated app, deploy the app, and finally launch it manually on the device. Here's a command sequence that relies on [ios-deploy](https://www.npmjs.com/package/ios-deploy), which you will need to install:
 
-```shell
+```
 $ yarn run react-native run-ios --device
 $ yarn run react-native reg-ios
 $ yarn run react-native deploy-ios
@@ -294,7 +294,7 @@ $ yarn run react-native deploy-ios
 
 This can get tedious if you are doing frequent debug loops. Consider ensuring your app [always passes](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy) on your development device. This requires you to first identify the app's device ID running on the device (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). After you have extracted the device ID, run an Approov device command to make the device always pass:
 
-```shell
+```
 approov device -add 123-deviceID-abc== -policy default,always-pass,all
 
 ```
@@ -319,7 +319,7 @@ The `react-native-approov` commands assume that the name of the iOS workspace is
 
 Removing Approov integration for your app just requires removing the `@approov/react-native-approov` package:
 
-```shell
+```
 $ yarn remove @approov/react-native-approov
 ```
 
@@ -355,7 +355,7 @@ Approov integration is controlled by the `react-native-approov` command and seve
 
 The command by-itself lists the available sub-commands:
 
-```shell
+```
 $ npx @approov/react-native-approov
 
 Usage: react-native-approov [options] [command]
@@ -375,7 +375,7 @@ Commands:
 
 Copy a prepared example into your filesystem using the `example` sub-command:
 
-```shell
+```
 $ npx @approov/react-native-approov example --help
 
 Usage: react-native-approov example [options] [app] [dir]
@@ -391,7 +391,7 @@ Options:
 
 Check that your React Native project is ready for Approov integration or is already properly integrated using the `check` sub-command:
 
-```shell
+```
 $ npx @approov/react-native-approov check --help
 Usage: react-native-approov check [options]
 
@@ -407,7 +407,7 @@ Previous versions of this quickstart used a default flow that integrated Approov
 
 Integrate Approov into your React Native project using the `integrate` sub-command:
 
-```shell
+```
 $ npx @approov/react-native-approov integrate --help
 
 Usage: react-native-approov integrate [options]

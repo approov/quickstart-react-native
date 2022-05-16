@@ -1,10 +1,18 @@
 # Approov Quickstart: React Native
 
-This quickstart is written specifically for Android and iOS apps that are implemented using [`React Native`](https://reactnative.dev/) and the [`React Natibe Networking`](https://reactnative.dev/docs/network), including any networking based on the `XMLHttpRequest API` so including `frisbee` and `axios`. If this is not your situation then check if there is a more relevant quickstart guide available.
+This quickstart is written specifically for Android and iOS apps that are implemented using [`React Native`](https://reactnative.dev/) and the [`React Native Networking`](https://reactnative.dev/docs/network), including any networking based on the `XMLHttpRequest API` so including `frisbee` and `axios`. If this is not your situation then check if there is a more relevant quickstart guide available.
 
 This quickstart provides the basic steps for integrating Approov into your app. A more detailed step-by-step guide using a [Shapes App Example](https://github.com/approov/quickstart-react-native/blob/main/SHAPES-EXAMPLE.md) is also available.
 
 To follow this guide you should have received an onboarding email for a trial or paid Approov account.
+
+## ADDING THE APPROOV PACKAGE
+
+Add the Approov package to your existing App with the following command:
+
+```
+npm install @approov/react-native-approov
+```
 
 ## CHECK INTEGRATION COMPATIBILITY
 
@@ -17,14 +25,6 @@ npx @approov/react-native-approov check
 The output provides a checklist and reports any issues. Fix any errors reported, such as version updates or extra permissions. On Android, for example, the minimum SDK is 21, and the additional `ACCESS_NETWORK_STATE` permission is required. Please [read this](https://approov.io/docs/latest/approov-usage-documentation/#targeting-android-11-and-above) section of the reference documentation if targeting Android 11 (API level 30) or above.
 
 Once all issues are fixed, you should rerun your app to verify it is working as before. You are now ready to add Approov protection.
-
-## ADDING THE APPROOV PACKAGE
-
-Simply add the Approov package with the following command:
-
-```
-npm install @approov/react-native-approov
-```
 
 ## INITIALIZING THE APPROOV SERVICE
 

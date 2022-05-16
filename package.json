@@ -1,11 +1,11 @@
 {
-  "name": "@approov/react-native-approov",
-  "version": "2.2.8-alpha5",
+  "name": "@approov/react-native-approov-3.0.0-alpha",
+  "version": "3.0.0-alpha1",
   "publishConfig": {
     "access": "public"
   },
   "title": "React Native Approov",
-  "description": "Approov API Threat Protection for ReactNative",
+  "description": "Approov Mobile App Protection for ReactNative",
   "repository": {
     "type": "git",
     "url": "git+https://github.com/approov/quickstart-react-native.git",

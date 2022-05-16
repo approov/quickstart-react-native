@@ -20,7 +20,7 @@ Firstly, we need to add the Shapes example itself. Three examples: `shapes_axios
 
 We will use the Approov `shapes_fetch` example to illustrate the remaining steps to integrate Approov into a simple React Native app. To copy a pre-packaged example, start a command-line terminal, run the `react-native-approov example` command, and select an example and directory to install into:
 
-```shell
+```
 $ npx @approov/react-native-approov example
 ✔ Select example app to copy › shapes_fetch
 ✔ Specify destination path … .
@@ -36,7 +36,7 @@ The example react-native project is downloaded, npm packages are installed, and,
 
 Depending on your platform, before building your app, you may need to explicitly start the metro packager in the top-level React Native project directory as well as starting an emulator/simulator or connecting a physical device. Ensure you are in the `shapes_fetch` and execute:
 
-```shell
+```
 yarn run react-native start
 ```
 
@@ -44,19 +44,19 @@ If you wish to run on a physical Android device then connect it to your host pla
 
 To actually run the app on an Android emulator or device, in a separate process or terminal window, ensure you are in the `shapes_fetch` directory and run android:
 
-```shell
+```
 yarn run react-native run-android
 ```
 
 To test the app on the iOS simulator, run it from the same `shapes_fetch` directory:
 
-```shell
+```
 yarn run react-native run-ios
 ```
 
 If you wish to run on a physical iOS device then connct it to your host platform over USB. See [Run an App on a device](https://help.apple.com/xcode/mac/current/#/dev5a825a1ca) for setup instructions. **Important**: you must set up a development team to set up code signing and establish the device provisioning profile. Run it from the same `shapes_fetch` directory:
 
-```shell
+```
 yarn run react-native run-ios --device
 ```
 
@@ -76,8 +76,14 @@ This endpoint is protected with an API key that is built into the code, and ther
 
 In a shell terminal in the `shapes_fetch` directory, type the following command to install the Approov dependency:
 
-```shell
+```
 npm install @approov/react-native-approov
+```
+
+For iOS you must also install [pod](https://cocoapods.org/) dependencies. Change directory to `ios` and type:
+
+```
+pod install
 ```
 
 ## ENSURE THE SHAPES API IS ADDED

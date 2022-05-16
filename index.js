@@ -19,10 +19,7 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { NativeModules } from 'react-native'
+import {NativeModules} from 'react-native'
+const {ApproovService} = NativeModules
 
-const { Approov } = NativeModules
-
-// this is just a placeholder; currently, there are no exposed constants or functions in this interface.
-
-export default Approov
+export default ApproovService

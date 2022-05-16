@@ -1,4 +1,4 @@
-<h1 align="center">React-Native Approov Quickstart</h1>
+<h1 align="center">Approov React-Native Quickstart FAQ</h1>
 <p align="center">
     <a href="https://approov.io">
       <img style="margin:0;" src="assets/approov-icon.png" alt=""/>

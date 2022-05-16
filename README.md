@@ -36,7 +36,7 @@ In order to use Approov you must initialize it when your app is started. Import 
 import {NativeModules} from 'react-native';
 const {ApproovService} = NativeModules;
 ```
-Place the initialization code in your main Javascript file so that it is executed early during the startup of your app and before any networking calls, that you want to protect with Approov, are made:
+Place the initialization code in your main Javascript file (typically `App.js`) so that it is executed early during the startup of your app. This code should only be executed once and before making any networking calls that you want to protect with Approov:
 
 ```Javascript
 ApproovService.initialize("<enter-your-config-string-here>")

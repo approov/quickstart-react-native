@@ -67,7 +67,7 @@ public class ApproovInterceptor implements Interceptor {
         String url = request.url().toString();
         String host = request.url().host();
         if (host.equals("localhost")) {
-            Log.d(TAG, "url " + url + "passed through");
+            Log.d(TAG, "url " + url + " passed through");
             return chain.proceed(request);
         }
 

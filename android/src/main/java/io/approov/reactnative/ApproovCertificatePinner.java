@@ -27,40 +27,46 @@ import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
-import io.approov.service.ApproovService;
 import okhttp3.CertificatePinner;
 
+import com.criticalblue.approovsdk.Approov;
+
+// ApproovCertificatePinner provides an OkHttp CertificatePinner for Approov defined public key pins
 public class ApproovCertificatePinner {
-    private final static String TAG = "ApproovCertificatePinner";
+    // logging tag
+    private final static String TAG = "ApproovService";
 
     /**
-     * Builds a new certificate pinner using the current Approov-registered certificates.
+     * Builds a new certificate pinner using the current Approov public key pins.
      * 
-     * @param approovService
-     * @return the certificate pinner.
+     * @param approovService provides the ApproovService state
+     * @return CertificatePinner with Approov pins
      */
     public static CertificatePinner build(ApproovService approovService) {
         CertificatePinner.Builder pinBuilder = new CertificatePinner.Builder();
-        Map<String, List<String>> allPins = approovService.getPins("public-key-sha256");
-        for (Map.Entry<String, List<String>> entry : allPins.entrySet()) {
-            String domain = entry.getKey();
-            if (!domain.equals("*")) {
-                // the * domain is for managed trust roots and should
-                // not be added directly
-                List<String> pins = entry.getValue();
+        if (approovService.isInitialized()) {
+            // add pins if Approov has been initialized
+            Map<String, List<String>> allPins = Approov.getPins("public-key-sha256");
+            for (Map.Entry<String, List<String>> entry: allPins.entrySet()) {
+                String domain = entry.getKey();
+                if (!domain.equals("*")) {
+                    // the * domain is for managed trust roots and should
+                    // not be added directly
+                    List<String> pins = entry.getValue();
 
-                // if there are no pins then we try and use any managed trust roots
-                if (pins.isEmpty() && (allPins.get("*") != null))
-                    pins = allPins.get("*");
+                    // if there are no pins then we try and use any managed trust roots
+                    if (pins.isEmpty() && (allPins.get("*") != null))
+                        pins = allPins.get("*");
 
-                // add the required pins for the domain
-                for (String pin: pins) {
-                    pinBuilder = pinBuilder.add(domain, "sha256/" + pin);
-                    Log.i(TAG, "Adding OkHttp pin " + entry.getKey() + ":sha256/" + pin);
+                    // add the required pins for the domain
+                    for (String pin: pins)
+                        pinBuilder = pinBuilder.add(domain, "sha256/" + pin);
+
+                    // log the number of pins applied
+                    Log.d(TAG, "applied " + String.valueOf(pins.size()) + " pins to host domain " + domain);
                 }
             }
         }
-
         return pinBuilder.build();
     }
 }

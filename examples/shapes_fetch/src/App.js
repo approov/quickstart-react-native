@@ -19,7 +19,7 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import React, {useState, useEffect} from 'react';
+import React, {useState} from 'react';
 import {
   Button,
   Image,
@@ -29,7 +29,10 @@ import {
   Text,
   View,
 } from 'react-native';
-import {NativeModules} from 'react-native';
+
+// UNCOMMENT IF USING APPROOV
+//import {NativeModules} from 'react-native';
+//const {ApproovService} = NativeModules;
 
 const appTitle = 'Approov Shapes';
 const checkTitle = 'check';
@@ -44,40 +47,51 @@ const imgAssets = {
   Circle: require('./assets/circle.png'),
 };
 
-// determine which api to use
-
+// API configuration parameters
 const api = {
-  version: 'protected API (v2)',
   // the check endpoint should always work
-  checkUrl: `https://shapes.approov.io/v2/hello`,
-  // the fetch endpoint should only succeed if approov is integrated
-  fetchUrl: `https://shapes.approov.io/v2/shapes`,
-  // the API key used for v1 endpoints (this should not be stored in source code in production apps)
+  checkUrl: `https://shapes.approov.io/v1/hello`,
+
+  // COMMENT OUT IF USING APPROOV API PROTECTION
+  fetchUrl: `https://shapes.approov.io/v1/shapes`,
+
+  // UNCOMMENT OUT IF USING APPROOV API PROTECTION
+  //fetchUrl: `https://shapes.approov.io/v3/shapes`,
+
+  // COMMENT OUT IF USING APPROOV SECRETS PROTECTION
   key: 'yXClypapWNHIifHUWmBIyPFAm',
+
+  // UNCOMMENT IF USING APPROOV SECRETS PROTECTION
+  //key: 'shapes_api_key_placeholder',
 };
-console.log(`Using ${api.version}`);
 
-// set an example user authorization header
+// UNCOMMENT IF USING APPROOV
+/*ApproovService.initialize("<enter-your-config-string-here>")
+.then(() => {
+  console.log(`Approov initialized`);
+})
+.catch(error => {
+  console.log(`Approov initialization error: ${error.message}`);
+});*/
 
+// UNCOMMENT IF USING APPROOV SECRETS PROTECTION
+//ApproovService.addSubstitutionHeader("api-key", "");
+
+// headers to be included in Shapes requests
 const headers = {
-  Authorization: 'Bearer <example-auth-token>',
   'api-key': api.key,
 };
 
 // define App screen
-
 const App = () => {
   // define state
-
   const [result, setResult] = useState({shape: 'logo', status: ''});
 
   // define check connection handler
-
   const checkConnection = () => {
     setResult({shape: 'none', status: ''});
     fetch(api.checkUrl, {
       method: 'GET',
-      headers: headers,
     })
       .then(response => {
         if (!response.ok) {
@@ -98,7 +112,6 @@ const App = () => {
   };
 
   // define fetch shape handler
-
   const fetchShape = () => {
     setResult({shape: 'none', status: ''});
     fetch(api.fetchUrl, {
@@ -121,7 +134,6 @@ const App = () => {
   };
 
   // return the screen for rendering
-
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -147,7 +159,6 @@ const App = () => {
 };
 
 // screen styles
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

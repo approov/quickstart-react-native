@@ -29,7 +29,6 @@ const updatingProps = async (project, opts) => {
   let tokenPrefix = opts['token.prefix']
   let bindingName = opts['binding.name']
   let usePrefetch = opts['init.prefetch']
-  let useBitcode = opts['bitcode']
 
   const onPromptsCancel = (prompt, answers) => {
     project.errors++
@@ -94,19 +93,6 @@ const updatingProps = async (project, opts) => {
     ], { onCancel: onPromptsCancel })
     usePrefetch = response.usePrefetch
 
-    // use bitcode
-
-    response = await prompts([  
-      {
-        type: 'toggle',
-        name: 'useBitcode',
-        message: 'Use bitcode for iOS builds (not typical)?',
-        initial: usePrefetch,
-        active: 'yes',
-        inactive: 'no'
-      }
-    ], { onCancel: onPromptsCancel })
-    useBitcode = response.useBitcode
   }
 
   return {
@@ -114,20 +100,18 @@ const updatingProps = async (project, opts) => {
     tokenPrefix,
     bindingName,
     usePrefetch,
-    useBitcode,
   }
 }
 
 const command = (new Command())
 
 .name('integrate')
-.description('Integrate Approov into the current app')
+.description('Integrate Approov into the current app (deprecated)')
 
 .option('--token.name <name>', 'name of Approov token field', 'Approov-Token')
 .option('--token.prefix <string>', 'prefix prepended to Approov token string', '')
 .option('--binding.name <name>', 'name of binding field', '')
 .option('--init.prefetch', 'start token fetch at app launch', false)
-.option('--bitcode', 'use bitcode for iOS builds', false)
 .option('--no-prompt', 'do not prompt for user input', false)
 
 .action(async (opts) => {
@@ -136,7 +120,6 @@ const command = (new Command())
   try {
     await project.checkingReactNative()
     await project.checkingApproovCli()
-    await project.findingApproovApiDomains()
 
     const props = await updatingProps(project, opts)
 

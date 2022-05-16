@@ -20,73 +20,67 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "ACBUtils.h"
+#import "ApproovUtils.h"
 
-void ACBLog(NSString *fmt, ...) {
+void ApproovLog(NSString *fmt, ...) {
     va_list vargs;
     va_start(vargs, fmt);
     NSString* msg = [[NSString alloc] initWithFormat:fmt arguments:vargs];
     va_end(vargs);
-
-    NSLog(@"[Approov] %@", msg);
+    NSLog(@"ApproovService: %@", msg);
 }
 
-void ACBLogX(NSString *fmt, ...) {
-    if (ACB_LEVEL <= ACB_EXTREME) {
+void ApproovLogX(NSString *fmt, ...) {
+    if (APPROOV_LEVEL <= APPROOV_EXTREME) {
         va_list vargs;
         va_start(vargs, fmt);
         NSString* msg = [[NSString alloc] initWithFormat:fmt arguments:vargs];
         va_end(vargs);
-
-        NSLog(@"[Approov] DEBUG: %@", msg);
+        NSLog(@"ApproovService EXTREME: %@", msg);
     }
 }
 
-void ACBLogD(NSString *fmt, ...) {
-    if (ACB_LEVEL <= ACB_DEBUG) {
+void ApproovLogD(NSString *fmt, ...) {
+    if (APPROOV_LEVEL <= APPROOV_DEBUG) {
         va_list vargs;
         va_start(vargs, fmt);
         NSString* msg = [[NSString alloc] initWithFormat:fmt arguments:vargs];
         va_end(vargs);
-
-        NSLog(@"[Approov] DEBUG: %@", msg);
+        NSLog(@"ApproovService DEBUG: %@", msg);
     }
 }
 
-void ACBLogI(NSString *fmt, ...) {
-    if (ACB_LEVEL <= ACB_INFO) {
+void ApproovLogI(NSString *fmt, ...) {
+    if (APPROOV_LEVEL <= APPROOV_INFO) {
         va_list vargs;
         va_start(vargs, fmt);
         NSString* msg = [[NSString alloc] initWithFormat:fmt arguments:vargs];
         va_end(vargs);
-
-        NSLog(@"[Approov] INFO: %@", msg);
+        NSLog(@"ApproovService INFO: %@", msg);
     }
 }
 
-void ACBLogW(NSString *fmt, ...) {
-    if (ACB_LEVEL <= ACB_WARN) {
+void ApproovLogW(NSString *fmt, ...) {
+    if (APPROOV_LEVEL <= APPROOV_WARN) {
         va_list vargs;
         va_start(vargs, fmt);
         NSString* msg = [[NSString alloc] initWithFormat:fmt arguments:vargs];
         va_end(vargs);
-
-        NSLog(@"[Approov] WARN: %@", msg);
+        NSLog(@"ApproovService WARN: %@", msg);
     }
 }
 
-void ACBLogE(NSString *fmt, ...) {
-    if (ACB_LEVEL <= ACB_ERROR) {
+void ApproovLogE(NSString *fmt, ...) {
+    if (APPROOV_LEVEL <= APPROOV_ERROR) {
         va_list vargs;
         va_start(vargs, fmt);
         NSString* msg = [[NSString alloc] initWithFormat:fmt arguments:vargs];
         va_end(vargs);
-
-        NSLog(@"[Approov] ERROR: %@", msg);
+        NSLog(@"ApproovService ERROR: %@", msg);
     }
 }
 
-NSError *ACBError(NSInteger code, NSString *fmt, ...) {
+NSError *ApproovError(NSInteger code, NSString *fmt, ...) {
     va_list vargs;
     va_start(vargs, fmt);
     NSString* msg = [[NSString alloc] initWithFormat:fmt arguments:vargs];
@@ -98,13 +92,17 @@ NSError *ACBError(NSInteger code, NSString *fmt, ...) {
         NSLocalizedRecoverySuggestionErrorKey: NSLocalizedString(msg, nil)
     };
     NSError* error = [[NSError alloc] initWithDomain:[[NSBundle mainBundle] bundleIdentifier] code:code userInfo:userInfo];
-    
     return error;
 }
 
 @implementation NSString (NSString_Extended)
 
-- (NSString *)urlencode {
+/**
+ * URL encodes a string.
+ *
+ * @return encoded string
+ */
+- (NSString *)urlEncode {
     NSMutableString *output = [NSMutableString string];
     const unsigned char *source = (const unsigned char *)[self UTF8String];
     long unsigned sourceLen = strlen((const char *)source);
@@ -124,7 +122,12 @@ NSError *ACBError(NSInteger code, NSString *fmt, ...) {
     return output;
 }
 
-- (NSString *)urldecode {
+/**
+ * Decodes a URL encoded string.
+ *
+ * @return decoded string
+ */
+- (NSString *)urlDecode {
     return [self stringByRemovingPercentEncoding];
 }
 

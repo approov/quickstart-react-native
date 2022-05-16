@@ -23,21 +23,20 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// A mock https protocol good for returning status codes and errors.
-@interface ACBMockURLProtocol : NSURLProtocol <NSURLSessionDataDelegate>
+/// Optional properties specifying behaviors such as prefetch, token headers and binding.
+/// These are read from the Approov.plist file in the root project directory.
+@interface ApproovProps: NSObject
 
-/// Starts a data task which returns a custom status code.
-/// @param session the session starting the task.
-/// @param code the status code.
-/// @param msg a descriptive message (not useed).
-+ (NSURLSessionDataTask *)createMockTaskForSession:(NSURLSession *)session withStatusCode:(NSInteger)code withMessage:(NSString *)msg;
+/// Returns the Approov properties.
+///
+/// @return the shared singleton
++ (instancetype)sharedProps;
 
-
-/// Starts a data task which fails the task with a custom error.
-/// @param session the session starting the task.
-/// @param code the error code.
-/// @param msg a descriptive message.
-+ (NSURLSessionDataTask *)createMockTaskForSession:(NSURLSession *)session withErrorCode:(NSInteger)code withMessage:(NSString *)msg;
+/// Returns the value for a given key.
+///
+/// @param key a look up key.
+/// @return the corresponding value or nil if none found.
+- (NSString *)valueForKey:(NSString *)key;
 
 @end
 

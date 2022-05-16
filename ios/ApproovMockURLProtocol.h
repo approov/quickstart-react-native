@@ -23,18 +23,26 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-/// Properties specifying behaviors such as preefetch, attestation headers, and binding.
-/// These are read from the Approov.plist file in the root project directory.
-@interface ACBApproovProps : NSObject
+/// A mock https protocol for returning status codes and errors to the user if the Approov
+/// fetching fails
+@interface ApproovMockURLProtocol: NSURLProtocol <NSURLSessionDataDelegate>
 
-/// Returns the Approov props.
-/// @return the shared singleton.
-+ (instancetype)sharedProps;
+/// Starts a data task which returns a custom status code.
+///
+/// @param session the session starting the task
+/// @param code the status code
+/// @param msg a descriptive message
+/// @return NSURLSessionDataTask that mocks the request
++ (NSURLSessionDataTask *)createMockTaskForSession:(NSURLSession *)session withStatusCode:(NSInteger)code withMessage:(NSString *)msg;
 
-/// Returns the value for a given key.
-/// @param key a look up key.
-/// @return the corresponding value or nil if none found.
-- (NSString *)valueForKey:(NSString *)key;
+
+/// Starts a data task which fails the task with a custom error.
+///
+/// @param session the session starting the task
+/// @param code the error code
+/// @param msg a descriptive message
+/// @return NSURLSessionDataTask that mocks the request
++ (NSURLSessionDataTask *)createMockTaskForSession:(NSURLSession *)session withErrorCode:(NSInteger)code withMessage:(NSString *)msg;
 
 @end
 

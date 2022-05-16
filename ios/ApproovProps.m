@@ -20,40 +20,48 @@
  */
 
 #import <Foundation/Foundation.h>
-#import "ACBApproovProps.h"
-#import "ACBUtils.h"
+#import "ApproovProps.h"
+#import "ApproovUtils.h"
 
-@interface ACBApproovProps ()
+/// Optional properties specifying behaviors such as prefetch, token headers and binding.
+/// These are read from the Approov.plist file in the root project directory.
+@interface ApproovProps ()
 
+// dictionary holding the loaded properties
 @property NSDictionary<NSString *,NSString *> *props;
 
 @end
 
-@implementation ACBApproovProps
+@implementation ApproovProps
 
+/**
+ * Create the singleton shared properties instance.
+ */
 + (instancetype)sharedProps {
-    static ACBApproovProps *sharedProps = nil;
+    static ApproovProps *sharedProps = nil;
     static dispatch_once_t onceToken = 0;
-
     dispatch_once(&onceToken, ^{
         sharedProps = [[self alloc] init];
     });
     return sharedProps;
 }
 
+// name of the property file and its extension
 NSString *const PropsResource = @"approov";
 NSString *const PropsExtension = @"plist";
 
+/**
+ * Initialize and read the properties which should be present if this is called.
+ */
 - (instancetype)init {
-    ACBLogD(@"Approov props initializing");
-    
+    // initialize
     self = [super init];
     if (self == nil) {
-        ACBLogE(@"Approov props failed to initialize");
+        ApproovLogE(@"Approov props failed to initialize");
         [NSException raise:@"ApproovPropsInitFailure" format:@"Approov props failed to initialize."];
     }
 
-    // read in props
+    // read in properties
     NSURL *propsURL = [[NSBundle mainBundle] URLForResource:PropsResource withExtension:PropsExtension];
     if (propsURL) {
         NSError *error = nil;
@@ -61,25 +69,31 @@ NSString *const PropsExtension = @"plist";
             _props = [NSDictionary<NSString *,NSString *> dictionaryWithContentsOfURL:propsURL error:&error];
         } else {
             _props = [NSDictionary<NSString *,NSString *> dictionaryWithContentsOfURL:propsURL];
-            if (_props == nil) error = ACBError(1001, @"Unable to locate Approov props resource");
+            if (_props == nil)
+                error = ApproovError(1001, @"Unable to locate Approov props resource");
         }
         if (error) {
-            ACBLogE(@"Approov props read failed");
+            ApproovLogE(@"reading of properties file from %@ failed: %@", [propsURL absoluteString], [error localizedDescription]);
             [NSException raise:@"ApproovPropsReadFailed" format:@"Approov props config read failed: %@. \
              Please make sure you have the plist file '%@.%@' available in your app's root directory.", error, PropsResource, PropsExtension];
+        } else {
+            ApproovLogI(@"read properties file from %@", [propsURL absoluteString]);
         }
     }
     else {
-        ACBLogE(@"Approov props not found");
+        ApproovLogE(@"properties file at %@ not found", [propsURL absoluteString]);
         [NSException raise:@"ApproovPropsNotFound" format:@"Approov props not found: \
          Please make sure you have the plist file '%@.%@' available in your app's root directory.", PropsResource, PropsExtension];
     }
-    
-    ACBLogI(@"Approov props initialized");
-
     return self;
 }
 
+/**
+ * Looks up the property value for the given key.
+ *
+ * @param key is the key to be lookup up
+ * @return the value of the key, or nil if it is not present
+ */
 - (NSString *)valueForKey:(NSString *)key {
     return [_props objectForKey:key];
 }

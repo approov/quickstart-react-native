@@ -189,26 +189,6 @@ const task = {
     return permissions
   },
 
-  getAndroidApproovSdkPath: function(dir) {
-    return path.join(dir, 'node_modules', '@approov', 'react-native-approov', 'android', 'libs', 'approov.aar')
-  },
-
-  hasAndroidApproovSdk: function(dir) {
-    return fsx.isFile(this.getAndroidApproovSdkPath(dir))
-  },
-
-  installingAndroidApproovSdk: async function(dir) {
-    let isInstalled = false
-    const sdkPath = this.getAndroidApproovSdkPath(dir)
-    if (fsx.isDirectory(path.dirname(sdkPath))) {
-      try {
-        await sh.execAsync(`approov sdk -getLibrary ${sdkPath}`)
-        isInstalled = true
-      } catch (err) {}
-    }
-    return isInstalled
-  },
-
   getAndroidApproovConfigPath: function(dir) {
     return path.join(this.getAndroidPath(dir), 'app', 'src', 'main', 'assets', 'approov.config')
   },
@@ -353,37 +333,6 @@ const task = {
     return compareVersions.compare(deployTarget, minDeployTarget, '>=')
   },
 
-  getIosApproovSdkPath: function(dir) {
-    return path.join(dir, 'node_modules', '@approov', 'react-native-approov', 'ios', 'Approov.xcframework')
-  },
-
-  hasIosApproovSdk: function(dir) {
-    return fsx.isDirectory(this.getIosApproovSdkPath(dir))
-  },
-
-  installingIosApproovSdk: async function(dir, bitcode) {
-    let isInstalled = false
-    const sdkPath = this.getIosApproovSdkPath(dir)
-    if (fsx.isDirectory(path.dirname(sdkPath))) {
-      if (fsx.isDirectory(sdkPath)) {
-        try {
-          await sh.execAsync(`rm -f ${sdkPath}`)
-        } catch (err) {}
-      }
-      const library = bitcode ? `${sdkPath} -bitcode` : sdkPath
-      try {
-        console.log(`approov sdk -getLibrary ${library}`)
-        await sh.execAsync(`approov sdk -getLibrary ${library}`)
-        isInstalled = true
-      } catch (err) {
-        try {
-          await sh.execAsync(`rm -f ${sdkPath}`)
-        } catch (err) {}
-      }
-    }
-    return isInstalled
-  },
-
   getIosApproovConfigPath: function(dir) {
     return path.join(dir, 'node_modules', '@approov', 'react-native-approov', 'ios', 'approov.config')
   },
@@ -514,7 +463,7 @@ const task = {
     if (!expireAfter) expireAfter = '1h'
     let isRegistered = false
     try {
-      await sh.execAsync(`approov registration -add ${ipaPath} -expireAfter ${expireAfter}`, {silent:false})
+      await sh.execAsync(`approov registration -add ${ipaPath} -bitcode -expireAfter ${expireAfter}`, {silent:false})
       isRegistered = true
     } catch (err) {}
     return isRegistered

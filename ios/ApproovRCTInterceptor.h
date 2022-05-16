@@ -20,43 +20,21 @@
  */
 
 #import <Foundation/Foundation.h>
+#import "ApproovService.h"
 
 NS_ASSUME_NONNULL_BEGIN
 
-#define ACB_EXTREME 0
-#define ACB_DEBUG   1
-#define ACB_INFO    2
-#define ACB_WARN    3
-#define ACB_WARNING 3
-#define ACB_ERR     4
-#define ACB_ERROR   4
+/// ReactNative interceptor that is able to add Approov onto requests being made by the
+/// built-in networking stack
+@interface ApproovRCTInterceptor: NSObject
 
-// set this to control amount of logging
-#define ACB_LEVEL   ACB_INFO
+/// ApproovService being used by the interceptor
+@property (readonly) ApproovService *approovService;
 
-void ACBLog(NSString *fmt, ...);
-
-void ACBLogX(NSString *fmt, ...);
-
-void ACBLogD(NSString *fmt, ...);
-
-void ACBLogI(NSString *fmt, ...);
-
-void ACBLogW(NSString *fmt, ...);
-
-void ACBLogE(NSString *fmt, ...);
-
-NSError *ACBError(NSInteger code, NSString *fmt, ...);
-
-/// String convenience methods encapsulating URL encoding, which seems
-/// is a mess of deprecations over various iOS releases.
-@interface NSString (urlencoding)
-
-/// Returns a URL encoded version of this string.
-- (NSString *)urlencode;
-
-/// Returns a URL decoded (unencoded) version of this string.
-- (NSString *)urldecode;
+/// Creates a ReactNative interceptor.
+///
+/// @param approovService the ApproovService used to update requests
++ (instancetype)startWithApproovService:(ApproovService *)approovService;
 
 @end
 

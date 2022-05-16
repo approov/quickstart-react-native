@@ -19,116 +19,136 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import "ACBMockURLProtocol.h"
-#import "ACBUtils.h"
+#import "ApproovMockURLProtocol.h"
+#import "ApproovUtils.h"
 
-@interface ACBMockURLProtocol ()
+/// A mock https protocol for returning status codes and errors to the user if the
+/// Approov fetching fails
+@implementation ApproovMockURLProtocol
 
-@property NSURLSessionDataTask *proxyTask;
-
-@end
-
-@implementation ACBMockURLProtocol
-
+/**
+ * Starts a data task which returns a custom status code.
+ *
+ * @param session the session starting the task
+ * @param code the status code
+ * @param msg a descriptive message
+ * @return NSURLSessionDataTask that mocks the request
+ */
 + (NSURLSessionDataTask *)createMockTaskForSession:(NSURLSession *)session withStatusCode:(NSInteger)code withMessage:(NSString *)msg {
-    NSString *urlString = [NSString stringWithFormat:@"mockhttps://example.com/status?code=%ld&msg=%@", code, [msg urlencode]];
+    NSString *urlString = [NSString stringWithFormat:@"mockhttps://example.com/status?code=%ld&msg=%@", code, [msg urlEncode]];
     NSURL *url = [NSURL URLWithString:urlString];
-    ACBLogD(@"URL: %@ : %@", url, urlString);
+    ApproovLogD(@"mocked URL: %@: %@", url, urlString);
     return [session dataTaskWithURL:url];
 }
 
+/**
+ * Starts a data task which returns a custom error.
+ *
+ * @param session the session starting the task
+ * @param code the status code
+ * @param msg a descriptive message
+ * @return NSURLSessionDataTask that mocks the request
+ */
 + (NSURLSessionDataTask *)createMockTaskForSession:(NSURLSession *)session withErrorCode:(NSInteger)code withMessage:(NSString *)msg {
-    NSString *urlString = [NSString stringWithFormat:@"mockhttps://example.com/error?code=%ld&msg=%@", code, [msg urlencode]];
+    NSString *urlString = [NSString stringWithFormat:@"mockhttps://example.com/error?code=%ld&msg=%@", code, [msg urlEncode]];
     NSURL *url = [NSURL URLWithString:urlString];
-    ACBLogD(@"URL: %@ : %@", url, urlString);
+    ApproovLogD(@"mocked URL: %@: %@", url, urlString);
     return [session dataTaskWithURL:url];
 }
 
-+ (BOOL)canInitWithRequest:(NSURLRequest *) request {
-    ACBLogD(@"Mock URL protocol checking if request can be handled");
-
-    ACBLogX(@"url: %@", request.URL);
-    ACBLogX(@"scheme: %@", request.URL.scheme);
-
+/**
+ * Determines whether the protocool subclass can handle the request.
+ *
+ * @param request is the specific request to be checked
+ * @return YES if it can be handled
+ */
++ (BOOL)canInitWithRequest:(NSURLRequest *)request {
     // pass is this is not a mock https scheme
     if (![request.URL.scheme isEqualToString:@"mockhttps"]) {
-        ACBLogD(@"not handling scheme: %@", request.URL.scheme);
-       return NO;
-    }
-
-    // pass if this request has already been intercepted
-    // the urlprotocol is very chatty and checks multiple times per request for some reason.
-    if ([NSURLProtocol propertyForKey: @"mocked" inRequest:request] ) {
-        ACBLogD(@"Mock URL protocol already handling request");
         return NO;
     }
 
-    ACBLogD(@"Mock URL protocol will handle the request");
+    // pass if this request has already been intercepted - the urlprotocol is very chatty and checks multiple
+    // times per request for some reason
+    if ([NSURLProtocol propertyForKey: @"handled" inRequest:request] ) {
+        ApproovLogD(@"mock URL protocol already handling request");
+        return NO;
+    }
+
+    // we can handle the request
+    ApproovLogD(@"mock URL protocol will handle the request");
     return YES;
  }
 
+/**
+ * Returns a canonical version of the specified request. This shows the request
+ * is intercepted and it is marked as being handled.
+ *
+ * @param request is the request to be canonicalized
+ * @return the canonicalized version of the request
+ */
 + (NSURLRequest *)canonicalRequestForRequest:(NSURLRequest * _Nonnull) request {
-    ACBLogD(@"Mock URL protocol canonicalizing request");
-    
     NSMutableURLRequest * _Nonnull mutableRequest = [request mutableCopy];
-
-    // mark request as being handled
-    [NSURLProtocol setProperty:@YES forKey:@"mocked" inRequest:mutableRequest];
-
+    [NSURLProtocol setProperty:@YES forKey:@"handled" inRequest:mutableRequest];
     return mutableRequest;
 }
 
+/**
+ * Creates a mocked URL protocol instance to handle the request.
+ *
+ * @param request being initialized
+ * @param cachedResponse is any cached response, or nuil otherwise
+ * @param client which provides the implementation of the client
+ */
 - (instancetype)initWithRequest:request cachedResponse:cachedResponse client:client {
     self = [super initWithRequest:request cachedResponse:cachedResponse client:client];
     if (!self) {
-        ACBLogE(@"Mock URL protocol failed to initialize with request");
+        ApproovLogE(@"mock URL protocol failed to initialize with request");
         return nil;
     }
-
-    ACBLogD(@"Mock URL protocol initialized with request");
-    
+    ApproovLogD(@"mock URL protocol initialized with request");
     return self;
 }
 
+/**
+ * Starts the protocol specific loading of the request. This is used to extract the 
+ * code and message and provide a response with it.
+ */
 - (void)startLoading {
-    ACBLogD(@"Mock URL protocol starting load");
-
-    NSURL *url = self.request.URL;
-
-    // identify response type
-    NSString *type = url.path;
-
     // parse the query strings
+    NSURL *url = self.request.URL;
     NSMutableDictionary *queryStrings = [[NSMutableDictionary alloc] init];
     for (NSString *qs in [url.query componentsSeparatedByString:@"&"]) {
-        // Get the parameter name
         NSString *key = [[qs componentsSeparatedByString:@"="] objectAtIndex:0];
-        // Get the parameter value
         NSString *value = [[qs componentsSeparatedByString:@"="] objectAtIndex:1];
         value = [value stringByReplacingOccurrencesOfString:@"+" withString:@" "];
-        value = [value urldecode];
+        value = [value urlDecode];
         queryStrings[key] = value;
     }
     
-    // extract code & msg values
+    // extract code and msg values
     NSInteger code = [queryStrings[@"code"] intValue];
     NSString *msg = queryStrings[@"msg"];
     
+    // determine the response to be sent
     id<NSURLProtocolClient> client = [self client];
-    if ([type isEqualToString:@"/status"]) {
+    if ([url.path isEqualToString:@"/status"]) {
         // send a mock status code response
         NSURLResponse * response = [[NSHTTPURLResponse alloc] initWithURL:url statusCode:code HTTPVersion:@"HTTP/1.1" headerFields:@{}];
         [client URLProtocol:self didReceiveResponse:response cacheStoragePolicy:NSURLCacheStorageNotAllowed];
         [client URLProtocolDidFinishLoading:self];
     } else {
-        // else send error
-        NSError *error = ACBError(code, msg);
+        // send an error response
+        NSError *error = ApproovError(code, msg);
         [client URLProtocol:self didFailWithError:error];
     }
 }
 
+/**
+ * Stops the protocol specific loading of the request. There is nothing to do as the loading always results
+ * in some sort of error.
+ */
 - (void)stopLoading {
-    ACBLogD(@"Mock URL protocol stopping load");
 }
 
 @end

@@ -30,6 +30,7 @@ import {
   View,
 } from 'react-native';
 import {NativeModules} from 'react-native';
+const {ApproovService} = NativeModules;
 
 const appTitle = 'Approov Shapes';
 const checkTitle = 'check';
@@ -44,14 +45,13 @@ const imgAssets = {
   Circle: require('./assets/circle.png'),
 };
 
-// determine which api to use
-
-const api = NativeModules.Approov
+// determine which API to use
+const api = NativeModules.ApproovService
   ? {
       msg: 'Approov installed',
-      version: 'protected API (v2)',
-      checkUrl: `https://shapes.approov.io/v2/hello`,
-      fetchUrl: `https://shapes.approov.io/v2/shapes`,
+      version: 'Approov protected API (v3)',
+      checkUrl: `https://shapes.approov.io/v1/hello`,
+      fetchUrl: `https://shapes.approov.io/v3/shapes`,
       key: 'yXClypapWNHIifHUWmBIyPFAm',
     }
   : {
@@ -63,22 +63,29 @@ const api = NativeModules.Approov
     };
 console.log(`${api.msg}, using ${api.version}`);
 
-// set an example user authorization header
+// initialize Approov if it is installed
+// PROVIDE YOUR APPROOV CONFIGURATION BELOW
+if (NativeModules.ApproovService) {
+  NativeModules.ApproovService.initialize("<enter-your-config-string-here>")
+  .then(() => {
+    console.log(`Approov initialized`);
+  })
+  .catch(error => {
+    console.log(`Approov initialization error: ${error.message}`);
+  });  
+}
 
+// define the headers used for requests
 const headers = {
-  Authorization: 'Bearer <example-auth-token>',
   'api-key': api.key,
 };
 
 // define App screen
-
 const App = () => {
   // define state
-
   const [result, setResult] = useState({shape: 'logo', status: ''});
 
   // define check connection handler
-
   const checkConnection = () => {
     setResult({shape: 'none', status: ''});
     fetch(api.checkUrl, {
@@ -104,7 +111,6 @@ const App = () => {
   };
 
   // define fetch shape handler
-
   const fetchShape = () => {
     setResult({shape: 'none', status: ''});
     fetch(api.fetchUrl, {
@@ -127,7 +133,6 @@ const App = () => {
   };
 
   // return the screen for rendering
-
   return (
     <>
       <StatusBar barStyle="dark-content" />
@@ -156,7 +161,6 @@ const App = () => {
 };
 
 // screen styles
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,

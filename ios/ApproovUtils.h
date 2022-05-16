@@ -19,9 +19,42 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-#import <React/RCTBridgeModule.h>
+#import <Foundation/Foundation.h>
 
-/// The module bridging react-native to iOS.
-@interface ACBApproovModule : NSObject <RCTBridgeModule>
+NS_ASSUME_NONNULL_BEGIN
+
+#define APPROOV_EXTREME 0
+#define APPROOV_DEBUG   1
+#define APPROOV_INFO    2
+#define APPROOV_WARN    3
+#define APPROOV_WARNING 3
+#define APPROOV_ERR     4
+#define APPROOV_ERROR   4
+
+// set this to control amount of logging
+#define APPROOV_LEVEL   APPROOV_INFO
+
+// logging functions at various log levels
+void ApproovLog(NSString *fmt, ...);
+void ApproovLogX(NSString *fmt, ...);
+void ApproovLogD(NSString *fmt, ...);
+void ApproovLogI(NSString *fmt, ...);
+void ApproovLogW(NSString *fmt, ...);
+void ApproovLogE(NSString *fmt, ...);
+
+// create an error
+NSError *ApproovError(NSInteger code, NSString *fmt, ...);
+
+/// String convenience methods encapsulating URL encoding, which seems
+/// is a mess of deprecations over various iOS releases.
+@interface NSString (urlencoding)
+
+/// Returns a URL encoded version of this string.
+- (NSString *)urlEncode;
+
+/// Returns a URL decoded (unencoded) version of this string.
+- (NSString *)urlDecode;
 
 @end
+
+NS_ASSUME_NONNULL_END

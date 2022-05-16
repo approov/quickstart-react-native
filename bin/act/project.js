@@ -57,9 +57,9 @@ class Project {
 
   handleError(err) { 
     if (!(err instanceof LogError)) {
-      throw err // uncomment to see stack trace during debug
+      //throw err // uncomment to see stack trace during debug
       this.errors++
-      this.log.fail(`UnUnexpected error: ${err.message}.`)
+      this.log.fail(`Unexpected error: ${err.message}.`)
       this.log.help(this.ref('contactSupport'))
     }
   }
@@ -100,19 +100,6 @@ class Project {
       this.log.fatal('Approov CLI found, but no active session. Ensure a role is set and a session is active, entering a password if necessary.', this.ref('approovSession'))
     }
     this.log.succeed(`Found Approov CLI with active session.`)
-  }
-
-  async findingApproovApiDomains() {
-    this.log.spin(`Finding Approov protected API domains...`)
-    const apiDomains = await task.findingReactNativeApproovApiDomains()
-    if (apiDomains.length <= 0) {
-      this.warnings++
-      this.log.warn('No protected API Domains found')
-    } else {
-      this.log.info(`Approov is currently protecting these API domains:`)
-      apiDomains.forEach(domain => this.log.info(chalk.green(`  ${domain}`)))
-    }
-    this.log.info(`To add or remove API domains, see ${this.ref('apiDomains')}`)
   }
 
   async checkingApproovPackage() {
@@ -199,22 +186,10 @@ class Project {
   
       if (task.hasReactNativeApproovPackage(this.dir)) {
         this.log.spin(`Checking for Android Approov components...`)
-        if (!task.hasAndroidApproovSdk(this.dir)) {
-          this.errors++
-          this.log.fail('Missing Android Approov SDK.', this.ref('cmdIntegrate'))
-        } else {
-          this.log.succeed('Found Android Approov SDK.')
-        }
-        if (!task.hasAndroidApproovConfig(this.dir)) {
-          this.errors++
-          this.log.fail('Missing Android Approov config file.', this.ref('cmdIntegrate'))
-        } else {
+        if (task.hasAndroidApproovConfig(this.dir)) {
           this.log.succeed('Found Android Approov config file.')
         }
-        if (!task.hasAndroidApproovProps(this.dir)) {
-          this.errors++
-          this.log.fail('Missing Android Approov properties file.', this.ref('cmdIntegrate'))
-        } else {
+        if (task.hasAndroidApproovProps(this.dir)) {
           this.log.succeed('Found Android Approov properties file.')
         }
       }
@@ -223,14 +198,6 @@ class Project {
 
   async installingAndroidFiles(props) {
     if (task.hasAndroidPath(this.dir)) {
-      this.log.note(`Installing Android Approov SDK library...`)
-      let isInstalled = await task.installingAndroidApproovSdk(this.dir)
-      if (!isInstalled) {
-        this.errors++
-        this.log.fatal('Failed to install Android Approov SDK library.', this.ref('contactSupport'))
-      }
-      this.log.succeed(`Installed Android Approov SDK library.`)
-
       this.log.note(`Installing Android Approov config file...`)
       isInstalled = await task.installingAndroidApproovConfig(this.dir)
       if (!isInstalled) {
@@ -278,17 +245,9 @@ class Project {
       this.warnings++
       this.log.warn(`iOS project found but ${task.getEnvPlatform()} does not support iOS development.`)
       this.log.info('Skipping additional iOS checks.')
-    } else if (!task.hasEnvXcodebuild() || !task.hasEnvIosDeploy()) {
-      this.log.succeed(`Found iOS project.`)
-      if (!task.hasEnvXcodebuild()) {
-        this.warnings++
-        this.log.warn('Missing Xcode command line tools (xcodebuild).')
-      }
-      if (!task.hasEnvIosDeploy()) {
-        this.warnings++
-        this.log.warn('Missing iOS deployment tool (ios-deploy).')
-      }
-      this.log.info('Skipping additional iOS checks.')
+    } else if (!task.hasEnvXcodebuild()) {
+      this.warnings++
+      this.log.warn('Missing Xcode command line tools (xcodebuild).')
     } else {
       this.log.succeed(`Found iOS project.`)
       const scheme = task.getIosScheme(this.dir)
@@ -314,22 +273,10 @@ class Project {
   
       if (task.hasReactNativeApproovPackage(this.dir)) {
         this.log.spin(`Checking for iOS Approov components...`)
-        if (!task.hasIosApproovSdk(this.dir)) {
-          this.errors++
-          this.log.fail('Missing iOS Approov SDK.', this.ref('cmdIntegrate'))
-        } else {
-          this.log.succeed('Found iOS Approov SDK.')
-        }
-        if (!task.hasIosApproovConfig(this.dir)) {
-          this.errors++
-          this.log.fail('Missing iOS Approov config file.', this.ref('cmdIntegrate'))
-        } else {
+        if (task.hasIosApproovConfig(this.dir)) {
           this.log.succeed('Found iOS Approov config file.')
         }
-        if (!task.hasIosApproovProps(this.dir)) {
-          this.errors++
-          this.log.fail('Missing iOS Approov properties file.', this.ref('cmdIntegrate'))
-        } else {
+        if (task.hasIosApproovProps(this.dir)) {
           this.log.succeed('Found iOS Approov properties file.')
         }
 
@@ -341,16 +288,6 @@ class Project {
 
   async installingIosFiles(props) {
     if (task.hasIosPath(this.dir)) {
-      const bitcode = !!props.useBitcode
-      const usingBitcode = bitcode? ' (bitcode)' : ''
-      this.log.note(`Installing iOS Approov SDK library${usingBitcode}...`)
-      let isInstalled = await task.installingIosApproovSdk(this.dir, bitcode)
-      if (!isInstalled) {
-        this.errors++
-        this.log.fatal('Failed to install iOS Approov SDK library.', this.ref('contactSupport'))
-      }
-      this.log.succeed(`Installed iOS Approov SDK library${usingBitcode}.`)
-
       this.log.note(`Installing iOS Approov config file...`)
       isInstalled = await task.installingIosApproovConfig(this.dir)
       if (!isInstalled) {
@@ -384,7 +321,6 @@ class Project {
         }
         this.log.warn('on iOS, Approov integrated apps will only attest properly on a physical device or simulator set to always pass.')
         this.log.warn('on iOS, when targeting a device, ensure a development team is specified in xcode and the device is properly provisioned.')
-        if (bitcode) this.log.warn('on iOS, ensure that your xcode project enables bitcode for all configurations you build.')
       }
     }
   }
@@ -424,7 +360,7 @@ class Project {
     this.log.succeed(`Registered the ${configuration} IPA for ${expireAfter}.`)
   }
 
-  async deployingIosApp(configuration, expireAfter) {
+  async deployingIosApp(configuration) {
     const scheme = task.getIosScheme(this.dir)
     if (!configuration) configuration = 'Debug'
 

@@ -329,7 +329,9 @@ In addition to the package, the Approov SDKs, base configurations, and property 
 
 React Native natively implements the `XMLHttpRequest` (XHR) object. The built in `fetch()` call uses XHR calls as to popular networking libraries such as `axios` and `frisbee`. Any networking calls using XHR route through native React Native and are fully supported by Approov integration.
 
-Networking libraries which are implemented using independent networking stacks rather than XHR do not use React Native networking and are not supported by Approov out of the box. One example is the [rn-fetch-blob](https://github.com/joltup/rn-fetch-blob) package, though there is some experimental work to make it compatible. If you have a need to use such a library, [contact support](#getting-additional-help), and we will work with you to complete the integration.
+Support is also provided for [rn-fetch-blob](https://github.com/joltup/rn-fetch-blob) if a special fork of the package must be used, available at [@approov/rn-fetch-blob] (https://www.npmjs.com/package/@approov/rn-fetch-blob).
+
+Other networking libraries which are implemented using independent networking stacks rather than XHR do not use React Native networking and are not supported by Approov out of the box. If you have a need to use such a library, [contact support](#getting-additional-help), and we will work with you to complete the integration.
 
 ### Why isn't Expo supported?
 

@@ -1,6 +1,6 @@
 # Approov Quickstart: React Native
 
-This quickstart is written specifically for Android and iOS apps that are implemented using [`React Native`](https://reactnative.dev/) and the [`React Native Networking`](https://reactnative.dev/docs/network), including any networking based on the `XMLHttpRequest API` so including `frisbee` and `axios`. If this is not your situation then check if there is a more relevant quickstart guide available.
+This quickstart is written specifically for Android and iOS apps that are implemented using [`React Native`](https://reactnative.dev/) and the [`React Native Networking`](https://reactnative.dev/docs/network), including any networking based on the `XMLHttpRequest API` so including `frisbee` and `axios`. Support is also provided for [rn-fetch-blob](https://github.com/joltup/rn-fetch-blob). If this is not your situation then check if there is a more relevant quickstart guide available.
 
 This quickstart provides the basic steps for integrating Approov into your app. A more detailed step-by-step guide using a [Shapes App Example](https://github.com/approov/quickstart-react-native/blob/main/SHAPES-EXAMPLE.md) is also available.
 
@@ -75,3 +75,11 @@ Note that it is possible to use both approaches side-by-side in the same app, in
 See [FAQ](https://github.com/approov/quickstart-react-native/blob/main/FAQ.md) for answers to common questions about the integration and troubleshooting.
 
 See [REFERENCE](https://github.com/approov/quickstart-react-native/blob/main/REFERENCE.md) for a complete list of all of the Approov related methods.
+
+## RN-FETCH-BLOB
+Support is provided for the [rn-fetch-blob](https://github.com/joltup/rn-fetch-blob) networking stack. However, to use this a special fork of the package must be used. This is available at [@approov/rn-fetch-blob](https://www.npmjs.com/package/@approov/rn-fetch-blob). You will need to uninstall the standard package and install the special one as follows:
+
+```
+npm uninstall rn-fetch-blob
+npm install @approov/rn-fetch-blob
+```

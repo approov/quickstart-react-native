@@ -154,9 +154,13 @@ To register the iOS app with Approov, the `react-native-approov` package adds a 
 yarn run react-native reg-ios
 ```
 
-Note that this is only possible if a `.ipa` file has been generated to run on a physical device. If you need to use an iOS simulator then you can avoid registration by ensuring it [always passes](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy) on a specific device.
-
 By default, the `Debug` configuration is registered with Approov for one hour, useful for debug and testing.
+
+Note that this is only possible if an `.ipa` file has been generated to run on a physical device. If you need to use an iOS simulator then you can ensure it [always passes](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy) on a specific device. Note though, that since a bitcode SDK is being used, this normally requires a registration to have been made. To work around this, issue the following command (note that this only needs to be done once):
+
+```
+approov sdk -bitcodeAdd 6557
+```
 
 
 > **IMPORTANT:** The registration takes around 30 seconds to propagate across the Approov Cloud Infrastructure, therefore don't try to run the app again before this time has elapsed. During development of your app you can ensure it [always passes](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy) on your device to not have to register the app each time you modify it.

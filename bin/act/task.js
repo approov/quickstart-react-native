@@ -129,7 +129,7 @@ const task = {
 
   installingReactNativeApproovPackage: async function(dir) {
     try {
-      await sh.execAsync(`cd ${dir} && yarn add @approov/react-native-approov-3.0.0-alpha`, {silent:false})
+      await sh.execAsync(`cd ${dir} && yarn add @approov/react-native-approov`, {silent:false})
       return true
     } catch (err) {}
     return false  

@@ -1,6 +1,6 @@
 {
-  "name": "@approov/react-native-approov-3.0.0-alpha",
-  "version": "3.0.0-alpha15",
+  "name": "@approov/react-native-approov",
+  "version": "3.0.0",
   "publishConfig": {
     "access": "public"
   },

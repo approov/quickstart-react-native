@@ -345,9 +345,7 @@ There have been issues reported on Linux after installing Node using the Snap pa
 
 ### Getting additional help
 
-If you encounter issues when using `react-native-approov` which you cannot resolve using this document, please review the [React Native developer docs](https://reactnative.dev) and the [Approov user docs](https://approov.io/docs) for more detailed information.
-
-If you are still stuck, please [Contact Us](https://approov.io/contact).
+If you encounter issues when using `react-native-approov` which you cannot resolve using this document, please review the [React Native developer docs](https://reactnative.dev) and the [Approov user docs](https://approov.io/docs) for more detailed information. If you are still stuck, please [Contact Us](https://approov.io/contact).
 
 ## Command Reference
 

@@ -4,7 +4,7 @@ You should use this option if you wish to protect access to your APIs using an A
 These steps require access to the [Approov CLI](https://approov.io/docs/latest/approov-cli-tool-reference/), please follow the [Installation](https://approov.io/docs/latest/approov-installation/) instructions.
 
 ## ADDING API DOMAINS
-In order for Approov tokens to be added by the plugin for particular API domains it is necessary to inform Approov about them. Execute the following command:
+In order for Approov tokens to be added for particular API domains it is necessary to inform Approov about them. Execute the following command:
 
 ```
 approov api -add <your-domain>
@@ -78,7 +78,7 @@ ApproovService.setBindingHeader("Authorization");
 In this case it means that the value of `Authorization` holds the token value to be bound. This only needs to be called once. On subsequent requests the value of the specified header is read and its value set as the token binding value. Note that you should select a header whose value does not typically change from request to request, as each change requires a new Approov token to be fetched.
 
 ### Prefetching
-If you wish to reduce the latency associated with fetching the first Approov token, then make this call immediately after initializing Approov in the plugin:
+If you wish to reduce the latency associated with fetching the first Approov token, then make this call immediately after initializing Approov:
 
 ```Javascript
 ApproovService.prefetch()

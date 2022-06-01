@@ -28,7 +28,7 @@ Add the Approov package to your existing App with the following command:
 npm install @approov/react-native-approov
 ```
 
-For iOS you must also install [pod](https://cocoapods.org/) dependencies. Change directory to `ios` and type:
+For iOS you must also install [pod](https://cocoapods.org/) dependencies. Change the directory to `ios` and type:
 
 ```
 pod install

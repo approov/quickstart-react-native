@@ -1,7 +1,7 @@
 # Secrets Protection
 You should use this option if you wish to protect access to 3rd party or managed APIs where you are not able to add an Approov token check to the backend. This allows client secrets, or API keys, used for access to be protected with Approov. Rather than build secrets into an app where they might be reverse engineered, they are only provided at runtime by Approov for apps that pass attestation. This substantially improves your protection and prevents these secrets being abused by attackers. Where you are able to modify the backend we recommend you use API Protection for further enchanced flexibility and security.
 
-This quickstart provides straightforward implementation if the secret is currently supplied in a request header to the API. The plugin is able to automatically rewrite headers or query parameters as the requests are being made, to automatically substitute in the secret, but only if the app has passed the Approov attestation checks. If the app fails its checks then you can add a custom [rejection](#handling-rejections) handler.
+This quickstart provides straightforward implementation if the secret is currently supplied in a request header to the API. The package is able to automatically rewrite headers or query parameters as the requests are being made, to automatically substitute in the secret, but only if the app has passed the Approov attestation checks. If the app fails its checks then you can add a custom [rejection](#handling-rejections) handler.
 
 These additional steps require access to the [Approov CLI](https://approov.io/docs/latest/approov-cli-tool-reference/), please follow the [Installation](https://approov.io/docs/latest/approov-installation/) instructions.
 
@@ -34,7 +34,7 @@ approov secstrings -setEnabled
 ```
 > Note that this command requires an [admin role](https://approov.io/docs/latest/approov-usage-documentation/#account-access-roles).
 
-The quickstart integration works by allowing you to replace the secret in your app with a placeholder value instead, and then the placeholder value is mapped to the actual secret value on the fly by the plugin (if the app passes Approov attestation). The shipped app code will only contain the placeholder values.
+The quickstart integration works by allowing you to replace the secret in your app with a placeholder value instead, and then the placeholder value is mapped to the actual secret value on the fly by the Approov package (if the app passes Approov attestation). The shipped app code will only contain the placeholder values.
 
 If your app currently uses `<secret-value>` then replace it in your app with the value `<secret-placeholder>`. Choose a suitable placeholder name to reflect the type of the secret. The placeholder value will be added to requests in the normal way, but you should be using the Approov enabled networking client to perfom the substituion.
 
@@ -48,23 +48,23 @@ approov secstrings -addKey <secret-placeholder> -predefinedValue <secret-value>
 
 You can add up to 16 different secret values to be substituted in this way.
 
-If the secret value is provided on the header `<secret-header>` then it is necessary to notify the plugin that the header is subject to substitution. You do this by making the call once, after initialization:
+If the secret value is provided on the header `<secret-header>` then it is necessary to notify Approov that the header is subject to substitution. You do this by making the call once, after initialization:
 
 ```Javascript
 ApproovService.addSubstitutionHeader("<secret-header>", "");
 ```
 
-With this in place the Approov plugin should replace the `<secret-placeholder>` with the `<secret-value>` as required when the app passes attestation. Since the mapping lookup is performed on the placeholder value you have the flexibility of providing different secrets on different API calls, even if they passed with the same header name.
+With this in place Approov should replace the `<secret-placeholder>` with the `<secret-value>` as required when the app passes attestation. Since the mapping lookup is performed on the placeholder value you have the flexibility of providing different secrets on different API calls, even if they passed with the same header name.
 
 Since earlier released versions of the app may have already leaked the `<secret-value>`, you may wish to refresh the secret at some later point when any older version of the app is no longer in use. You can of course do this update over-the-air using Approov without any need to modify the app.
 
-If the secret value is provided as a parameter in a URL query string with the name `<secret-param>` then it is necessary to notify the plugin that the query parameter is subject to substitution. You do this by making the call once, after initialization:
+If the secret value is provided as a parameter in a URL query string with the name `<secret-param>` then it is necessary to notify Approov that the query parameter is subject to substitution. You do this by making the call once, after initialization:
 
 ```Javascript
 ApproovService.addSubstitutionQueryParam("<secret-param>");
 ```
 
-After this the Approov plugin should transform any instance of a URL such as `https://mydomain.com/endpoint?<secret-param>=<secret-placeholder>` into `https://mydomain.com/endpoint?<secret-param>=<secret-value>`, if the app passes attestation and there is a secure string with the name `<secret-placeholder>`.
+After this Approov should transform any instance of a URL such as `https://mydomain.com/endpoint?<secret-param>=<secret-placeholder>` into `https://mydomain.com/endpoint?<secret-param>=<secret-value>`, if the app passes attestation and there is a secure string with the name `<secret-placeholder>`.
 
 ## REGISTERING APPS
 In order for Approov to recognize the app as being valid it needs to be registered with the service. Rebuild your app and ensure the current directory is the top level of your app project to follow the instructions below.
@@ -165,7 +165,7 @@ If you want to just look up a value then just pass `null` instead of `newDef`.
 
 You may define a new value for the `key` by passing a new value in `newDef` rather than `null`. An empty string `newDef` is used to delete the secure string.
 
-This method is also useful for providing runtime secrets protection when the values are not passed on headers. Secure strings set using this method may also be looked up using subsequent plugin header or query parameter substitutions. 
+This method is also useful for providing runtime secrets protection when the values are not passed on headers. Secure strings set using this method may also be looked up using subsequent Approov header or query parameter substitutions. 
 
 ### Prefetching
 If you wish to reduce the latency associated with substituting the first secret, then make this call immediately after initializing Approov:

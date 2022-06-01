@@ -7,7 +7,7 @@ This quickstart is written specifically for Android and iOS apps that are implem
 * A recent version of `React Native` (>= 0.60) installed, see [installing react native](https://reactnative.dev/docs/environment-setup).
 * You also need `yarn` classic (1.x), see [installing yarn](https://www.npmjs.com/package/yarn).
 * The `approov` command line tool [installed](https://approov.io/docs/latest/approov-installation/) with access to your account
-* [Android Studio](https://developer.android.com/studio) installed (version Bumblebee 2021.1 is used in this guide) if you will build the Android app. Note that the `ANDROID_SDK_ROOT` value must be properly defined to allow the plugin to be built.
+* [Android Studio](https://developer.android.com/studio) installed (version Bumblebee 2021.1 is used in this guide) if you will build the Android app. Note that the `ANDROID_SDK_ROOT` value must be properly defined to allow building.
 * [Xcode](https://developer.apple.com/xcode/) installed (version 13.3 is used in this guide) to build iOS version of application
 * [Cocoapods](https://cocoapods.org) installed to support iOS building (1.11.3 used in this guide)
 * An iOS device or simulator if you are using the iOS platform

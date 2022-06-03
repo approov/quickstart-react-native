@@ -21,7 +21,7 @@ This ensures connections may only use official certificates, and blocks the use 
 In order for secrets to be protected for particular API domains it is necessary to inform Approov about them. Execute the following command:
 
 ```
-approov api -add <your-domain> -noApproovToken
+approov api -add your.domain -noApproovToken
 ```
 
 This informs Approov that it should be active for the domain, but does not need to send Approov tokens for it. Adding the domain ensures that the channel will be protected against Man-in-the-Middle (MitM) attacks.
@@ -36,35 +36,37 @@ approov secstrings -setEnabled
 
 The quickstart integration works by allowing you to replace the secret in your app with a placeholder value instead, and then the placeholder value is mapped to the actual secret value on the fly by the Approov package (if the app passes Approov attestation). The shipped app code will only contain the placeholder values.
 
-If your app currently uses `<secret-value>` then replace it in your app with the value `<secret-placeholder>`. Choose a suitable placeholder name to reflect the type of the secret. The placeholder value will be added to requests in the normal way, but you should be using the Approov enabled networking client to perfom the substituion.
+If your app currently uses `your-secret` then replace it in your app with the value `your-placeholder`. Choose a suitable placeholder name to reflect the type of the secret. The placeholder value will be added to requests in the normal way, but you should be using the Approov enabled networking client to perfom the substitution.
 
-You must inform Approov that it should substitute `<secret-placeholder>` for `<secret-value>` in requests as follows:
+You must inform Approov that it should substitute `your-placeholder` for `your-secret` in requests as follows:
 
 ```
-approov secstrings -addKey <secret-placeholder> -predefinedValue <secret-value>
+approov secstrings -addKey your-placeholder -predefinedValue your-secret
 ```
 
 > Note that this command also requires an [admin role](https://approov.io/docs/latest/approov-usage-documentation/#account-access-roles).
 
 You can add up to 16 different secret values to be substituted in this way.
 
-If the secret value is provided on the header `<secret-header>` then it is necessary to notify Approov that the header is subject to substitution. You do this by making the call once, after initialization:
+If the secret value is provided on the header `your-header` then it is necessary to notify Approov that the header is subject to substitution. You do this by making the call once, after initialization:
 
 ```Javascript
-ApproovService.addSubstitutionHeader("<secret-header>", "");
+ApproovService.addSubstitutionHeader("your-header", "");
 ```
 
-With this in place Approov should replace the `<secret-placeholder>` with the `<secret-value>` as required when the app passes attestation. Since the mapping lookup is performed on the placeholder value you have the flexibility of providing different secrets on different API calls, even if they passed with the same header name.
+With this in place Approov should replace the `your-placeholder` with the `your-secret` as required when the app passes attestation. Since the mapping lookup is performed on the placeholder value you have the flexibility of providing different secrets on different API calls, even if they passed with the same header name.
 
-Since earlier released versions of the app may have already leaked the `<secret-value>`, you may wish to refresh the secret at some later point when any older version of the app is no longer in use. You can of course do this update over-the-air using Approov without any need to modify the app.
+You can see a [worked example](https://github.com/approov/quickstart-react-native/blob/main/SHAPES-EXAMPLE.md#shapes-app-with-secrets-protection) for the Shapes app.
 
-If the secret value is provided as a parameter in a URL query string with the name `<secret-param>` then it is necessary to notify Approov that the query parameter is subject to substitution. You do this by making the call once, after initialization:
+Since earlier released versions of the app may have already leaked `your-secret`, you may wish to refresh the secret at some later point when any older version of the app is no longer in use. You can of course do this update over-the-air using Approov without any need to modify the app.
+
+If the secret value is provided as a parameter in a URL query string with the name `your-param` then it is necessary to notify Approov that the query parameter is subject to substitution. You do this by making the call once, after initialization:
 
 ```Javascript
-ApproovService.addSubstitutionQueryParam("<secret-param>");
+ApproovService.addSubstitutionQueryParam("your-param");
 ```
 
-After this Approov should transform any instance of a URL such as `https://mydomain.com/endpoint?<secret-param>=<secret-placeholder>` into `https://mydomain.com/endpoint?<secret-param>=<secret-value>`, if the app passes attestation and there is a secure string with the name `<secret-placeholder>`.
+After this Approov should transform any instance of a URL such as `https://your.domain/endpoint?your-param=your-placeholder` into `https://your.domain/endpoint?your-param=your-secret`, if the app passes attestation and there is a secure string with the name `your-placeholder`.
 
 ## REGISTERING APPS
 In order for Approov to recognize the app as being valid it needs to be registered with the service. Rebuild your app and ensure the current directory is the top level of your app project to follow the instructions below.
@@ -177,7 +179,7 @@ ApproovService.prefetch()
 This initiates the process of fetching the required information as a background task, so that it is available immediately when subsequently needed. The success or failure function is called when the prefetch is completed. Note the information will automatically expire after approximately 5 minutes.
 
 ### Prechecking
-You may wish to do an early check in your to present a warning to the user if the app is not going to be able to access secrets because it fails the attestation process. Here is an example of calling the appropriate method:
+You may wish to do an early check in your app to present a warning to the user if it is not going to be able to access secrets because it fails the attestation process. Here is an example of calling the appropriate method:
 
 ```Javascript
 ApproovService.precheck()

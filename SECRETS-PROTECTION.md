@@ -54,7 +54,7 @@ If the secret value is provided on the header `your-header` then it is necessary
 ApproovService.addSubstitutionHeader("your-header", "");
 ```
 
-With this in place Approov should replace the `your-placeholder` with the `your-secret` as required when the app passes attestation. Since the mapping lookup is performed on the placeholder value you have the flexibility of providing different secrets on different API calls, even if they passed with the same header name.
+With this in place Approov should replace the `your-placeholder` with `your-secret` as required when the app passes attestation. Since the mapping lookup is performed on the placeholder value you have the flexibility of providing different secrets on different API calls, even if they passed with the same header name.
 
 You can see a [worked example](https://github.com/approov/quickstart-react-native/blob/main/SHAPES-EXAMPLE.md#shapes-app-with-secrets-protection) for the Shapes app.
 

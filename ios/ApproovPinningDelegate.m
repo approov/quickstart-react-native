@@ -170,4 +170,17 @@ didReceiveResponse:(NSURLResponse *)response
     }
 }
 
+/**
+ * Tells the URL session that the session has been invalidated. This is simply passed to the original delegate.
+ *
+ * https://developer.apple.com/documentation/foundation/nsurlsessiondelegate/1407776-urlsession
+ */
+- (void)URLSession:(NSURLSession *)session
+        didBecomeInvalidWithError:(NSError *)error {
+    [_originalDelegate URLSession:session didBecomeInvalidWithError:error];
+    if (error) {
+        ApproovLogE(@"session did become invalid with error: %@", error.debugDescription);
+    }
+}
+
 @end

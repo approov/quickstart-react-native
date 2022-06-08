@@ -66,6 +66,9 @@ const api = {
   //key: 'shapes_api_key_placeholder',
 };
 
+// UNCOMMENT IF USING APPROOV SECRETS PROTECTION
+//ApproovService.addSubstitutionHeader("api-key", "");
+
 // UNCOMMENT IF USING APPROOV
 /*ApproovService.initialize("<enter-your-config-string-here>")
 .then(() => {
@@ -74,9 +77,6 @@ const api = {
 .catch(error => {
   console.log(`Approov initialization error: ${error.message}`);
 });*/
-
-// UNCOMMENT IF USING APPROOV SECRETS PROTECTION
-//ApproovService.addSubstitutionHeader("api-key", "");
 
 // headers to be included in requests
 const headers = {

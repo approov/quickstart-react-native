@@ -69,11 +69,23 @@ RCT_EXPORT_MODULE(ApproovService);
 static NSString *const ConfigResource = @"approov";
 static NSString *const ConfigExtension = @"config";
 
+// time delay in millseconds for the first network request to be allowed from the time the app
+// starts prior to Approov being initialized to prevent the potential of data race for any API requests
+// made as soon as the app starts up
+static NSTimeInterval STARTUP_SYNC_DELAY = 3.0;
+
 // lock object used during initialization
 id initializerLock = nil;
 
 // keeps track of whether Approov is initialized
 BOOL isInitialized = NO;
+
+// lock object used for synchronizing the earliestNetworkRequestTime
+id earliestNetworkRequestTimeLock = nil;
+
+// the earliest time that any network request will be allowed to avoid any potential race conditions with Approov
+// protected API calls being made before Approov itself can be initialized - or 0.0 they may proceed immediately
+NSTimeInterval earliestNetworkRequestTime = 0.0;
 
 // original config string used during initialization
 NSString *initialConfigString = nil;
@@ -134,7 +146,6 @@ NSMutableSet<NSString *> *exclusionURLRegexs = nil;
  * initializes the SDK.
  */
 - (instancetype)init {
-    ApproovLogI(@"native module initialization starting");
     self = [super init];
     if (self == nil) {
         ApproovLogE(@"native module failed to initialize");
@@ -189,6 +200,14 @@ NSMutableSet<NSString *> *exclusionURLRegexs = nil;
 
     // start the React Native interceptor using this ApproovService
     [ApproovRCTInterceptor startWithApproovService:self];
+
+    // if we are not initializing at startup then we setup an earliest network request time
+    // to allow time for the Approov initialization to occur in case it is racing with the the
+    // initial API calls
+    if (!isInitialized) {
+        earliestNetworkRequestTime = [[NSDate date] timeIntervalSince1970] + STARTUP_SYNC_DELAY;
+        ApproovLogI(@"started");
+    }
     return self;
 }
 
@@ -251,6 +270,9 @@ RCT_EXPORT_METHOD(initialize:(NSString*)config resolver:(RCTPromiseResolveBlock)
                 [Approov setUserProperty:@"approov-react-native"];
                 initialConfigString = config;
                 isInitialized = YES;
+                @synchronized(earliestNetworkRequestTimeLock) {
+                    earliestNetworkRequestTime = 0.0;
+                }
                 ApproovLogI(@"initialized on deviceID %@", [Approov getDeviceID]);
                 resolve(nil);
             }
@@ -639,13 +661,6 @@ RCT_EXPORT_METHOD(fetchCustomJWT:(NSString*)payload resolver:(RCTPromiseResolveB
     // copy request into a form were it can be updated
     NSMutableURLRequest *updatedRequest = [request mutableCopy];
 
-    // if the Approov SDK is not initialized then we just return immediately without making any changes
-    if (!isInitialized) {
-        return [ApproovInterceptorResult createWithRequest:updatedRequest
-            withAction:ApproovInterceptorActionProceed
-            withMessage:[Approov stringFromApproovTokenFetchStatus:ApproovTokenFetchStatusNotInitialized]];
-    }
-
     // get the URL host domain
     NSString *host = updatedRequest.URL.host;
     if (host == nil) {
@@ -659,11 +674,39 @@ RCT_EXPORT_METHOD(fetchCustomJWT:(NSString*)payload resolver:(RCTPromiseResolveB
     // during development
     NSString *url = updatedRequest.URL.absoluteString;
     if ([host isEqualToString:@"localhost"]) {
-        ApproovLogI(@"url %@ given pass through", url);
+        ApproovLogI(@"localhost forwarded: %@", url);
         return [ApproovInterceptorResult createWithRequest:updatedRequest
             withAction:ApproovInterceptorActionProceed
-            withMessage:@"localhost pass through"];
+            withMessage:@"localhost forwarded"];
     }
+
+    // if the Approov SDK is not initialized then we just return immediately without making any changes
+    if (!isInitialized) {
+        // wait until any initial fetch time is reached
+        BOOL waitForReady = YES;
+        while (waitForReady) {
+            NSTimeInterval currentTime = [[NSDate date] timeIntervalSince1970];
+            NSTimeInterval earliestTime = 0.0;
+            @synchronized(earliestNetworkRequestTimeLock) {
+                earliestTime = earliestNetworkRequestTime;
+            }
+            if (currentTime >= earliestTime)
+                waitForReady = NO;
+            else {
+                // sleep for a short period to block this request thread
+                ApproovLogI(@"request paused: %@", url);
+                [NSThread sleepForTimeInterval:0.1];
+            }
+        }
+
+        // if Approov is still not initialized then forward the request unchanged
+        if (!isInitialized) {
+            ApproovLogI(@"uninitialized forwarded: %@", url);
+            return [ApproovInterceptorResult createWithRequest:updatedRequest
+                withAction:ApproovInterceptorActionProceed
+                withMessage:@"uninitalized forwarded"];
+        }
+    } 
 
     // obtain a copy of the exclusion URL regular expressions in a thread safe way
     NSSet<NSString *> *exclusionURLs;
@@ -678,7 +721,7 @@ RCT_EXPORT_METHOD(fetchCustomJWT:(NSString*)payload resolver:(RCTPromiseResolveB
         if (!error) {
             NSTextCheckingResult *match = [regex firstMatchInString:url options:0 range:NSMakeRange(0, [url length])];
             if (match) {
-                ApproovLogI(@"url %@ excluded", url);
+                ApproovLogI(@"excluded url: %@", url);
                 return [ApproovInterceptorResult createWithRequest:updatedRequest
                     withAction:ApproovInterceptorActionProceed
                     withMessage:@"URL excluded"];

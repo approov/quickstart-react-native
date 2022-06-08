@@ -42,13 +42,13 @@ const specs = {
 
 // reference links
 const faq = 'https://github.com/approov/quickstart-react-native/blob/main/FAQ.md'
+const apiProtection = 'https://github.com/approov/quickstart-react-native/blob/main/API-PROTECTION.md'
 const refs = {
   contactSupport: `${faq}#getting-additional-help`,
   devEnviron: `${faq}#check-that-your-development-environment-is-properly-set-up`,
   reactNativeApp: `${faq}#start-with-a-working-react-native-app`,
   integrateApproov: `${faq}#integrate-approov-into-your-app`,
-  runRegAndroidApp: `${faq}#android-devices`,
-  runRegIosApp: `${faq}#ios-devices`,
+  registeringApps: `${apiProtection}#registering-apps`,
   approovSession: `${faq}#establishing-an-active-approov-session`,
   apiDomains: `${faq}#checking-and-updating-approov-protected-api-domains`,
   androidMinSdk: `${faq}#updating-android-minimum-sdk`,

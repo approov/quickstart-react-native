@@ -68,8 +68,17 @@ public class ApproovService extends ReactContextBaseJavaModule {
     // any prefix to be added before the Approov token, such as "Bearer "
     private static final String APPROOV_TOKEN_PREFIX = "";
 
+    // time delay in millseconds for the first network request to be allowed from the time the app
+    // starts prior to Approov being initialized to prevent the potential of data race for any API requests
+    // made as soon as the app starts up
+    private static final long STARTUP_SYNC_DELAY = 3000;
+
     // the application context used for certain framework calls
     private Context applicationContext;
+
+    // the earliest time that any network request will be allowed to avoid any potential race conditions with Approov
+    // protected API calls being made before Approov itself can be initialized - or 0 they may proceed immediately
+    private long earliestNetworkRequestTime;
 
     // flag indicating whether the Approov SDK has been initialized - if not then no Approov functionality is enabled
     private boolean isInitialized;
@@ -191,6 +200,7 @@ public class ApproovService extends ReactContextBaseJavaModule {
         super(reactContext);
         applicationContext = reactContext;
         isInitialized = false;
+        earliestNetworkRequestTime = 0;
         proceedOnNetworkFail = false;
         initialConfig = null;
         approovTokenHeader = APPROOV_TOKEN_HEADER;
@@ -247,6 +257,14 @@ public class ApproovService extends ReactContextBaseJavaModule {
 
         // add the Approov client builder to any rn-fetch-blob instances
         configureRNFetchBlobIfFound(clientBuilder);
+
+        // if we are not initializing at startup then we setup an earliest network request time
+        // to allow time for the Approov initialization to occur in case it is racing with the the
+        // initial API calls
+        if (!isInitialized) {
+            earliestNetworkRequestTime = System.currentTimeMillis() + STARTUP_SYNC_DELAY;
+            Log.d(TAG, "started");
+        }
     }
 
     /**
@@ -307,6 +325,13 @@ public class ApproovService extends ReactContextBaseJavaModule {
     }
 
     /**
+     * Clears the earliest network request time so any network requests can proceed immediately.
+     */
+    private synchronized void clearEarliestNetworkRequestTime() {
+        earliestNetworkRequestTime = 0;
+    }
+
+    /**
      * Initializes the Approov SDK and thus enables the Approov features if the
      * initialization was not performed using configuration files on launch.
      * 
@@ -330,6 +355,7 @@ public class ApproovService extends ReactContextBaseJavaModule {
                 Approov.setUserProperty("approov-react-native");
                 initialConfig = config;
                 isInitialized = true;
+                clearEarliestNetworkRequestTime();
                 Log.d(TAG, "initialized on deviceID " + Approov.getDeviceID());
                 notifyPinChangeListeners();
                 promise.resolve(null);
@@ -352,6 +378,18 @@ public class ApproovService extends ReactContextBaseJavaModule {
         return isInitialized;
     }
 
+    /**
+     * Returns the earliest time that network requests should be allowed, in milliseconds, or 0
+     * if they are allowed immediately. This is used to perform a synchronization on any early network
+     * request thats should perhaps be subject to Approov protection that are performed prior to the
+     * initialization.
+     * 
+     * @return earliest network time in milliseconds, or 0 if no delay should be imposed
+     */
+    public synchronized long getEarliestNetworkRequestTime() {
+        return earliestNetworkRequestTime;
+    }
+   
     /**
      * Indicates that requests should proceed anyway if it is not possible to obtain an Approov token
      * due to a networking failure. If this is called then the backend API can receive calls without the

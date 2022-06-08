@@ -230,7 +230,7 @@ class Project {
     const isRegistered = await task.registeringAndroidApk(this.dir, variant, expireAfter)
     if (!isRegistered) {
       this.errors++
-      this.log.fatal(`Unable to register the ${variant} APK.`, this.ref('runRegAndroidApp'))
+      this.log.fatal(`Unable to register the ${variant} APK.`, this.ref('registeringApps'))
     }
     this.log.succeed(`Registered the ${variant} APK for ${expireAfter}.`)
   }
@@ -355,7 +355,7 @@ class Project {
     const isRegistered = await task.registeringIosIpa(this.dir, scheme, configuration, expireAfter)
     if (!isRegistered) {
       this.errors++
-      this.log.fatal(`Unable to register the ${configuration} IPA`, this.ref('runRegIosApp'))
+      this.log.fatal(`Unable to register the ${configuration} IPA`, this.ref('registeringApps'))
     }
     this.log.succeed(`Registered the ${configuration} IPA for ${expireAfter}.`)
   }
@@ -366,7 +366,7 @@ class Project {
 
     if (!task.hasEnvIosDeploy()) {
       this.warnings++
-      this.log.fatal('Missing iOS deployment tool (ios-deploy).', this.ref('runRegIosApp'))
+      this.log.fatal('Missing iOS deployment tool (ios-deploy).', this.ref('iosDevice'))
     }
 
     this.log.spin(`Checking for iOS ${configuration} APP...`)

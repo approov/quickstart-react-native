@@ -58,17 +58,42 @@ public class ApproovInterceptor implements Interceptor {
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        // if Approov is not initialized then we just proceed without making any changes
-        Request request = chain.request();
-        if (!approovService.isInitialized())
-            return chain.proceed(request);
-
         // if there are any accesses to localhost then they are just passed through
+        Request request = chain.request();
         String url = request.url().toString();
         String host = request.url().host();
         if (host.equals("localhost")) {
-            Log.d(TAG, "url " + url + " passed through");
+            Log.d(TAG, "localhost forwarded: " + url);
             return chain.proceed(request);
+        }
+
+        // if Approov is not initialized then perform any necessary synchronization to avoid a race on any
+        // initial network fetches
+        if (!approovService.isInitialized()) {
+            // wait until any initial fetch time is reached
+            boolean waitForReady = true;
+            while (waitForReady) {
+                long currentTime = System.currentTimeMillis();
+                long earliestTime = approovService.getEarliestNetworkRequestTime();
+                if (currentTime >= earliestTime)
+                    waitForReady = false;
+                else {
+                    // sleep for a short period to block this request thread
+                    Log.d(TAG, "request paused: " + url);
+                    try {
+                        Thread.sleep(100);
+                    }
+                    catch (InterruptedException e) {
+                        Log.d(TAG, "request pause interrupted: " + url);
+                    }
+                }
+            }
+
+            // if Approov is still not initialized then forward the request unchanged
+            if (!approovService.isInitialized()) {
+                Log.d(TAG, "uninitialized forwarded: " + url);
+                return chain.proceed(request);
+            }
         }
 
         // check if the URL matches one of the exclusion regexs and just proceed without making
@@ -77,7 +102,7 @@ public class ApproovInterceptor implements Interceptor {
         for (Pattern pattern: exclusionURLs.values()) {
             Matcher matcher = pattern.matcher(url);
             if (matcher.find()) {
-                Log.d(TAG, "url " + url + " excluded");
+                Log.d(TAG, "excluded url: " + url);
                 return chain.proceed(request);
             }
         }

@@ -128,7 +128,7 @@ fetchUrl: `https://shapes.approov.io/v3/shapes`,
 
 Remember to comment out the previous definition of `fetchUrl`.
 
-Next, uncomment the definition of the `approovSetup` function. Leave the body commented as this is only required if using scerets protection.
+Next, uncomment the definition of the `approovSetup` function. Leave the body commented as this is only required if using secrets protection.
 
 Next you need to uncomment the revised component hierarchy for the app that includes the `ApproovProvider` wrapping the app (remembering to comment out the previous definition):
 

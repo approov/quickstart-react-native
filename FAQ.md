@@ -104,7 +104,7 @@ See [Approov Public Key Pinning Configuration](https://approov.io/docs/latest/ap
 
 ### Customizing Approov token passing
 
-When making API calls, Approov tokens are usually passed in headers, using the default `Approov-Token` header name. It is important that your React Native app and your backend API coordinate on the name of the header which carries the token. You can change this by making an `ApproovService.setTokenHeader` call right after Approov initialization. For instance:
+When making API calls, Approov tokens are usually passed in headers, using the default `Approov-Token` header name. It is important that your React Native app and your backend API coordinate on the name of the header which carries the token. You can change this by making an `ApproovService.setTokenHeader` call in your `approovSetup` function. For instance:
 
 ```Javascript
 ApproovService.setTokenHeader("X-Approov-Authorization", "Bearer ");
@@ -116,7 +116,7 @@ This changes the header name to `X-Approov-Authorization` and provides a `Bearer
 
 You may bind an Approov token to the value of any other header field. This is almost always used to bind Approov and Authorization tokens. When bound, the backend service verifies the Approov token and further that the Approov token was bound to only that authorization data value. See [Token Binding](https://approov.io/docs/latest/approov-usage-documentation/#token-binding) for additional information.
 
-To enable token binding, specify the binding header name to a `ApproovService.setBindingHeader` call right after Approov initialization. For example:
+To enable token binding, specify the binding header name to a `ApproovService.setBindingHeader` call in your `approovSetup` function. For example:
 
 ```Javascript
 ApproovService.setBindingHeader("Authorization");
@@ -126,7 +126,7 @@ ApproovService.setBindingHeader("Authorization");
 
 ### Prefetching an Approov token at app launch
 
-Approov will typically attest a running app instance every five minutes. Each attestation fetches a new Approov token and requires communication between the app instance and the Approov service. By default, the first Approov token fetch occurs at the first API call after launch. Alternatively, you may elect to prefetch an Approov token immediately after launch by making an explicit call to the `prefetch` method right after Approov initialization.:
+Approov will typically attest a running app instance every five minutes. Each attestation fetches a new Approov token and requires communication between the app instance and the Approov service. By default, the first Approov token fetch occurs at the first API call after launch. Alternatively, you may elect to prefetch an Approov token immediately after launch by making an explicit call to the `prefetch` method in your `approovSetup` function:
 
 ```Javascript
 ApproovService.prefetch():
@@ -403,7 +403,7 @@ Options:
 
 #### react-native-approov integrate
 
-Previous versions of this quickstart used a default flow that integrated Approov using this `integate` option. If this option is used then configuration files are written into your app package that are read by the Approov integration when it first starts. This is still supported, but we recommend that for new integrations you explicitly include the `@approov/react-native-approov` package and add an `ApproovService.initialize` call with your configuration to your app. This provides more flexibility with newer Approov features. 
+Previous versions of this quickstart used a default flow that integrated Approov using this `integate` option. If this option is used then configuration files are written into your app package that are read by the Approov integration when it first starts. This is still supported, but we recommend that for new integrations you explicitly include the `@approov/react-native-approov` package and use the `ApproovProvider` component as described. This provides more flexibility with newer Approov features. 
 
 Integrate Approov into your React Native project using the `integrate` sub-command:
 

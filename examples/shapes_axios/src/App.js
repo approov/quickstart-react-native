@@ -69,7 +69,7 @@ const api = {
 /*const approovSetup = () => {
   // UNCOMMENT IF USING APPROOV SECRETS PROTECTION
   //ApproovService.addSubstitutionHeader("api-key", "");
-}*/
+};*/
 
 // headers to be included in requests
 const headers = {

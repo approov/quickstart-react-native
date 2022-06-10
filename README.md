@@ -36,7 +36,7 @@ pod install
 
 ## ACTIVATING APPROOV
 
-In order to use Approov you must include it as a component that wraps your application components. This automatically deals with initializing Approov when the app is started. Import the required native modules as follows:
+In order to use Approov you must include it as a component that wraps your application components. This automatically deals with initializing Approov when the app is started. Import using the following:
 
 ```Javascript
 import { ApproovProvider, ApproovService } from '@approov/react-native-approov';
@@ -48,7 +48,7 @@ You should define an initially empty function that is called just before Approov
 
 ```Javascript
 const approovSetup = () => {
-}
+};
 ```
 
 You must now wrap your application with the `ApproovProvider` component. For instance, if your app's components (typically defined in `App.js`) are currently:

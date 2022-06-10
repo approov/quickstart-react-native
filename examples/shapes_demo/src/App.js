@@ -63,7 +63,9 @@ const api = NativeModules.ApproovService
     };
 console.log(`${api.msg}, using ${api.version}`);
 
-// initialize Approov if it is installed
+// initialize Approov if it is installed. Note that this demo uses direct
+// initialization via ApproovService rather than using ApproovProvider. In
+// general we do not recommend this.
 // PROVIDE YOUR APPROOV CONFIGURATION BELOW
 if (NativeModules.ApproovService) {
   NativeModules.ApproovService.initialize("<enter-your-config-string-here>")

@@ -68,6 +68,8 @@ ApproovService.setTokenHeader("Authorization", "Bearer ");
 
 The first parameter is the new header name and the second a prefix to be added to the Approov token. This is primarily for integrations where the Approov Token JWT might need to be prefixed with `Bearer` and passed in the `Authorization` header.
 
+You are recommended to make this call inside the `approovSetup` function called by the `ApproovProvider`, to ensure this is setup prior to Approov initialization.
+
 ### Token Binding
 If want to use [Token Binding](https://approov.io/docs/latest/approov-usage-documentation/#token-binding) then set the header holding the value to be used for binding as follows:
 
@@ -77,14 +79,20 @@ ApproovService.setBindingHeader("Authorization");
 
 In this case it means that the value of `Authorization` holds the token value to be bound. This only needs to be called once. On subsequent requests the value of the specified header is read and its value set as the token binding value. Note that you should select a header whose value does not typically change from request to request, as each change requires a new Approov token to be fetched.
 
+You are recommended to make this call inside the `approovSetup` function called by the `ApproovProvider`, to ensure this is setup prior to Approov initialization.
+
 ### Prefetching
-If you wish to reduce the latency associated with fetching the first Approov token, then make this call immediately after initializing Approov:
+If you wish to reduce the latency associated with fetching the first Approov token, then make this call inside the `approovSetup` function called by the `ApproovProvider`:
 
 ```Javascript
 ApproovService.prefetch()
 ```
 
-This initiates the process of fetching an Approov token in the background, so that a cached token is available immediately when subsequently needed, or at least the fetch time is reduced. When the prefetch is finished then either the provided success or failure function will be called, depending upon the result. Note that there is no point in performing a prefetch if you are using token binding.
+This initiates the process of fetching an Approov token in the background as soon as Approov is initialized, so that a cached token is available immediately when subsequently needed.
+
+The `prefetch` returns a promise showing if it could be completed or not. You may wish to call it at later points of app execution if you know an Approov protected API call will be made in the near future.
+
+Note that there is no point in performing a prefetch if you are using token binding and the binding value is changed.
 
 ### Prechecking
 You may wish to do an early check in your app to present a warning to the user if it is not going to be able to obtain valid Approov tokens because it fails the attestation process. To do this you first need to enable the [Secure Strings](https://approov.io/docs/latest/approov-usage-documentation/#secure-strings) feature:
@@ -104,7 +112,7 @@ ApproovService.precheck()
 })
 .catch(error => {
     if (error.userInfo.type == "rejection")
-        // failure due to the attestation being rejected, see error.message. error.userInfo.rejectionARC and error.userInfo.rejectionReasons
+        // failure due to the attestation being rejected, see error.message, error.userInfo.rejectionARC and error.userInfo.rejectionReasons
         // may be used to present information to the user (note error.userInfo.rejectionReasons is only available if the feature is enabled,
         // otherwise it is always an empty string)
     else if (error.userInfo.type == "network")

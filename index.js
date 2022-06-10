@@ -19,7 +19,8 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import {NativeModules} from 'react-native'
-const {ApproovService} = NativeModules
+import { NativeModules } from 'react-native'
+const { ApproovService } = NativeModules
+import { ApproovProvider, useApproov } from './approov-provider'
 
-export default ApproovService
+export { ApproovService, ApproovProvider, useApproov }

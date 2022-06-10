@@ -34,24 +34,43 @@ For iOS you must also install [pod](https://cocoapods.org/) dependencies. Change
 pod install
 ```
 
-## INITIALIZING THE APPROOV SERVICE
+## ACTIVATING APPROOV
 
-In order to use Approov you must initialize it when your app is started. Import the required native modules as follows:
+In order to use Approov you must include it as a component that wraps your application components. This automatically deals with initializing Approov when the app is started. Import the required native modules as follows:
 
 ```Javascript
-import {NativeModules} from 'react-native';
-const {ApproovService} = NativeModules;
+import { ApproovProvider, ApproovService } from '@approov/react-native-approov';
 ```
-Place the initialization code in your main Javascript file (typically `App.js`) so that it is executed early during the startup of your app. This code should only be executed once and before making any networking calls that you want to protect with Approov:
+
+This defines an `ApproovProvider` component and the `ApproovService` which allows you to make certain calls to Approov from your application.
+
+You should define an initially empty function that is called just before Approov is initialized. You may wish to include certain `ApproovService` calls in this in the future:
 
 ```Javascript
-ApproovService.initialize("<enter-your-config-string-here>")
-.then(() => {
-  // initialization successful
-})
-.catch(error => {
-  // initialization error with reason in error.message
-});
+const approovSetup = () => {
+}
+```
+
+You must now wrap your application with the `ApproovProvider` component. For instance, if your app's components (typically defined in `App.js`) are currently:
+
+```Javascript
+return (
+  <View>
+    <Button onPress={callAPI} title="Press Me!" />
+  </View>
+);
+```
+
+This should be changed to the following:
+
+```Javascript
+return (
+  <ApproovProvider config="<enter-your-config-string-here>" onInit={approovSetup}>
+    <View>
+      <Button onPress={callAPI} title="Press Me!" />
+    </View>
+  </ApproovProvider>
+);
 ```
 
 The `<enter-your-config-string-here>` is a custom string that configures your Approov account access. This will have been provided in your Approov onboarding email.

@@ -90,6 +90,9 @@ NSTimeInterval earliestNetworkRequestTime = 0.0;
 // original config string used during initialization
 NSString *initialConfigString = nil;
 
+// keeps track of whether a prefetch request has been made prior to initialization
+BOOL pendingPrefetch = NO;
+
 // true if the interceptor should proceed on network failures and not add an Approov token
 BOOL proceedOnNetworkFail = NO;
 
@@ -274,6 +277,10 @@ RCT_EXPORT_METHOD(initialize:(NSString*)config resolver:(RCTPromiseResolveBlock)
                     earliestNetworkRequestTime = 0.0;
                 }
                 ApproovLogI(@"initialized on deviceID %@", [Approov getDeviceID]);
+                if (pendingPrefetch) {
+                    [self prefetch];
+                    pendingPrefetch = NO;
+                }
                 resolve(nil);
             }
         }
@@ -421,6 +428,7 @@ RCT_EXPORT_METHOD(removeExclusionURLRegex:(NSString *)urlRegex) {
  */
 RCT_EXPORT_METHOD(prefetch) {
     if (isInitialized) {
+        ApproovLogI(@"prefetch initiated");
         [Approov fetchApproovToken:^(ApproovTokenFetchResult *result) {
             if ((result.status == ApproovTokenFetchStatusSuccess) ||
                 (result.status == ApproovTokenFetchStatusUnknownURL) ||
@@ -429,6 +437,10 @@ RCT_EXPORT_METHOD(prefetch) {
             else
                 ApproovLogI(@"prefetch: %@", [Approov stringFromApproovTokenFetchStatus:result.status]);
         }:@"approov.io"];
+    }
+    else {
+        ApproovLogI(@"prefetch pending");
+        pendingPrefetch = YES;
     }
 }
 
@@ -447,7 +459,10 @@ RCT_EXPORT_METHOD(prefetch) {
  */
  RCT_EXPORT_METHOD(precheck:(RCTPromiseResolveBlock)resolve rejecter:(RCTPromiseRejectBlock)reject) {
     [Approov fetchSecureString:^(ApproovTokenFetchResult *result) {
-        ApproovLogI(@"precheck: %@", [Approov stringFromApproovTokenFetchStatus:result.status]);
+        if (result.status == ApproovTokenFetchStatusUnknownKey)
+            ApproovLogI(@"precheck: passed");
+        else
+             ApproovLogI(@"precheck: %@", [Approov stringFromApproovTokenFetchStatus:result.status]);
         if (result.status == ApproovTokenFetchStatusRejected) {
             // fetch failed because the attestation failed
             NSError *error = [[NSError alloc] initWithDomain:@"io.approov.reactnative" code:0 userInfo:[self rejectionUserInfo:result.ARC :result.rejectionReasons]];

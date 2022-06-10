@@ -83,6 +83,9 @@ public class ApproovService extends ReactContextBaseJavaModule {
     // flag indicating whether the Approov SDK has been initialized - if not then no Approov functionality is enabled
     private boolean isInitialized;
 
+    // flag indicating if there is a pending prefetch to be executed upon initialization
+    private boolean pendingPrefetch;
+
     // true if the interceptor should proceed on network failures and not add an Approov token
     private boolean proceedOnNetworkFail;
 
@@ -201,6 +204,7 @@ public class ApproovService extends ReactContextBaseJavaModule {
         applicationContext = reactContext;
         isInitialized = false;
         earliestNetworkRequestTime = 0;
+        pendingPrefetch = false;
         proceedOnNetworkFail = false;
         initialConfig = null;
         approovTokenHeader = APPROOV_TOKEN_HEADER;
@@ -358,6 +362,10 @@ public class ApproovService extends ReactContextBaseJavaModule {
                 clearEarliestNetworkRequestTime();
                 Log.d(TAG, "initialized on deviceID " + Approov.getDeviceID());
                 notifyPinChangeListeners();
+                if (pendingPrefetch) {
+                    prefetch();
+                    pendingPrefetch = false;
+                }
                 promise.resolve(null);
             } catch (IllegalArgumentException e) {
                 Log.e(TAG, "initialization failed with IllegalArgument: " + e.getMessage());
@@ -591,16 +599,21 @@ public class ApproovService extends ReactContextBaseJavaModule {
     }
 
     /**
-     * Prefetches an Approov token in the background. The placeholder domain "approov.io" is
-     * simply used to initiate the fetch and does not need to be a valid API for the account. This
-     * method can be used to lower the effective latency of a subsequent token fetch or secure strings
-     * lookup by starting the operation earlier so the subsequent fetch should be able to use cached
-     * results.
+     * Performs a prefetch in the background. The domain "approov.io" is simply used to initiate the
+     * fetch and does not need to be a valid API for the account. This method can be used to lower the
+     * effective latency of a subsequent token fetch or secure strings lookup by starting the operation
+     * earlier so the subsequent fetch should be able to use cached results. If this is called prior
+     * to the initialization then a pending prefetch is setup to be executed just after initialization.
      */
     @ReactMethod
     public synchronized void prefetch() {
         if (isInitialized) {
+            Log.d(TAG, "prefetch initiated");
             Approov.fetchApproovToken(new PrefetchHandler(), "approov.io");
+        }
+        else {
+            Log.d(TAG, "prefetch pending");
+            pendingPrefetch = true;
         }
     }
 
@@ -663,7 +676,10 @@ public class ApproovService extends ReactContextBaseJavaModule {
 
         @Override
         public void approovCallback(Approov.TokenFetchResult result) {
-            Log.d(TAG, "precheck: " + result.getStatus().toString());
+            if (result.getStatus() == Approov.TokenFetchStatus.UNKNOWN_KEY)
+                Log.d(TAG, "precheck: passed");
+            else
+                Log.d(TAG, "precheck: " + result.getStatus().toString());
             if (result.getStatus() == Approov.TokenFetchStatus.REJECTED)
                 // the precheck is rejected
                 promise.reject("precheck", "precheck: REJECTED " + result.getARC() + " " + result.getRejectionReasons(),

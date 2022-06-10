@@ -2,8 +2,7 @@
 This provides a reference for all of the methods defined on `ApproovService`. These are available if you import:
 
 ```Javascript
-import {NativeModules} from 'react-native';
-const {ApproovService} = NativeModules;
+import { ApproovProvider, ApproovService } from '@approov/react-native-approov';
 ```
 
 Many of the methods execute asynchronously and return a `Promise`. This is resolved to indicate success, or rejected with an `error` otherwise. The `error` is a map that provides:
@@ -14,15 +13,15 @@ Many of the methods execute asynchronously and return a `Promise`. This is resol
 * `userInfo.rejectionReasons`: Only provided for a `rejection` error type. If the [Rejection Reasons](https://approov.io/docs/latest/approov-usage-documentation/#rejection-reasons) feature is enabled, this provides a comma separated list of reasons why the app attestation was rejected.
 
 ## Initialize
+You will not generally need to call this function directly, since this is called automatically if you use the `ApproovProvider` component. It is only included here for completeness.
+
 Initializes the Approov SDK and thus enables the Approov features. The `config` will have been provided in the initial onboarding or email or can be [obtained](https://approov.io/docs/latest/approov-usage-documentation/#getting-the-initial-sdk-configuration) using the Approov CLI. This will generate an error if a second attempt is made at initialization with a different `config`.
 
 ```Javascript
 ApproovService.initialize(config);
 ```
 
-This function returns a `Promise` that is resolved when the operation is completed.
-
-You should always make this call soon after your app is started. Other network requests may be delayed for a short period until this call is made.
+This function returns a `Promise` that is resolved when the operation is completed. You should always make this call soon after your app is started. Other network requests may be delayed for a short period until this call is made.
 
 ## SetProceedOnNetworkFail
 Indicates that the network interceptor should proceed anyway if it is not possible to obtain an Approov token due to a networking failure. If this is called then the backend API can receive calls without the expected Approov token header being added, or without header/query parameter substitutions being made. This should only ever be used if there is some particular reason, perhaps due to local network conditions, that you believe that traffic to the Approov cloud service will be particularly problematic.
@@ -33,7 +32,7 @@ ApproovService.setProceedOnNetworkFail();
 
 Note that this should be used with *CAUTION* because it may allow a connection to be established before any dynamic pins have been received via Approov, thus potentially opening the channel to a MitM.
 
-You are recommended to make this call before `ApproovService.initialize`.
+You are recommended to make this call inside the `approovSetup` function called by the `ApproovProvider`, to ensure this is setup prior to Approov initialization.
 
 ## SetTokenHeader
 Sets the header that the Approov token is added on, as well as an optional prefix String (such as "`Bearer `"). Pass in an empty string if you do not wish to have a prefix. By default the token is provided on `Approov-Token` with no prefix.
@@ -42,7 +41,7 @@ Sets the header that the Approov token is added on, as well as an optional prefi
 ApproovService.setTokenHeader(header, prefix);
 ```
 
-You are recommended to make this call before `ApproovService.initialize`.
+You are recommended to make this call inside the `approovSetup` function called by the `ApproovProvider`, to ensure this is setup prior to Approov initialization.
 
 ## SetBindingHeader
 Sets a binding `header` that may be present on requests being made. This is for the [token binding](https://approov.io/docs/latest/approov-usage-documentation/#token-binding) feature. A header should be chosen whose value is unchanging for most requests (such as an Authorization header). If the `header` is present, then a hash of the `header` value is included in the issued Approov tokens to bind them to the value. This may then be verified by the backend API integration.
@@ -51,7 +50,7 @@ Sets a binding `header` that may be present on requests being made. This is for 
 ApproovService.setBindingHeader(header);
 ```
 
-You are recommended to make this call before `ApproovService.initialize`.
+You are recommended to make this call inside the `approovSetup` function called by the `ApproovProvider`, to ensure this is setup prior to Approov initialization.
 
 ## AddSubstitutionHeader
 Adds the name of a `header` which should be subject to [secure strings](https://approov.io/docs/latest/approov-usage-documentation/#secure-strings) substitution. This means that if the `header` is present then the value will be used as a key to look up a secure string value which will be substituted into the `header` value instead. This allows easy migration to the use of secure strings. A `requiredPrefix` may be specified to deal with cases such as the use of "`Bearer `" prefixed before values in an authorization header. If this is not required then simply use an empty string.
@@ -60,7 +59,7 @@ Adds the name of a `header` which should be subject to [secure strings](https://
 ApproovService..addSubstitutionHeader(header, requiredPrefix);
 ```
 
-You are recommended to make this call before `ApproovService.initialize`.
+You are recommended to make this call inside the `approovSetup` function called by the `ApproovProvider`, to ensure this is setup prior to Approov initialization.
 
 ## RemoveSubstitutionHeader
 Removes a `header` previously added using `AddSubstitutionHeader`.
@@ -76,7 +75,7 @@ Adds a `key` name for a query parameter that should be subject to [secure string
 ApproovService.addSubstitutionQueryParam(key);
 ```
 
-You are recommended to make this call before `ApproovService.initialize`.
+You are recommended to make this call inside the `approovSetup` function called by the `ApproovProvider`, to ensure this is setup prior to Approov initialization.
 
 ## RemoveSubstitutionQueryParam
 Removes a query parameter `key` name previously added using `AddSubstitutionQueryParam`.
@@ -94,7 +93,7 @@ ApproovService.addExclusionURLRegex(urlRegex);
 
 Note that this facility must be used with *EXTREME CAUTION* due to the impact of dynamic pinning. Pinning may be applied to all domains added using Approov, and updates to the pins are received when an Approov fetch is performed. If you exclude some URLs on domains that are protected with Approov, then these will be protected with Approov pins but without a path to update the pins until a URL is used that is not excluded. Thus you are responsible for ensuring that there is always a possibility of calling a non-excluded URL, or you should make an explicit call to fetchToken if there are persistent pinning failures. Conversely, use of those option may allow a connection to be established before any dynamic pins have been received via Approov, thus potentially opening the channel to a MitM.
 
-You are recommended to make this call before `ApproovService.initialize`.
+You are recommended to make this call inside the `approovSetup` function called by the `ApproovProvider`, to ensure this is setup prior to Approov initialization.
 
 ## RemoveExclusionURLRegex
 Removes an exclusion URL regular expression (`urlRegex`) previously added using `AddExclusionURLRegex`.
@@ -109,6 +108,8 @@ Performs a background fetch to lower the effective latency of a subsequent token
 ```Javascript
 ApproovService.prefetch();
 ```
+
+If you make this call inside the `approovSetup` function called by the `ApproovProvider` then a prefetch will be performed as soon as Approov is initialized.
 
 ## Precheck
 Performs a precheck to determine if the app will pass attestation. This requires [secure strings](https://approov.io/docs/latest/approov-usage-documentation/#secure-strings) to be enabled for the account, although no strings need to be set up. This will likely require network access so may take some time to complete.

@@ -114,15 +114,11 @@ Note that any Approov tokens for this domain will be automatically signed with t
 
 ## MODIFY THE APP TO USE APPROOV
 
-Uncomment the lines of Approov initialization code in `shapes-fetch/src/App.js` starting as follows:
+Uncomment the marked line near the start of the file that imports `ApproovProvider` and `ApproovService`:
 
 ```Javascript
-ApproovService.initialize("<enter-your-config-string-here>",
+import { ApproovProvider, ApproovService } from '@approov/react-native-approov';
 ```
-
-The Approov SDK needs a configuration string to identify the account associated with the app. It will have been provided in the Approov onboarding email (it will be something like `#123456#K/XPlLtfcwnWkzv99Wj5VmAxo4CrU267J1KlQyoz8Qo=`). Copy this to replace the text `<enter-your-config-string-here>`.
-
-You must also uncomment the marked lines near the start of the file that import `ApproovService`.
 
 You should also change the Shapes endpoint the app is using by uncommenting the line:
 
@@ -131,6 +127,21 @@ fetchUrl: `https://shapes.approov.io/v3/shapes`,
 ```
 
 Remember to comment out the previous definition of `fetchUrl`.
+
+Next, uncomment the definition of the `approovSetup` function. Leave the body commented as this is only required if using scerets protection.
+
+Next you need to uncomment the revised component hierarchy for the app that includes the `ApproovProvider` wrapping the app (remembering to comment out the previous definition):
+
+```Javascript
+return (
+    <ApproovProvider config="<enter-your-config-string-here>" onInit={approovSetup}>
+      <StatusBar barStyle="dark-content" />
+      {mainView}
+    </ApproovProvider>
+  );
+```
+
+The Approov SDK needs a configuration string to identify the account associated with the app. It will have been provided in the Approov onboarding email (it will be something like `#123456#K/XPlLtfcwnWkzv99Wj5VmAxo4CrU267J1KlQyoz8Qo=`). Copy this to replace the text `<enter-your-config-string-here>`.
 
 ## REGISTER YOUR APP WITH APPROOV
 
@@ -219,7 +230,7 @@ Firstly, revert any previous change to `shapes_fetch/src/App.js` for `fetchUrl` 
 
 The `key` should also be changed to `shapes_api_key_placeholder`, removing the actual API key out of the code.
 
-We need to inform Approov that it needs to substitute the placeholder value for the real API key on the `api-key` header. Find this line and uncomment it:
+We need to inform Approov that it needs to substitute the placeholder value for the real API key on the `api-key` header. Find this line within the `approovSetup` function and uncomment it:
 
 ```Javascript
 ApproovService.addSubstitutionHeader("api-key", "");

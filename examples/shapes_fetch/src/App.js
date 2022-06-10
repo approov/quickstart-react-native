@@ -31,8 +31,7 @@ import {
 } from 'react-native';
 
 // UNCOMMENT IF USING APPROOV
-//import {NativeModules} from 'react-native';
-//const {ApproovService} = NativeModules;
+//import { ApproovProvider, ApproovService } from '@approov/react-native-approov';
 
 const appTitle = 'Approov Shapes';
 const checkTitle = 'check';
@@ -65,17 +64,11 @@ const api = {
   //key: 'shapes_api_key_placeholder',
 };
 
-// UNCOMMENT IF USING APPROOV SECRETS PROTECTION
-//ApproovService.addSubstitutionHeader("api-key", "");
-
 // UNCOMMENT IF USING APPROOV
-/*ApproovService.initialize("<enter-your-config-string-here>")
-.then(() => {
-  console.log(`Approov initialized`);
-})
-.catch(error => {
-  console.log(`Approov initialization error: ${error.message}`);
-});*/
+/*const approovSetup = () => {
+  // UNCOMMENT IF USING APPROOV SECRETS PROTECTION
+  //ApproovService.addSubstitutionHeader("api-key", "");
+}*/
 
 // headers to be included in Shapes requests
 const headers = {
@@ -133,29 +126,41 @@ const App = () => {
       });
   };
 
-  // return the screen for rendering
+  const mainView = (
+    <SafeAreaView style={styles.container}>
+      <View style={styles.titleBox}>
+        <Text style={styles.title}>{appTitle}</Text>
+      </View>
+      <View style={styles.shapeBox}>
+        <Image style={styles.shape} source={imgAssets[result.shape]} />
+      </View>
+      <View style={styles.statusBox}>
+        <Text style={styles.status}>{result.status}</Text>
+      </View>
+      <View style={styles.controlsBox}>
+        <View style={styles.buttonBar}>
+          <Button onPress={checkConnection} title={checkTitle} />
+          <Button onPress={fetchShape} title={fetchTitle} />
+        </View>
+      </View>
+    </SafeAreaView>
+  );
+
+  // COMMENT IF USING APPROOV
   return (
     <>
       <StatusBar barStyle="dark-content" />
-      <SafeAreaView style={styles.container}>
-        <View style={styles.titleBox}>
-          <Text style={styles.title}>{appTitle}</Text>
-        </View>
-        <View style={styles.shapeBox}>
-          <Image style={styles.shape} source={imgAssets[result.shape]} />
-        </View>
-        <View style={styles.statusBox}>
-          <Text style={styles.status}>{result.status}</Text>
-        </View>
-        <View style={styles.controlsBox}>
-          <View style={styles.buttonBar}>
-            <Button onPress={checkConnection} title={checkTitle} />
-            <Button onPress={fetchShape} title={fetchTitle} />
-          </View>
-        </View>
-      </SafeAreaView>
+      {mainView}
     </>
   );
+
+  // UNCOMMENT IF USING APPROOV
+  /*return (
+    <ApproovProvider config="<enter-your-config-string-here>" onInit={approovSetup}>
+      <StatusBar barStyle="dark-content" />
+      {mainView}
+    </ApproovProvider>
+  );*/
 };
 
 // screen styles

@@ -48,7 +48,7 @@ approov secstrings -addKey your-placeholder -predefinedValue your-secret
 
 You can add up to 16 different secret values to be substituted in this way.
 
-If the secret value is provided on the header `your-header` then it is necessary to notify Approov that the header is subject to substitution. You do this by making the call once, after initialization:
+If the secret value is provided on the header `your-header` then it is necessary to notify Approov that the header is subject to substitution. You are recommended to make this call inside the `approovSetup` function called by the `ApproovProvider`, to ensure this is setup prior to Approov initialization:
 
 ```Javascript
 ApproovService.addSubstitutionHeader("your-header", "");
@@ -60,7 +60,7 @@ You can see a [worked example](https://github.com/approov/quickstart-react-nativ
 
 Since earlier released versions of the app may have already leaked `your-secret`, you may wish to refresh the secret at some later point when any older version of the app is no longer in use. You can of course do this update over-the-air using Approov without any need to modify the app.
 
-If the secret value is provided as a parameter in a URL query string with the name `your-param` then it is necessary to notify Approov that the query parameter is subject to substitution. You do this by making the call once, after initialization:
+If the secret value is provided as a parameter in a URL query string with the name `your-param` then it is necessary to notify Approov that the query parameter is subject to substitution. You are recommended to make this call inside the `approovSetup` function called by the `ApproovProvider`, to ensure this is setup prior to Approov initialization:
 
 ```Javascript
 ApproovService.addSubstitutionQueryParam("your-param");
@@ -114,7 +114,36 @@ If you are building and running on an iOS simulator then there will be no `.ipa`
 ## HANDLING REJECTIONS
 If the app is not recognized as being valid by Approov then an exception is thrown on the network request and the API call is not completed. The secret value will never be communicated to the app in this case.
 
-If you wish to provide more specific information about the cause of the rejection then you must use the [precheck](#prechecking) capability that will also fail, and provide more detailed information in the error returned to the failure function. 
+If you wish to provide more specific information about the cause of the rejection then you must use the [precheck](#prechecking) capability that can provide more detailed information in the error returned to the failure function. You should consider adding the `precheck` call in any network request error handling in your app, as follows:
+
+```Javascript
+fetch("your.domain/endpoint", {
+    method: your-method,
+    headers: your-headers,
+})
+.then(response => {
+    // successful network request
+})
+.catch(error => {
+    // error - try and determine if this is due to an Approov issue
+    ApproovService.precheck()
+    .then(() => {
+        // the precheck completed successfully so error seems unrelated to Approov
+    })
+    .catch(error => {
+        if (error.userInfo.type == "rejection")
+            // failure due to the attestation being rejected, see error.message, error.userInfo.rejectionARC and error.userInfo.rejectionReasons
+            // may be used to present information to the user (note error.userInfo.rejectionReasons is only available if the feature is enabled,
+            // otherwise it is always an empty string)
+        else if (error.userInfo.type == "network")
+            // failure due to a potentially temporary networking issue, allow for a user initiated retry, see error.message
+        else
+            // a more permanent error, see error.message
+    })
+});
+```
+
+If the app is rejected then you may want to consider providing some feedback to the user about the issue.
 
 If you wish to provide more direct feedback then enable the [Rejection Reasons](https://approov.io/docs/latest/approov-usage-documentation/#rejection-reasons) feature:
 
@@ -170,13 +199,15 @@ You may define a new value for the `key` by passing a new value in `newDef` rath
 This method is also useful for providing runtime secrets protection when the values are not passed on headers. Secure strings set using this method may also be looked up using subsequent Approov header or query parameter substitutions. 
 
 ### Prefetching
-If you wish to reduce the latency associated with substituting the first secret, then make this call immediately after initializing Approov:
+If you wish to reduce the latency associated with substituting the first secret, then make this call inside the `approovSetup` function called by the `ApproovProvider`:
 
 ```Javascript
 ApproovService.prefetch()
 ```
 
-This initiates the process of fetching the required information as a background task, so that it is available immediately when subsequently needed. The success or failure function is called when the prefetch is completed. Note the information will automatically expire after approximately 5 minutes.
+This initiates the process of fetching the secrets in the background as soon as Approov is initialized, so that they are available immediately when subsequently needed.
+
+The `prefetch` returns a promise showing if it could be completed or not. You may wish to call it at later points of app execution if you know an Approov protected API call will be made in the near future.
 
 ### Prechecking
 You may wish to do an early check in your app to present a warning to the user if it is not going to be able to access secrets because it fails the attestation process. Here is an example of calling the appropriate method:
@@ -188,7 +219,7 @@ ApproovService.precheck()
 })
 .catch(error => {
     if (error.userInfo.type == "rejection")
-        // failure due to the attestation being rejected, see error.message. error.userInfo.rejectionARC and error.userInfo.rejectionReasons
+        // failure due to the attestation being rejected, see error.message, error.userInfo.rejectionARC and error.userInfo.rejectionReasons
         // may be used to present information to the user (note error.userInfo.rejectionReasons is only available if the feature is enabled,
         // otherwise it is always an empty string)
     else if (error.userInfo.type == "network")

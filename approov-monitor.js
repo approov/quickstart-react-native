@@ -19,9 +19,23 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-import { NativeModules } from 'react-native'
-const { ApproovService } = NativeModules
-import { ApproovProvider, useApproov } from './approov-provider'
-import { ApproovMonitor } from './approov-monitor'
+import { useEffect } from 'react'
+import { useApproov } from './approov-provider'
 
-export { ApproovService, ApproovProvider, ApproovMonitor, useApproov }
+const ApproovMonitor = () => {
+  const { approovReady, approovError } = useApproov()
+
+  useEffect(() => {
+    if (!approovReady && !approovError) {
+      console.log(`ApproovProvider: starting`)
+    } else if (approovReady) {
+      console.log(`ApproovProvider: ready`)
+    } else {
+      console.log(`ApproovProvider: error: ${approovError.toString()}`)
+    }
+  }, [approovReady, approovError])
+
+  return null
+}
+
+export { ApproovMonitor }

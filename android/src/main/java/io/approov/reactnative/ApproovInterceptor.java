@@ -70,6 +70,10 @@ public class ApproovInterceptor implements Interceptor {
         // if Approov is not initialized then perform any necessary synchronization to avoid a race on any
         // initial network fetches
         if (!approovService.isInitialized()) {
+            // mark the earliest network fetch request time prior to initialization - it is only updated
+            // if it is currently unset
+            approovService.setEarliestNetworkRequestTime();
+
             // wait until any initial fetch time is reached
             boolean waitForReady = true;
             while (waitForReady) {

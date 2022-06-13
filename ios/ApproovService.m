@@ -69,10 +69,13 @@ RCT_EXPORT_MODULE(ApproovService);
 static NSString *const ConfigResource = @"approov";
 static NSString *const ConfigExtension = @"config";
 
-// time delay in millseconds for the first network request to be allowed from the time the app
-// starts prior to Approov being initialized to prevent the potential of data race for any API requests
-// made as soon as the app starts up
-static NSTimeInterval STARTUP_SYNC_DELAY = 3.0;
+// time window (in millseconds) applied to any network request attempts made before Approov
+// is initialized. The start of the window is defined by the first network request received
+// prior to initialization. That network request, and any others arriving during the window, may
+// then be delayed until the end of the window period. This is to allow time for the Approov
+// initialization to be completed as it may be in a race with API requests made as the app
+// starts up.
+static NSTimeInterval STARTUP_SYNC_TIME_WINDOW = 2.5;
 
 // lock object used during initialization
 id initializerLock = nil;
@@ -200,17 +203,11 @@ NSMutableSet<NSString *> *exclusionURLRegexs = nil;
                 [self setBindingHeader:bindingHeader];
         }
     }
+    else
+         ApproovLogI(@"started");
 
     // start the React Native interceptor using this ApproovService
     [ApproovRCTInterceptor startWithApproovService:self];
-
-    // if we are not initializing at startup then we setup an earliest network request time
-    // to allow time for the Approov initialization to occur in case it is racing with the the
-    // initial API calls
-    if (!isInitialized) {
-        earliestNetworkRequestTime = [[NSDate date] timeIntervalSince1970] + STARTUP_SYNC_DELAY;
-        ApproovLogI(@"started");
-    }
     return self;
 }
 
@@ -697,6 +694,15 @@ RCT_EXPORT_METHOD(fetchCustomJWT:(NSString*)payload resolver:(RCTPromiseResolveB
 
     // if the Approov SDK is not initialized then we just return immediately without making any changes
     if (!isInitialized) {
+        // if this is the first network request performed prior to Approov initialization then we
+        // start a time window in case we are in a race with that initialization
+        @synchronized(earliestNetworkRequestTimeLock) {
+            if (earliestNetworkRequestTime == 0) {
+                earliestNetworkRequestTime = [[NSDate date] timeIntervalSince1970] + STARTUP_SYNC_TIME_WINDOW;
+                ApproovLogI(@"startup sync time window started");
+            }
+        }
+
         // wait until any initial fetch time is reached
         BOOL waitForReady = YES;
         while (waitForReady) {

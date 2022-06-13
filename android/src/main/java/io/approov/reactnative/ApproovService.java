@@ -68,10 +68,13 @@ public class ApproovService extends ReactContextBaseJavaModule {
     // any prefix to be added before the Approov token, such as "Bearer "
     private static final String APPROOV_TOKEN_PREFIX = "";
 
-    // time delay in millseconds for the first network request to be allowed from the time the app
-    // starts prior to Approov being initialized to prevent the potential of data race for any API requests
-    // made as soon as the app starts up
-    private static final long STARTUP_SYNC_DELAY = 3000;
+    // time window (in millseconds) applied to any network request attempts made before Approov
+    // is initialized. The start of the window is defined by the first network request received
+    // prior to initialization. That network request, and any others arriving during the window, may
+    // then be delayed until the end of the window period. This is to allow time for the Approov
+    // initialization to be completed as it may be in a race with API requests made as the app
+    // starts up.
+    private static final long STARTUP_SYNC_TIME_WINDOW = 2500;
 
     // the application context used for certain framework calls
     private Context applicationContext;
@@ -254,6 +257,8 @@ public class ApproovService extends ReactContextBaseJavaModule {
                     setBindingHeader(bindingHeader);
             }
         }
+        else
+            Log.d(TAG, "started");
 
         // set the custom Approov OkHttp client builder in the React Native networking stack
         ApproovClientBuilder clientBuilder = new ApproovClientBuilder(this);
@@ -261,14 +266,6 @@ public class ApproovService extends ReactContextBaseJavaModule {
 
         // add the Approov client builder to any rn-fetch-blob instances
         configureRNFetchBlobIfFound(clientBuilder);
-
-        // if we are not initializing at startup then we setup an earliest network request time
-        // to allow time for the Approov initialization to occur in case it is racing with the the
-        // initial API calls
-        if (!isInitialized) {
-            earliestNetworkRequestTime = System.currentTimeMillis() + STARTUP_SYNC_DELAY;
-            Log.d(TAG, "started");
-        }
     }
 
     /**
@@ -329,10 +326,33 @@ public class ApproovService extends ReactContextBaseJavaModule {
     }
 
     /**
+     * Sets the earliest network request based on the current time plus the window period if
+     * the time has not been previously set.
+     */
+    public synchronized void setEarliestNetworkRequestTime() {
+        if (earliestNetworkRequestTime == 0) {
+            earliestNetworkRequestTime = System.currentTimeMillis() + STARTUP_SYNC_TIME_WINDOW;
+            Log.i(TAG, "startup sync time window started");
+        }
+    }
+
+    /**
      * Clears the earliest network request time so any network requests can proceed immediately.
      */
     private synchronized void clearEarliestNetworkRequestTime() {
         earliestNetworkRequestTime = 0;
+    }
+
+    /**
+     * Returns the earliest time that network requests should be allowed, in milliseconds, or 0
+     * if they are allowed immediately. This is used to perform a synchronization on any early network
+     * request thats should perhaps be subject to Approov protection that are performed prior to the
+     * initialization.
+     * 
+     * @return earliest network time in milliseconds, or 0 if no delay should be imposed
+     */
+    public synchronized long getEarliestNetworkRequestTime() {
+        return earliestNetworkRequestTime;
     }
 
     /**
@@ -385,19 +405,7 @@ public class ApproovService extends ReactContextBaseJavaModule {
     public synchronized boolean isInitialized() {
         return isInitialized;
     }
-
-    /**
-     * Returns the earliest time that network requests should be allowed, in milliseconds, or 0
-     * if they are allowed immediately. This is used to perform a synchronization on any early network
-     * request thats should perhaps be subject to Approov protection that are performed prior to the
-     * initialization.
-     * 
-     * @return earliest network time in milliseconds, or 0 if no delay should be imposed
-     */
-    public synchronized long getEarliestNetworkRequestTime() {
-        return earliestNetworkRequestTime;
-    }
-   
+ 
     /**
      * Indicates that requests should proceed anyway if it is not possible to obtain an Approov token
      * due to a networking failure. If this is called then the backend API can receive calls without the

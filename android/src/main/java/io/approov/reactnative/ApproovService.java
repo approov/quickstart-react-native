@@ -496,7 +496,7 @@ public class ApproovService extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public synchronized void addSubstitutionHeader(String header, String requiredPrefix) {
-        Log.d(TAG, "addSubtitutionHeader " + header + ", " + requiredPrefix);
+        Log.d(TAG, "addSubstitutionHeader " + header + ", " + requiredPrefix);
         substitutionHeaders.put(header, requiredPrefix);
     }
 
@@ -507,7 +507,7 @@ public class ApproovService extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public synchronized void removeSubstitutionHeader(String header) {
-        Log.d(TAG, "removeSubtitutionHeader " + header);
+        Log.d(TAG, "removeSubstitutionHeader " + header);
         substitutionHeaders.remove(header);
     }
 
@@ -533,10 +533,10 @@ public class ApproovService extends ReactContextBaseJavaModule {
         try {
             Pattern pattern = Pattern.compile("[\\?&]"+key+"=([^&;]+)");
             substitutionQueryParams.put(key, pattern);
-            Log.d(TAG, "addSubtitutionQueryParam " + key);
+            Log.d(TAG, "addSubstitutionQueryParam " + key);
         }
         catch (PatternSyntaxException e) {
-            Log.e(TAG, "addSubtitutionQueryParam " + key + " error: " + e.getMessage());
+            Log.e(TAG, "addSubstitutionQueryParam " + key + " error: " + e.getMessage());
         }
     }
 
@@ -547,7 +547,7 @@ public class ApproovService extends ReactContextBaseJavaModule {
      */
     @ReactMethod
     public synchronized void removeSubstitutionQueryParam(String key) {
-        Log.d(TAG, "removeSubtitutionQueryParam " + key);
+        Log.d(TAG, "removeSubstitutionQueryParam " + key);
         substitutionQueryParams.remove(key);
     }
 

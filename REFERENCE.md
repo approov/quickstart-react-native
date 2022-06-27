@@ -56,7 +56,7 @@ You are recommended to make this call inside the `approovSetup` function called 
 Adds the name of a `header` which should be subject to [secure strings](https://approov.io/docs/latest/approov-usage-documentation/#secure-strings) substitution. This means that if the `header` is present then the value will be used as a key to look up a secure string value which will be substituted into the `header` value instead. This allows easy migration to the use of secure strings. A `requiredPrefix` may be specified to deal with cases such as the use of "`Bearer `" prefixed before values in an authorization header. If this is not required then simply use an empty string.
 
 ```Javascript
-ApproovService..addSubstitutionHeader(header, requiredPrefix);
+ApproovService.addSubstitutionHeader(header, requiredPrefix);
 ```
 
 You are recommended to make this call inside the `approovSetup` function called by the `ApproovProvider`, to ensure this is setup prior to Approov initialization.

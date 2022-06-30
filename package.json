@@ -1,6 +1,6 @@
 {
   "name": "@approov/react-native-approov",
-  "version": "3.0.4",
+  "version": "3.0.5",
   "publishConfig": {
     "access": "public"
   },
@@ -30,6 +30,7 @@
   "licenseFilename": "LICENSE",
   "readmeFilename": "README.md",
   "main": "index.js",
+  "typings": "index",
   "bin": {
     "react-native-approov": "bin/index.js"
   },
@@ -39,7 +40,8 @@
   },
   "devDependencies": {
     "react": "^17.0.2",
-    "react-native": "^0.67.3"
+    "react-native": "^0.67.3",
+    "typescript": "^4.7.4"
   },
   "dependencies": {
     "chalk": "^4.1.0",

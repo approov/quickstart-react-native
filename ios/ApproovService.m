@@ -859,7 +859,7 @@ RCT_EXPORT_METHOD(fetchCustomJWT:(NSString*)payload resolver:(RCTPromiseResolveB
                 }
             } else if (status != ApproovTokenFetchStatusUnknownKey) {
                 // we have failed to get a secure string with a more serious permanent error
-                NSString *detail = [NSString stringWithFormat:@"Header substitution network: %@",
+                NSString *detail = [NSString stringWithFormat:@"Header substitution error: %@",
                         [Approov stringFromApproovTokenFetchStatus:status]];
                 return [ApproovInterceptorResult createWithRequest:updatedRequest
                         withAction:ApproovInterceptorActionFail withMessage:detail];

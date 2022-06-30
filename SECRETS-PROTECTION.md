@@ -88,7 +88,7 @@ You can use the `approov` CLI registration command as follows:
 approov registration -add /path/to/APK
 ```
 
-This makes a permanent registration for the the provided `APK`.
+This makes a permanent registration for the provided `APK`.
 
 [Managing Registrations](https://approov.io/docs/latest/approov-usage-documentation/#managing-registrations) provides more details for app registrations, especially for releases to the Play Store. Note that you may also need to apply specific [Android Obfuscation](https://approov.io/docs/latest/approov-usage-documentation/#android-obfuscation) rules for your app when releasing it.
 
@@ -105,7 +105,7 @@ ou can use the `approov` CLI registration command as follows:
 approov registration -add /path/to/IPA -bitcode
 ```
 
-This makes a permanent registration for the the provided `IPA`. Note, the `-bitcode` option must be used because React Native uses the bitcode variant of the Approov SDK.
+This makes a permanent registration for the provided `IPA`. Note, the `-bitcode` option must be used because React Native uses the bitcode variant of the Approov SDK.
 
 If you are building and running on an iOS simulator then there will be no `.ipa` file and you must ensure the app [always passes](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy) on your simulator without needing to perform a registration.
 

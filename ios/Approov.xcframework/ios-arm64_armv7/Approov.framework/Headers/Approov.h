@@ -165,7 +165,7 @@ __attribute__((visibility("default"))) @interface Approov: NSObject
  * SDK. Thus the method will return quickly. However, if this method is called when there has
  * been no prior call to fetch an Approov token then a network request to the Approov cloud
  * service will be made to obtain any latest configuration update. The maximum timeout period
- * is set to be quite short but the the caller must be aware that this delay may occur.
+ * is set to be quite short but the caller must be aware that this delay may occur.
  *
  * Note that the returned configuration should generally be kept in local storage for the app
  * so that it can be made available on initialisation of the Approov SDK next time the app

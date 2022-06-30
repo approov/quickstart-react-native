@@ -848,7 +848,7 @@ public class ApproovService extends ReactContextBaseJavaModule {
      *
      * @param key is the secure string key to be looked up
      * @param newDef is any new definition for the secure string, or null for lookup only
-     * @param promise to be fulfilled with the the secure string (should not be cached by your app)
+     * @param promise to be fulfilled with the secure string (should not be cached by your app)
      */
     @ReactMethod
     public void fetchSecureString(String key, String newDef, Promise promise) {
@@ -925,7 +925,7 @@ public class ApproovService extends ReactContextBaseJavaModule {
      * userInfo.rejectionReasons may provide additional information about the Approov rejection.
      *
      * @param payload is the marshaled JSON object for the claims to be included
-     * @param promise to be fulfilled with the the custom JWT (should not be cached by your app)
+     * @param promise to be fulfilled with the custom JWT (should not be cached by your app)
      */
     @ReactMethod
     public void fetchCustomJWT(String payload, Promise promise) {

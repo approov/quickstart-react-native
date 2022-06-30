@@ -187,7 +187,7 @@ typedef NS_ENUM(NSUInteger, RSSwizzleMode) {
 /**
  Swizzles the instance method of the class with the new implementation.
 
- Original implementation must always be called from the new implementation. And because of the the fact that for safe and robust swizzling original implementation must be dynamically fetched at the time of calling and not at the time of swizzling, swizzling API is a little bit complicated.
+ Original implementation must always be called from the new implementation. And because of the fact that for safe and robust swizzling original implementation must be dynamically fetched at the time of calling and not at the time of swizzling, swizzling API is a little bit complicated.
 
  You should pass a factory block that returns the block for the new implementation of the swizzled method. And use swizzleInfo argument to retrieve and call original implementation.
 
@@ -266,7 +266,7 @@ typedef NS_ENUM(NSUInteger, RSSwizzleMode) {
 /**
  Swizzles the class method of the class with the new implementation.
 
- Original implementation must always be called from the new implementation. And because of the the fact that for safe and robust swizzling original implementation must be dynamically fetched at the time of calling and not at the time of swizzling, swizzling API is a little bit complicated.
+ Original implementation must always be called from the new implementation. And because of the fact that for safe and robust swizzling original implementation must be dynamically fetched at the time of calling and not at the time of swizzling, swizzling API is a little bit complicated.
 
  You should pass a factory block that returns the block for the new implementation of the swizzled method. And use swizzleInfo argument to retrieve and call original implementation.
 

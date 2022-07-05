@@ -174,7 +174,7 @@ Here is an example of using the required method:
 
 ```Javascript
 ApproovService.fetchSecureString(key, newDef)
-.then((secret => {
+.then(secret => {
     // use `secret` as required, but never cache or store its value - note `secret` will be null if the
     // provided `key` is not defined
 })

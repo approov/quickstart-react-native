@@ -82,7 +82,7 @@ You should see an Approov Shapes app running. This is a plain React Native app a
 
 There are two buttons on the app. Pressing `check` will call the `shapes.approov.io` server's unprotected connectivity check endpoint `/v1/hello`, and this should succeed.
 
-The `shape` button requests a random shape from the API key protected `/v1/shapes` endpoint. This should succeed and you should see a successful shapes call with one of these shapes:
+The `fetch` button requests a random shape from the API key protected `/v1/shapes` endpoint. This should succeed and you should see a successful shapes call with one of these shapes:
 
 ![iOS Shapes](assets/shapes-ios.png)
 
@@ -203,7 +203,7 @@ This will deploy but not launch the app. Launch the app manually on your device.
 
 ### Android and iOS
 
-Now press the `Get Shape` button. You should now see this (or another shape):
+Now press the `fetch` button. You should now see this (or another shape):
 
 ![Android Shapes](assets/shapes-android.png)
 
@@ -270,7 +270,7 @@ yarn run react-native reg-ios
 yarn run react-native run-ios
 ```
 
-Run the app again without making any changes to the app and press the `Get Shape` button. You should now see this (or another shape):
+Run the app again without making any changes to the app and press the `fetch` button. You should now see this (or another shape):
 
 ![Android Shapes](assets/shapes-android.png)
 

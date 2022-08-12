@@ -80,7 +80,12 @@ Before integrating Approov into your React Native app, you should add all API do
 API calls protected by Approov will include an Approov token which must be checked. Backend quickstarts for common server frameworks, lanquages, and API gateways can be accessed at [Backend APIs](https://approov.io/docs/latest/approov-integration-examples/backend-api/).
 
 ```
-$ approov api --list
+approov api --list
+```
+
+Which will output something like the following:
+
+```
 1 API domain:
  shapes.approov.io          type:restricted, alg:HS256
 ```
@@ -88,7 +93,12 @@ $ approov api --list
 If you need to add API domains to your account:
 
 ```
-$ approov api -add shapes.approov.io
+approov api -add shapes.approov.io
+```
+
+You will be asked for confirmation:
+
+```
 WARNING: active role is for account <your-account>
 WARNING: adding the API will have an immediate impact on your apps in production. If you wish to continue then please enter YES and return: YES
 added new API domain shapes.approov.io with type:restricted, alg:HS256

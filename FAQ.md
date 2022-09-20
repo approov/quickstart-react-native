@@ -77,7 +77,7 @@ Before integrating Approov into your React Native app, you should add all API do
 
 ### How do I setup my backend service to check for approved API calls?
 
-API calls protected by Approov will include an Approov token which must be checked. Backend quickstarts for common server frameworks, lanquages, and API gateways can be accessed at [Backend APIs](https://approov.io/docs/latest/approov-integration-examples/backend-api/).
+API calls protected by Approov will include an Approov token which must be checked. Backend quickstarts for common server frameworks, lanquages, and API gateways can be accessed at [Backend API Quickstarts](https://approov.io/resource/quickstarts/#backend-api-quickstarts).
 
 ```
 approov api --list

@@ -154,9 +154,6 @@ const command = new Command()
   .action(async (opts) => {
     const project = new Project(process.cwd())
 
-    console.log(`**************************** android: ${opts.android}`)
-    console.log(`**************************** ios: ${opts.ios}`)
-
     try {
       await project.checkingReactNative()
       await project.checkingApproovCli()
@@ -166,11 +163,9 @@ const command = new Command()
 
       await project.installingApproovPackage()
       if (opts.android) {
-        console.log(`**************************** installing android files`)
         await project.installingAndroidFiles(props)
       }
       if (opts.ios) {
-        console.log(`**************************** installing ios files`)
         await project.installingIosFiles(props)
       }
     } catch (err) {

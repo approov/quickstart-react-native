@@ -74,7 +74,7 @@ dependencies {
     //noinspection GradleDynamicVersion
     implementation fileTree(dir: "libs", include: ["*.aar"])
     implementation 'com.facebook.react:react-native:+'
-    implementation 'com.github.approov:approov-android-sdk:3.0.0'
+    implementation 'com.github.approov:approov-android-sdk:3.1.0'
     if (findProject(':rn-fetch-blob') != null) {
         implementation project(path: ':rn-fetch-blob')  // From node_modules
     } else {

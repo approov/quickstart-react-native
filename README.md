@@ -36,6 +36,8 @@ For iOS you must also install [pod](https://cocoapods.org/) dependencies. Change
 pod install
 ```
 
+Note: do not worry if this generates warnings about duplicate UUIDs.
+
 ## ACTIVATING APPROOV
 
 In order to use Approov you must include it as a component that wraps your application components. This automatically deals with initializing Approov when the app is started. Import using the following:

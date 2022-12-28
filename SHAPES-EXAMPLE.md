@@ -8,7 +8,7 @@ This quickstart is written specifically for Android and iOS apps that are implem
 * You also need `yarn` classic (1.x), see [installing yarn](https://www.npmjs.com/package/yarn).
 * The `approov` command line tool [installed](https://approov.io/docs/latest/approov-installation/) with access to your account
 * [Android Studio](https://developer.android.com/studio) installed (version Bumblebee 2021.1 is used in this guide) if you will build the Android app. Note that the `ANDROID_SDK_ROOT` value must be properly defined to allow building.
-* [Xcode](https://developer.apple.com/xcode/) installed (version 13.3 is used in this guide) to build iOS version of application
+* [Xcode](https://developer.apple.com/xcode/) installed (version 14.1 is used in this guide) to build iOS version of application
 * [Cocoapods](https://cocoapods.org) installed to support iOS building (1.11.3 used in this guide)
 * An iOS device or simulator if you are using the iOS platform
 * An Android device or emulator if you are using the Android platform
@@ -18,10 +18,15 @@ This quickstart is written specifically for Android and iOS apps that are implem
 
 Firstly, we need to add the Shapes example itself. Three examples: `shapes_axios`, `shapes_fetch`, and `shapes_frisbee` all work with a publicly available shapes service at `shapes.approov.io`.
 
-We will use the Approov `shapes_fetch` example to illustrate the remaining steps to integrate Approov into a simple React Native app. To copy a pre-packaged example, start a command-line terminal, run the `react-native-approov example` command, and select an example and directory to install into:
+We will use the Approov `shapes_fetch` example to illustrate the remaining steps to integrate Approov into a simple React Native app. To copy a pre-packaged example, start a command-line terminal, run the `react-native-approov example` command:
 
 ```
-$ npx @approov/react-native-approov example
+npx @approov/react-native-approov example
+```
+
+Then select an example and directory to install into:
+
+```
 ✔ Select example app to copy › shapes_fetch
 ✔ Specify destination path … .
 ✔ Created shapes-fetch example.
@@ -56,6 +61,12 @@ To test the app on the iOS simulator, run it from the same `shapes_fetch` direct
 
 ```
 yarn run react-native run-ios
+```
+
+If you obtain an error about `No simulator available` then you can override the default simulator with an explicit selection (`iPhone 14` in this case):
+
+```
+yarn run react-native run-ios --simulator="iPhone 14"
 ```
 
 If you wish to run on a physical iOS device then connct it to your host platform over USB. See [Run an App on a device](https://help.apple.com/xcode/mac/current/#/dev5a825a1ca) for setup instructions.
@@ -101,6 +112,8 @@ For iOS you must also install [pod](https://cocoapods.org/) dependencies. Change
 ```
 pod install
 ```
+
+Note: do not worry if this generates warnings about duplicate UUIDs.
 
 ## ENSURE THE SHAPES API IS ADDED
 

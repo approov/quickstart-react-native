@@ -80,7 +80,8 @@ __attribute__((visibility("default"))) @interface ApproovTokenFetchResult: NSObj
 // no token could be obtained.
 @property (readonly, nonnull) NSString *token;
 
-// The secure string of the last secure string fetch. This may be nil if the string is not available.
+// The secure string of the last secure string fetch. This value should not be cached by the app client code. This may
+// be nil if the string is not available.
 @property (readonly, nullable) NSString *secureString;
 
 // Any Attestation Response Code (ARC) providing details of the device properties. This is the empty string if
@@ -113,7 +114,7 @@ typedef void (^ApproovTokenFetchCallback)(ApproovTokenFetchResult *_Nonnull resu
  * characters of the base64 encoded signature as an additional "sip" claim. This can be safely logged as it cannot be
  * transformed into a valid token since the full signature is not provided, but it can be subsequently checked for
  * validity if the shared secret is known with a very high probability. The loggable token is always valid JSON. If
- * there is an error then the type is given with the key "error". Note that this is not applicable to JWE tokens.
+ * there is no valid token then the status is provided in the "status" claim. Note that this is not applicable to JWE tokens.
  *
  * @return Loggable Approov token string
  */
@@ -141,7 +142,7 @@ __attribute__((visibility("default"))) @interface Approov: NSObject
  * that is obtained from the Approov CLI tool and contains all necessary parameters to initialize the SDK.
  * An updated configuration may be transmitted while the SDK is in use and this must be stored in the
  * local storage of the app. If "auto" is provided as the update configuration then the SDK will manage
- * its own configuration update storage. If "auto is used then on the very first initialization
+ * its own configuration update storage. If "auto" is used then on the very first initialization
  * a short network fetch will be attempted to get the latest update configuration if possible. If
  * "reinit" is provided for the comment then it allows the SDK to be reinitialized to change Approov
  * accounts.
@@ -165,7 +166,7 @@ __attribute__((visibility("default"))) @interface Approov: NSObject
  * SDK. Thus the method will return quickly. However, if this method is called when there has
  * been no prior call to fetch an Approov token then a network request to the Approov cloud
  * service will be made to obtain any latest configuration update. The maximum timeout period
- * is set to be quite short but the the caller must be aware that this delay may occur.
+ * is set to be quite short but the caller must be aware that this delay may occur.
  *
  * Note that the returned configuration should generally be kept in local storage for the app
  * so that it can be made available on initialisation of the Approov SDK next time the app
@@ -212,8 +213,7 @@ __attribute__((visibility("default"))) @interface Approov: NSObject
  * should never cache the Approov token as it may become invalidated at any point.
  *
  * If a new Approov token is required then a more extensive app measurement is performed that involves
- * communicating with the Approov cloud service. Thus this method may take up to several seconds to
- * return and should not be called from a UI thread. There is also a chance that due to poor network
+ * communicating with the Approov cloud service. There is a chance that due to poor network
  * connectivity or other factors an Approov token cannot be obtained, and this is reflected in the
  * returned status.
  *
@@ -257,7 +257,9 @@ __attribute__((visibility("default"))) @interface Approov: NSObject
  * Initiates an asynchronous request to obtain a custom JWT with the given payload. The call returns
  * immediately and when the token is fetched (or if the request times out due to an error, or if the
  * request is rejected) then a callback method is called on the supplied interface instance object.
- * This callback is made on a different thread. The payload must be valid JSON.
+ * This callback is made on a different thread. The payload must be valid JSON or else a BadPayload
+ * error status is returned. If the attestation process fails then the error status Rejected is
+ * returned. Finally, if the feature is not enabled then the Disabled status is returned.
  *
  * @param callbackHandler is a function that takes an ApproovTokenFetchResult when the token is obtained
  * @param payload provide marshaled JSON to be included in the custom JWT to be fetched
@@ -268,7 +270,9 @@ __attribute__((visibility("default"))) @interface Approov: NSObject
  * Initiates an synchronous request to obtain a custom JWT with the given payload. The call only
  * returns when the custom JWT has been obtained (or if the request times out due to an error, or
  * if the request is rejected) then a callback method is called on the supplied interface instance
- * object. This callback is made on a different thread. The payload must be valid JSON.
+ * object. This callback is made on a different thread. The payload must be valid JSON or else
+ * a BadPayload error status is returned. If the attestation process fails then the error status
+ * Rejected is returned. Finally, if the feature is not enabled then the Disabled status is returned.
  *
  * @param payload provide marshaled JSON to be included in the custom JWT to be fetched
  * @return results of fetching a token
@@ -280,9 +284,13 @@ __attribute__((visibility("default"))) @interface Approov: NSObject
  * returns immediately and when the secure string is fetched (or if the request times out due to an
  * error, or if the request is rejected) then a callback method is called on the supplied interface
  * instance object. This callback is made on a different thread. This provides the secure string value.
- * It is also possible to update the secure string value by providing a new definition. Note that
- * after an initial fetch secure strings will be available for some period until they expire, with
- * no latency for a network operation.
+ * It is also possible to update the secure string value by providing a new definition. In this case the
+ * new value is returned as the secure string. Use of an empty string for newDef removes the string entry.
+ * Note that after an initial fetch secure strings will be available for some period until they expire, with
+ * no latency for a network operation. If the string is not defined then the UnknownKey error status
+ * is returned. If the attestation process fails then the error status Rejected is returned. If the provided
+ * key is invalid then a BadKey status is returned. Finally, if the feature is not enabled then the Disabled
+ * status is returned.
  *
  * @param callbackHandler is a function that takes an ApproovTokenFetchResult when the token is obtained
  * @param key is the name of the key (max 64 characters) that the secure string is held against
@@ -294,11 +302,15 @@ __attribute__((visibility("default"))) @interface Approov: NSObject
  * Initiates an synchronous request to obtain, or update, a string held securely by the SDK. The
  * call only returns when secure string has been obtained (or if the request times out due to an error, or
  * if the request is rejected). This provides the secure string value. It is also possible to update
- * the secure string value by providing a new definition. Note that after an initial fetch secure
- * strings will be available for some period until they expire, with no latency for a network operation.
+ * the secure string value by providing a new definition. In this case the new value is returned as the
+ * secure string. Use of an empty string for newDef removes the string entry. Note that after an initial fetch secure
+ * strings will be available for some period until they expire, with no latency for a network operation. If
+ * the string is not defined then the UnknownKey error status is returned. If the attestation process fails
+ * then the error status Rejected is returned. If the provided key is invalid then a BadKey status is returned.
+ * Finally, if the feature is not enabled then the Disabled status is returned.
  *
  * @param key is the name of the key (max 64 characters) that the secure string is held against
- * @param newDef is any new definition for the secure string, or nil otherwise
+ * @param newDef is any new definition for the secure string, empty for deletion or nil otherwise
  * @return results of fetching the secure string
  */
 + (nonnull ApproovTokenFetchResult *)fetchSecureStringAndWait:(nonnull NSString *)key :(nullable NSString *)newDef;
@@ -371,12 +383,12 @@ __attribute__((visibility("default"))) @interface Approov: NSObject
 
 /**
  * Gets the signature for the given message. This uses an account specific message signing key that is
- * transmitted to the SDK after a successful token fetch if the facility is enabled for the account and
- * the token is received from the primary (rather than failover) Approov cloud. Note
+ * transmitted to the SDK after a successful token fetch if the facility is enabled for the account. Note
  * that if the attestation failed then the signing key provided is actually random so that the
  * signature will be incorrect. An Approov token should always be included in the message
  * being signed and sent alongside this signature to prevent replay attacks.
  *
+ * @param message is the content of the message to be signed
  * @return base64 encoded signature of the message, or nil if no signing key is available
  */
 + (nullable NSString *)getMessageSignature:(nonnull NSString *)message;

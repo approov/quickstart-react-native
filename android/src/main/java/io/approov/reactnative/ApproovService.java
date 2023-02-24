@@ -58,7 +58,7 @@ public class ApproovService extends ReactContextBaseJavaModule {
     // module name that defines how it is called from Javascript
     private static final String MODULE_NAME = "ApproovService";
 
-    // optional configiration and properties files
+    // optional configuration and properties files
     private static final String CONFIG_NAME = "approov.config";
     private static final String PROPS_NAME = "approov.props";
 
@@ -76,6 +76,12 @@ public class ApproovService extends ReactContextBaseJavaModule {
     // starts up.
     private static final long STARTUP_SYNC_TIME_WINDOW = 2500;
 
+    // flag indicating whether the Approov SDK has been initialized - if not then no Approov functionality is enabled
+    private static boolean isInitialized = false;
+
+    // any initial configuration used in order to detect a difference
+    private static String initialConfig = null;
+
     // the application context used for certain framework calls
     private Context applicationContext;
 
@@ -83,17 +89,11 @@ public class ApproovService extends ReactContextBaseJavaModule {
     // protected API calls being made before Approov itself can be initialized - or 0 they may proceed immediately
     private long earliestNetworkRequestTime;
 
-    // flag indicating whether the Approov SDK has been initialized - if not then no Approov functionality is enabled
-    private boolean isInitialized;
-
     // flag indicating if there is a pending prefetch to be executed upon initialization
     private boolean pendingPrefetch;
 
     // true if the interceptor should proceed on network failures and not add an Approov token
     private boolean proceedOnNetworkFail;
-
-    // any initial configuration used in order to detect a difference
-    private String initialConfig;
 
     // header to be used to send Approov tokens
     private String approovTokenHeader;
@@ -205,11 +205,9 @@ public class ApproovService extends ReactContextBaseJavaModule {
         // initialize the service state
         super(reactContext);
         applicationContext = reactContext;
-        isInitialized = false;
         earliestNetworkRequestTime = 0;
         pendingPrefetch = false;
         proceedOnNetworkFail = false;
-        initialConfig = null;
         approovTokenHeader = APPROOV_TOKEN_HEADER;
         approovTokenPrefix = APPROOV_TOKEN_PREFIX;
         bindingHeader = null;

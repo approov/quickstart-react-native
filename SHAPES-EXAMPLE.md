@@ -69,7 +69,7 @@ If you obtain an error about `No simulator available` then you can override the 
 yarn run react-native run-ios --simulator="iPhone 14"
 ```
 
-If you wish to run on a physical iOS device then connct it to your host platform over USB. See [Run an App on a device](https://help.apple.com/xcode/mac/current/#/dev5a825a1ca) for setup instructions.
+If you wish to run on a physical iOS device then connect it to your host platform over USB. See [Run an App on a device](https://help.apple.com/xcode/mac/current/#/dev5a825a1ca) for setup instructions.
 
 You must set up a development team to set up code signing and establish the device provisioning profile. Open the Xcode project as follows:
 

@@ -114,7 +114,8 @@
    didSendBodyData:(int64_t)bytesSent
     totalBytesSent:(int64_t)totalBytesSent
 totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
-    [_originalDelegate URLSession:session task:task didSendBodyData:bytesSent totalBytesSent:totalBytesSent totalBytesExpectedToSend:totalBytesExpectedToSend];
+    if ([_originalDelegate respondsToSelector:@selector(URLSession: task: didSendBodyData: totalBytesSent: totalBytesExpectedToSend:)])
+        [_originalDelegate URLSession:session task:task didSendBodyData:bytesSent totalBytesSent:totalBytesSent totalBytesExpectedToSend:totalBytesExpectedToSend];
 }
 
 /**
@@ -128,7 +129,8 @@ totalBytesExpectedToSend:(int64_t)totalBytesExpectedToSend {
 willPerformHTTPRedirection:(NSHTTPURLResponse *)response
         newRequest:(NSURLRequest *)request
  completionHandler:(void (^)(NSURLRequest *))completionHandler {
-    [_originalDelegate URLSession:session task:task willPerformHTTPRedirection:response newRequest:request completionHandler:completionHandler];
+    if ([_originalDelegate respondsToSelector:@selector(URLSession: task: willPerformHTTPRedirection: newRequest: completionHandler:)])
+        [_originalDelegate URLSession:session task:task willPerformHTTPRedirection:response newRequest:request completionHandler:completionHandler];
 }
 
 /**
@@ -141,7 +143,8 @@ willPerformHTTPRedirection:(NSHTTPURLResponse *)response
           dataTask:(NSURLSessionDataTask *)dataTask
 didReceiveResponse:(NSURLResponse *)response
  completionHandler:(void (^)(NSURLSessionResponseDisposition disposition))completionHandler {
-    [_originalDelegate URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
+    if ([_originalDelegate respondsToSelector:@selector(URLSession: dataTask: didReceiveResponse: completionHandler:)])
+        [_originalDelegate URLSession:session dataTask:dataTask didReceiveResponse:response completionHandler:completionHandler];
 }
 
 /**
@@ -153,7 +156,8 @@ didReceiveResponse:(NSURLResponse *)response
 - (void)URLSession:(NSURLSession *)session
           dataTask:(NSURLSessionDataTask *)dataTask
     didReceiveData:(NSData *)data {
-    [_originalDelegate URLSession:session dataTask:dataTask didReceiveData:data];
+    if ([_originalDelegate respondsToSelector:@selector(URLSession: dataTask: didReceiveData:)])
+        [_originalDelegate URLSession:session dataTask:dataTask didReceiveData:data];
 }
 
 /**
@@ -164,7 +168,8 @@ didReceiveResponse:(NSURLResponse *)response
 - (void)URLSession:(NSURLSession *)session
         task:(NSURLSessionTask *)task
         didCompleteWithError:(NSError *)error {
-    [_originalDelegate URLSession:session task:task didCompleteWithError:error];
+    if ([_originalDelegate respondsToSelector:@selector(URLSession: task: didCompleteWithError:)])
+        [_originalDelegate URLSession:session task:task didCompleteWithError:error];
     if (error) {
         ApproovLogE(@"session task completed with error: %@", error.debugDescription);
     }
@@ -177,7 +182,8 @@ didReceiveResponse:(NSURLResponse *)response
  */
 - (void)URLSession:(NSURLSession *)session
         didBecomeInvalidWithError:(NSError *)error {
-    [_originalDelegate URLSession:session didBecomeInvalidWithError:error];
+    if ([_originalDelegate respondsToSelector:@selector(URLSession: didBecomeInvalidWithError:)])
+        [_originalDelegate URLSession:session didBecomeInvalidWithError:error];
     if (error) {
         ApproovLogE(@"session did become invalid with error: %@", error.debugDescription);
     }

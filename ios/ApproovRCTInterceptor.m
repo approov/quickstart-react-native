@@ -95,9 +95,12 @@ static dispatch_once_t _onceToken = 0;
             if (delegate != nil) {
                 NSString *delegateClassName = NSStringFromClass([delegate class]);
                 ApproovLogD(@"checking session creation with %@ delegate", delegateClassName);
-                if ([delegateClassName hasPrefix:@"RCT"] || [delegateClassName isEqual:@"RNFetchBlobRequest"]) {
-                    // we have a delegate associated with React Native that we need to handle
-                    ApproovLogD(@"intercepting a session creation with %@ delegate", NSStringFromClass([delegate class]));
+                if (([delegateClassName hasPrefix:@"RCT"] || [delegateClassName isEqual:@"RNFetchBlobRequest"]) &&
+                    ![delegateClassName isEqual:@"RCTMultipartDataTask"]) {
+                    // we have a delegate associated with React Native that we need to handle (note we don't intercept
+                    // the RCTMultipartDataTask since this is specifically associated with bundle reload of Javascript and
+                    // is not associated with the app's own network requests)
+                    ApproovLogI(@"intercepting a session creation with %@ delegate", NSStringFromClass([delegate class]));
 
                     // add mock https protocol for sending status code and error
                     if (!configuration.protocolClasses || [configuration.protocolClasses count] == 0) {
@@ -114,7 +117,7 @@ static dispatch_once_t _onceToken = 0;
 
                     // remember this particular NSURLSession since it is one we should add Approov to. We only remember one for
                     // React Native at a time but this is okay given its session creation process. For rn-fetch-blob a new session
-                    // is created for each request, so there is a very small chance of race at this point but this would only
+                    // is created for each request, so there is a very small chance of a race at this point but this would only
                     // result in a missing Approov token rather than a pinning vulnerability.
                     if ([delegateClassName hasPrefix:@"RCT"])
                         interceptor->_RNSession = session;

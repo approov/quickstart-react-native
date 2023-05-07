@@ -46,7 +46,7 @@ The `react-native-approov` package adds a convenient registration command `reg-i
 yarn run react-native reg-ios
 ```
 
-ou can use the `approov` CLI registration command as follows:
+You can use the `approov` CLI registration command as follows:
 
 ```
 approov registration -add /path/to/IPA -bitcode
@@ -124,7 +124,7 @@ ApproovService.precheck()
 });
 ```
 
-This performs the operation in the backgrouund, and then either the provided success or failure function will be called.
+This performs the operation in the background, and then either the provided success or failure function will be called.
 
 > Note you should NEVER use this as the only form of protection in your app, this is simply to provide an early indication of failure to your users as a convenience. You must always also have APIs protected with Approov tokens that are essential to the operation of your app. This is because, although the Approov attestation itself is heavily secured, it may be possible for an attacker to bypass its result or prevent it being called at all.
 

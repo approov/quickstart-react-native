@@ -24,7 +24,7 @@ Pod::Spec.new do |s|
   s.resources = "ios/approov.{config,plist}"
 
   s.ios.vendored_frameworks = "ios/Approov.xcframework"
-  s.ios.deployment_target  = '10.0'
+  s.ios.deployment_target  = '12.5'
 
   s.dependency "React"
 end

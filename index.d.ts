@@ -1,6 +1,7 @@
 export declare class ApproovService {
     static initialize(config: string): Promise<void>;
     static setProceedOnNetworkFail(): void;
+    static setSuppressLoggingUnknownURL(): void;
     static setTokenHeader(header: string, prefix: string): void;
     static setBindingHeader(header: string): void;
     static addSubstitutionHeader(header: string, requiredPrefix: string): void;

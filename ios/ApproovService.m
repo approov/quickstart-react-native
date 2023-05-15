@@ -96,8 +96,11 @@ NSString *initialConfigString = nil;
 // keeps track of whether a prefetch request has been made prior to initialization
 BOOL pendingPrefetch = NO;
 
-// true if the interceptor should proceed on network failures and not add an Approov token
+// YES if the interceptor should proceed on network failures and not add an Approov token
 BOOL proceedOnNetworkFail = NO;
+
+// YES if no logging should be output on unknown (or excluded) URLs
+BOOL suppressLoggingUnknownURL = NO;
 
 // header that will be added to Approov enabled requests
 NSString *approovTokenHeader = @"Approov-Token";
@@ -295,6 +298,16 @@ RCT_EXPORT_METHOD(setProceedOnNetworkFail) {
     // no need to synchronize on this
     proceedOnNetworkFail = YES;
     ApproovLogI(@"proceedOnNetworkFail");
+}
+
+/**
+ * Indicates that logging should be suppressed for the requests to unknown (or excluded) URLs in order
+ * to reduce the level of logging for requests not protected with Approov.
+ */
+RCT_EXPORT_METHOD(setSuppressLoggingUnknownURL) {
+    // no need to synchronize on this
+    suppressLoggingUnknownURL = YES;
+    ApproovLogI(@"suppressLoggingUnknownURL");
 }
 
 /**
@@ -686,7 +699,8 @@ RCT_EXPORT_METHOD(fetchCustomJWT:(NSString*)payload resolver:(RCTPromiseResolveB
     // during development
     NSString *url = updatedRequest.URL.absoluteString;
     if ([host isEqualToString:@"localhost"]) {
-        ApproovLogI(@"localhost forwarded: %@", url);
+        if (!suppressLoggingUnknownURL)
+            ApproovLogI(@"localhost forwarded: %@", url);
         return [ApproovInterceptorResult createWithRequest:updatedRequest
             withAction:ApproovInterceptorActionProceed
             withMessage:@"localhost forwarded"];
@@ -742,7 +756,8 @@ RCT_EXPORT_METHOD(fetchCustomJWT:(NSString*)payload resolver:(RCTPromiseResolveB
         if (!error) {
             NSTextCheckingResult *match = [regex firstMatchInString:url options:0 range:NSMakeRange(0, [url length])];
             if (match) {
-                ApproovLogI(@"excluded url: %@", url);
+                if (!suppressLoggingUnknownURL)
+                    ApproovLogI(@"excluded url: %@", url);
                 return [ApproovInterceptorResult createWithRequest:updatedRequest
                     withAction:ApproovInterceptorActionProceed
                     withMessage:@"URL excluded"];
@@ -763,7 +778,8 @@ RCT_EXPORT_METHOD(fetchCustomJWT:(NSString*)payload resolver:(RCTPromiseResolveB
 
     // fetch the Approov token and log the result
     ApproovTokenFetchResult *result = [Approov fetchApproovTokenAndWait:url];
-    ApproovLogI(@"token for %@: %@", host, [result loggableToken]);
+    if (!suppressLoggingUnknownURL || ([result status] != ApproovTokenFetchStatusUnknownURL))
+        ApproovLogI(@"token for %@: %@", host, [result loggableToken]);
 
     // log if a configuration update is received and call fetchConfig to clear the update state
     if (result.isConfigChanged) {

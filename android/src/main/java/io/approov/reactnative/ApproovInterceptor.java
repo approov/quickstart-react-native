@@ -63,7 +63,8 @@ public class ApproovInterceptor implements Interceptor {
         String url = request.url().toString();
         String host = request.url().host();
         if (host.equals("localhost")) {
-            Log.d(TAG, "localhost forwarded: " + url);
+            if (!approovService.isSuppressLoggingUnknownURL())
+                Log.d(TAG, "localhost forwarded: " + url);
             return chain.proceed(request);
         }
 
@@ -106,7 +107,8 @@ public class ApproovInterceptor implements Interceptor {
         for (Pattern pattern: exclusionURLs.values()) {
             Matcher matcher = pattern.matcher(url);
             if (matcher.find()) {
-                Log.d(TAG, "excluded url: " + url);
+                if (!approovService.isSuppressLoggingUnknownURL())
+                    Log.d(TAG, "excluded url: " + url);
                 return chain.proceed(request);
             }
         }
@@ -118,9 +120,10 @@ public class ApproovInterceptor implements Interceptor {
             Log.d(TAG, "setting data hash for binding header " + bindingHeader);
         }
 
-        // request an Approov token for the domain
+        // request an Approov token for the domain and log unless suppressed
         Approov.TokenFetchResult approovResults = Approov.fetchApproovTokenAndWait(host);
-        Log.d(TAG, "token for " + host + ": " + approovResults.getLoggableToken());
+        if (!approovService.isSuppressLoggingUnknownURL() || (approovResults.getStatus() != Approov.TokenFetchStatus.UNKNOWN_URL))
+            Log.d(TAG, "token for " + host + ": " + approovResults.getLoggableToken());
 
         // force a pinning change if there is any dynamic config update, calling fetchConfig to
         // clear the update flag

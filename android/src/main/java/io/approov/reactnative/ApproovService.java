@@ -95,6 +95,9 @@ public class ApproovService extends ReactContextBaseJavaModule {
     // true if the interceptor should proceed on network failures and not add an Approov token
     private boolean proceedOnNetworkFail;
 
+    // true if the logging should be suppressed for unknown (and excluded) URLs
+    private boolean suppressLoggingUnknownURL;
+
     // header to be used to send Approov tokens
     private String approovTokenHeader;
 
@@ -208,6 +211,7 @@ public class ApproovService extends ReactContextBaseJavaModule {
         earliestNetworkRequestTime = 0;
         pendingPrefetch = false;
         proceedOnNetworkFail = false;
+        suppressLoggingUnknownURL = false;
         approovTokenHeader = APPROOV_TOKEN_HEADER;
         approovTokenPrefix = APPROOV_TOKEN_PREFIX;
         bindingHeader = null;
@@ -424,6 +428,25 @@ public class ApproovService extends ReactContextBaseJavaModule {
      */
     public synchronized boolean isProceedOnNetworkFail() {
         return proceedOnNetworkFail;
+    }
+
+    /**
+     * Indicates that logging for unknown (and excluded) URLs should be suppressed. This prevents excessive
+     * logging for fetches not associated with Approov protection.
+     */
+    @ReactMethod
+    public synchronized void setSuppressLoggingUnknownURL() {
+        Log.d(TAG, "setSuppressLoggingUnknownURL");
+        suppressLoggingUnknownURL = true;
+    }
+
+    /**
+     * Determines if requests should proceed on a network fail or not.
+     * 
+     * @return true if logging should be suppressed for unknown (and excluded) URLs.
+     */
+    public synchronized boolean isSuppressLoggingUnknownURL() {
+        return suppressLoggingUnknownURL;
     }
 
     /**

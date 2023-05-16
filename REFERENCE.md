@@ -34,6 +34,15 @@ Note that this should be used with *CAUTION* because it may allow a connection t
 
 You are recommended to make this call inside the `approovSetup` function called by the `ApproovProvider`, to ensure this is setup prior to Approov initialization.
 
+## SetSuppressLoggingUnknownURL
+Indicates that logging should be suppressed for requests to domains that have not been added in Approov. These requests would normally cause a `UNKNOWN_URL` (Android) or `unknown URL` (iOS) to be generated. Use this option if you wish to reduce the amount of logging being generated.
+
+```Javascript
+ApproovService.setSuppressLoggingUnknownURL();
+```
+
+Note that this also suppresses logging generated for domains that match a criteria set with `addExclusionURLRegex`.
+
 ## SetTokenHeader
 Sets the header that the Approov token is added on, as well as an optional prefix String (such as "`Bearer `"). Pass in an empty string if you do not wish to have a prefix. By default the token is provided on `Approov-Token` with no prefix.
 

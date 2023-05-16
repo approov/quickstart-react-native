@@ -32,7 +32,7 @@ const specs = {
     defaultVariant: 'debug',
   },
   ios: {
-    minDeployTarget: '10.0',
+    minDeployTarget: '12.5',
     defaultConfiguration: 'Debug',
   },
   reg: {

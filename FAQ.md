@@ -235,7 +235,7 @@ Note, it is strongly recommended that you test your Approov-integrated app on mu
 
 ### Changing your deployment target on iOS
 
-Both React Native and Approov require a minimum deployment target OS of `10.0`, so it is unlikely you need to change this value.
+As of version `3.1.4` the React Native implementation require a minimum deployment target OS of `12.5`, so it is unlikely you need to change this value. If you need support for earlier version of ios, version `3.1.3` offers support for iOS 10.
 
 To set the deployment target, open the `iOS` project in xcode and go to the `General` settings for your app. In the `Deployment Info` section, you will see a checked `iPhone` tab with a deployment value next to it. Select the deployment value and change as needed.
 

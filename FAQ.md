@@ -29,7 +29,7 @@ These are some common issues or questions you may have about Approov integration
 
 ### Check that your development environment is properly set up
 
-Ensure that you have a recent version of `React Native` (>= 0.60) installed (see [installing react native](https://reactnative.dev/docs/environment-setup)). You also need `yarn` classic (1.x) (see [installing yarn](https://www.npmjs.com/package/yarn)). If you can build the default `react-native init` app, your React Native environment is likely set up properly.
+Ensure that you have a recent version of `React Native` (>= 0.71) installed (see [installing react native](https://reactnative.dev/docs/environment-setup)). You also need `yarn` classic (1.x) (see [installing yarn](https://www.npmjs.com/package/yarn)). If you can build the default `react-native init` app, your React Native environment is likely set up properly.
 
 For Android, you will also want access to `adb` for identifying device IDs and running `logcat` (see [Android Debug Bridge ](https://developer.android.com/studio/command-line/adb)). For iOS, you should also install `ios-deploy` to run on iOS devices (see [installing ios-deploy](https://github.com/ios-control/ios-deploy)).
 
@@ -235,7 +235,7 @@ Note, it is strongly recommended that you test your Approov-integrated app on mu
 
 ### Changing your deployment target on iOS
 
-As of version `3.1.4` the React Native implementation require a minimum deployment target OS of `12.5`, so it is unlikely you need to change this value. If you need support for earlier version of ios, version `3.1.3` offers support for iOS 10.
+As of version `3.1.4` the React Native implementation require a minimum deployment target OS of `12.5`, so it is unlikely you need to change this value.
 
 To set the deployment target, open the `iOS` project in xcode and go to the `General` settings for your app. In the `Deployment Info` section, you will see a checked `iPhone` tab with a deployment value next to it. Select the deployment value and change as needed.
 

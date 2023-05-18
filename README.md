@@ -4,9 +4,9 @@ This quickstart is written specifically for Android and iOS apps that are implem
 
 This quickstart provides the basic steps for integrating Approov into your app. A more detailed step-by-step guide using a [Shapes App Example](https://github.com/approov/quickstart-react-native/blob/main/SHAPES-EXAMPLE.md) is also available.
 
-To follow this guide you should have received an onboarding email for a trial or paid Approov account.
+To follow this guide you should have received an onboarding email for a trial or paid Approov account and be using a version of ReactNative of 0.71 or above.
 
-Note that the minimum OS requirement for iOS is 10 and for Android the minimum SDK version is 21 (Android 5.0). You cannot use Approov in apps that need to support OS versions older than this.
+Note that the minimum OS requirement for iOS is 12.5 and for Android the minimum SDK version is 21 (Android 5.0). You cannot use Approov in apps that need to support OS versions older than this.
 
 ## CHECK INTEGRATION COMPATIBILITY
 

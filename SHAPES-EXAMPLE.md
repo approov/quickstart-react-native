@@ -4,7 +4,7 @@ This quickstart is written specifically for Android and iOS apps that are implem
 
 ## WHAT YOU WILL NEED
 * Access to a trial or paid Approov account
-* A recent version of `React Native` (>= 0.60) installed, see [installing react native](https://reactnative.dev/docs/environment-setup).
+* A recent version of `React Native` (>= 0.71) installed, see [installing react native](https://reactnative.dev/docs/environment-setup).
 * You also need `yarn` classic (1.x), see [installing yarn](https://www.npmjs.com/package/yarn).
 * The `approov` command line tool [installed](https://approov.io/docs/latest/approov-installation/) with access to your account
 * [Android Studio](https://developer.android.com/studio) installed (version Bumblebee 2021.1 is used in this guide) if you will build the Android app. Note that the `ANDROID_SDK_ROOT` value must be properly defined to allow building.

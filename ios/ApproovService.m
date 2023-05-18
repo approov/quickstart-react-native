@@ -777,7 +777,7 @@ RCT_EXPORT_METHOD(fetchCustomJWT:(NSString*)payload resolver:(RCTPromiseResolveB
     }
 
     // fetch the Approov token and log the result
-    ApproovTokenFetchResult *result = [Approov fetchApproovTokenAndWait:url];
+    ApproovTokenFetchResult *result = [Approov fetchApproovTokenAndWait:host];
     if (!suppressLoggingUnknownURL || ([result status] != ApproovTokenFetchStatusUnknownURL))
         ApproovLogI(@"token for %@: %@", host, [result loggableToken]);
 

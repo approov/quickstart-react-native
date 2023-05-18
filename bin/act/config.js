@@ -24,7 +24,7 @@
 // Approov-related specs
 const specs = {
   reactNative: {
-    minVersion: '0.60',
+    minVersion: '0.71',
   },
   android: {
     minSdk: '21',

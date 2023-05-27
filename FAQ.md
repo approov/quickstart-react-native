@@ -343,12 +343,6 @@ Support is also provided for [rn-fetch-blob](https://github.com/joltup/rn-fetch-
 
 Other networking libraries which are implemented using independent networking stacks rather than XHR do not use React Native networking and are not supported by Approov out of the box. If you have a need to use such a library, [contact support](#getting-additional-help), and we will work with you to complete the integration.
 
-### Why isn't Expo supported?
-
-Expo is a framework and a platform for universal React applications. There are two expo workflows - `managed` and `bare`. Managed apps are built with the expo-cli and are not compatible with React Native native modules. Because of this limitation, Approov cannot function properly in the expo managed environment.
-
-Expo's bare environment provides support for Expo SDKs without the restrictions imposed by the managed environment. This workflow may be compatible with Approov, and we are investigating future support for Approov in this environment.
-
 ### Integration may fail on Linux when Node installed as a Snap package
 
 There have been issues reported on Linux after installing Node using the Snap package, for example, [child_process spawn missing stdout](https://github.com/nodejs/node/issues/32430). This may cause package installations to fail when running `react-native-approov example` and `integrate` commands. The suggested workaround is to remove the snap node package and reinstall node using the linux distribution's package manager, for example, [installing node on ubuntu 20.04](https://dev.to/katerakeren/a-step-by-step-guide-to-installing-node-js-on-ubuntu-45h).

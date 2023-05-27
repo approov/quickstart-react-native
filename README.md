@@ -6,6 +6,8 @@ This quickstart provides the basic steps for integrating Approov into your app. 
 
 To follow this guide you should have received an onboarding email for a trial or paid Approov account and be using a version of ReactNative of 0.71 or above.
 
+It is possible to use this with [Expo](https://expo.dev/), although not with [Expo Go](https://expo.dev/client) as native library modules are required.
+
 Note that the minimum OS requirement for iOS is 12.5 and for Android the minimum SDK version is 21 (Android 5.0). You cannot use Approov in apps that need to support OS versions older than this.
 
 ## CHECK INTEGRATION COMPATIBILITY
@@ -28,6 +30,12 @@ Add the Approov package to your existing App with the following command:
 
 ```
 npm install @approov/react-native-approov
+```
+
+If you are installing into an Expo project then use:
+
+```
+expo install @approov/react-native-approov
 ```
 
 For iOS you must also install [pod](https://cocoapods.org/) dependencies. Change the directory to `ios` and type:

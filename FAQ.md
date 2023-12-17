@@ -43,7 +43,7 @@ Start with your own React Native app, or use one of the Approov-provided example
 Three examples `shapes_axios`, `shapes_fetch`, and `shapes_frisbee` all work with a publicly available shapes service at `shapes.approov.io`.
 We will use the Approov `shapes_fetch` example to illustrate the remaining steps to integrate Approov into a simple React Native app. To copy a pre-packaged example, start a command-line terminal, run the `react-native-approov example` command, and select an example and directory to install into:
 
-```
+```plaintext
 $ npx @approov/react-native-approov example
 ✔ Select example app to copy › shapes_fetch
 ✔ Specify destination path … .
@@ -85,7 +85,7 @@ approov api --list
 
 Which will output something like the following:
 
-```
+```plaintext
 1 API domain:
  shapes.approov.io          type:restricted, alg:HS256
 ```
@@ -98,7 +98,7 @@ approov api -add shapes.approov.io
 
 You will be asked for confirmation:
 
-```
+```plaintext
 WARNING: active role is for account <your-account>
 WARNING: adding the API will have an immediate impact on your apps in production. If you wish to continue then please enter YES and return: YES
 added new API domain shapes.approov.io with type:restricted, alg:HS256
@@ -144,19 +144,19 @@ ApproovService.prefetch():
 
 ### Troubleshooting Approov rejections
 
-What can you do if you have integrated and registered your app with Approov and your API calls are still being blocked? Consider the following steps:
+What can you do if you have integrated your app with Approov and your API calls are still being blocked? Consider the following steps:
 
-1. Your app is attested every five minutes when active. If you recently registered an app which is running, the new Approov token may not have been fetched yet. Relaunching the app may be all that is required.
+1. Your app is attested every five minutes when active. If you recently added an app signing certificate when an app which is running then it won't have propagated. Relaunching the app may be all that is required.
 
-2. Have you made any changes to your app, rebuilt it, and then forgotten to update your Approov registration?
+2. Is your app definitely being signed with the correct certificate.
 
-3. Has your Approov registration expired? The default `react-native reg-android` and  `react-native reg-ios` registrations expire after 1 hour.
+3. Are you running with a debugger attached or on an Android emulator? You can get valid tokens by [marking the signing certificate as being for development](https://approov.io/docs/latest/approov-usage-documentation/#development-app-signing-certificates).
 
-4. Is the device you are using consistent with your [Security Policies](https://approov.io/docs/latest/approov-usage-documentation/#security-policies)? For example, apps running on an Android emulator will be rejected by the default security policy. You may change devices or [check the approov security policies](https://approov.io/docs/latest/approov-usage-documentation/#changing-security-policy) and/or [change security policies for an individual device](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy).
+4. Are you running on an iOS simulator? These apps are not signed and are thus not recognized by default. You can get valid Approov tokens on a specific device by ensuring you are [forcing a device ID to pass](https://approov.io/docs/latest/approov-usage-documentation/#forcing-a-device-id-to-pass). As a shortcut, you can use the `latest` as discussed so that the `device ID` doesn't need to be extracted from the logs or an Approov token.
 
-5. Approov token data is logged to the console, and [additional annotations can be added](https://approov.io/docs/latest/approov-usage-documentation/#annotation-policies) to help explain why a particular Approov token is invalid and your app is not correctly authenticated with the Approov Cloud Service. The various forms of annotations are described here.
+5. Is the device you are using consistent with your [Security Policies](https://approov.io/docs/latest/approov-usage-documentation/#security-policies)? For example, apps running on an Android emulator will be rejected by the default security policy. You may change devices or [check the approov security policies](https://approov.io/docs/latest/approov-usage-documentation/#changing-security-policy) and/or [change security policies for an individual device](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy).
 
-6. You can also check [live metrics](https://approov.io/docs/latest/approov-usage-documentation/#live-metrics) to identify the cause of attestation failures.
+6. You can also check [live metrics](https://approov.io/docs/latest/approov-usage-documentation/#metrics-graphs) to identify the cause of attestation failures.
 
 7. If still stumped, contact Approov support for further assistance.
 
@@ -222,14 +222,12 @@ It is likely you developed your React Native project running on an Android emula
 This requires you to first identify the app's device ID running on the emulator (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to ensure the device always passes:
 
 ```
-approov device -add 123-deviceID-abc== -policy default,always-pass,all
+approov forcepass -addDevice 123-deviceID-abc==
 ```
 
-Once the app is set to always pass on the emulator, you do not have to register your app before receiving valid Approov tokens.
+3. Mark the app signing certificate as being for development.
 
-3. Change your account's rejection policies to allow emulators.
-
-With this approach, Approov will attest the app running on the emulator the same as any other device. You must register your app each time it changes in order to receive valid tokens. If you forget to revoke this rejection policy when you deploy your app to production, you may be running with looser security than you intended. To learn more about this approach, see [Rejection Policies](https://approov.io/docs/latest/approov-usage-documentation/#rejection-policies).
+You can [mark the signing certificate as being for development](https://approov.io/docs/latest/approov-usage-documentation/#development-app-signing-certificates). This means that any app signed with the certificate will be marked as being for development, so you don't have to worry about the device ID changing.
 
 Note, it is strongly recommended that you test your Approov-integrated app on multiple physical devices before deploying to production.
 
@@ -270,46 +268,47 @@ end
 
 ### Running on an iOS simulator
 
-It is likely you developed your React Native project running on an iOS simulator, and after Approov integration, your project will still run on an iOS simulator. However, Approov is unable to properly attest apps running on an iOS simulator, so it will always return an invalid Approov token. You can workaround this behavior in several ways:
+It is likely you developed your React Native project running on an iOS simulator, and after Approov integration, your project will still run on an iOS simulator. However, Approov is unable to properly attest apps running on an iOS simulator, so it will always return an invalid Approov token. Apps built for the simulator are never code signed. You can workaround this behavior in several ways:
 
-1. Run your ap on a physical device.
+1. Run your app on a physical device.
 
 2. Ensure the simulator device is set to always pass so the Approov service always returns a valid token.
 
 This requires you to first identify your app's device ID on the simulator (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). Once you have extracted the device ID, run an Approov device command to ensure the device always passes:
 
 ```
-approov device -add 123-deviceID-abc== -policy default,always-pass,all
+approov forcepass -addDevice 123-deviceID-abc==
 ```
 
-Once your app is set to always pass on the simulator, you do not have to register your app before receiving valid Approov tokens.
+This sets the app to always pass on the specific device ID.
 
 Note, it is strongly recommended that you test your Approov-integrated app on multiple physical devices before deploying to production.
 
 ### Running on an iOS device
 
-To truly test Approov API proetction, you should be running your integrated app on a real device. Unlike running in on a simulator, running on a physical device requires code signing and device provisioning.
+To truly test Approov API protection, you should be running your integrated app on a real device. Unlike running in on a simulator, running on a physical device requires code signing and device provisioning.
 
 Connect a single iOS device to your host platform over USB and follow the instructions to [Run an App on a device](https://help.apple.com/xcode/mac/current/#/dev5a825a1ca) You must set up a development team; learn more on the [Signing & Capabilities Workflow](https://help.apple.com/xcode/mac/current/#/dev60b6fbbc7).
 
 After integrating with Approov, there is a subtle problem running your app using `react-native run-ios --device`. Everything builds and runs properly, but because `react native run-ios` uses `lldb` to launch your app, Approov will always reject the app since it launcheded in a debugger.
 
-To work around this, after building your app with `run-ios`, you must then register your updated app, deploy the app, and finally launch it manually on the device. Here's a command sequence that relies on [ios-deploy](https://www.npmjs.com/package/ios-deploy), which you will need to install:
+To work around this, after building your app with `run-ios`, deploy the app, and finally launch it manually on the device. Here's a command sequence that relies on [ios-deploy](https://www.npmjs.com/package/ios-deploy), which you will need to install:
 
 ```
-$ yarn run react-native run-ios --device
-$ yarn run react-native reg-ios
-$ yarn run react-native deploy-ios
+yarn run react-native run-ios --device
+```
+```
+yarn run react-native deploy-ios
 ```
 
-This can get tedious if you are doing frequent debug loops. Consider ensuring your app [always passes](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy) on your development device. This requires you to first identify the app's device ID running on the device (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). After you have extracted the device ID, run an Approov device command to make the device always pass:
+This can get tedious if you are doing frequent debug loops. Identify the app's device ID running on the device (see [Extracting the Device ID](https://approov.io/docs/latest/approov-usage-documentation/#extracting-the-device-id)). After you have extracted the device ID, run an Approov device command to make the device always pass:
 
 ```
-approov device -add 123-deviceID-abc== -policy default,always-pass,all
+approov forcepass -addDevice 123-deviceID-abc==
 
 ```
 
-Once your app is set to always pass on the device, you do not have to register your app before receiving valid Approov tokens. Though this does not test Approov attestation, you can now just use the single `react-native run-ios --device` command to build and run your app.
+Once your app is set to always pass on the device, it will pass even if it is connected to a debugger. Though this does not test Approov attestation, you can now just use the single `react-native run-ios --device` command to build and run your app.
 
 You can use this same approach when developing on a simulator; see [Running on an iOS simulator](#running-on-an-ios-simulator).
 
@@ -330,7 +329,7 @@ The `react-native-approov` commands assume that the name of the iOS workspace is
 Removing Approov integration for your app just requires removing the `@approov/react-native-approov` package:
 
 ```
-$ yarn remove @approov/react-native-approov
+yarn remove @approov/react-native-approov
 ```
 
 In addition to the package, the Approov SDKs, base configurations, and property files will be removed.
@@ -359,7 +358,7 @@ Approov integration is controlled by the `react-native-approov` command and seve
 
 The command by-itself lists the available sub-commands:
 
-```
+```plaintext
 $ npx @approov/react-native-approov
 
 Usage: react-native-approov [options] [command]
@@ -379,7 +378,7 @@ Commands:
 
 Copy a prepared example into your filesystem using the `example` sub-command:
 
-```
+```plaintext
 $ npx @approov/react-native-approov example --help
 
 Usage: react-native-approov example [options] [app] [dir]
@@ -395,7 +394,7 @@ Options:
 
 Check that your React Native project is ready for Approov integration or is already properly integrated using the `check` sub-command:
 
-```
+```plaintext
 $ npx @approov/react-native-approov check --help
 Usage: react-native-approov check [options]
 
@@ -411,7 +410,7 @@ Previous versions of this quickstart used a default flow that integrated Approov
 
 Integrate Approov into your React Native project using the `integrate` sub-command:
 
-```
+```plaintext
 $ npx @approov/react-native-approov integrate --help
 
 Usage: react-native-approov integrate [options]
@@ -435,7 +434,7 @@ Several sub-commands are added to the `react-native` CLi to support Approov.
 
 Register the latest Android app with Approov:
 
-```
+```plaintext
 react-native reg-android 
 
 register Android debug APK
@@ -457,7 +456,7 @@ Example usage:
 
 Register the latest iOS app with Approov:
 
-```
+```plaintext
 register iOS debug device IPA
 
 Options:
@@ -477,7 +476,7 @@ Example usage:
 
 Deploy the latest iOS app to a device without launching it:
 
-```
+```plaintext
 react-native deploy-ios 
 
 deploy iOS debug app to device
@@ -495,6 +494,6 @@ Example usage:
 
 ![GitHub](https://img.shields.io/github/license/approov/quickstart-react-native)
 
-Copyright © 2022 CriticalBlue, Ltd.
+Copyright © 2023 Approov, Ltd.
 
 ---

@@ -32,6 +32,8 @@ Add the Approov package to your existing App with the following command:
 npm install @approov/react-native-approov
 ```
 
+Note if you experience an error related to peer dependencies, then you can append the `--force` to install with your particular React Native version. The plugin supports version 0.71 or above.
+
 If you are installing into an Expo project then use:
 
 ```

@@ -103,6 +103,8 @@ In a shell terminal in the `shapes_fetch` directory, type the following command 
 npm install @approov/react-native-approov
 ```
 
+Note if you experience an error related to peer dependencies, then you can append the `--force` to install with your particular React Native version. The plugin supports version 0.71 or above.
+
 For iOS you must also install [pod](https://cocoapods.org/) dependencies. Change directory to `ios` and type:
 
 ```

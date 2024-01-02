@@ -8,7 +8,7 @@ To follow this guide you should have received an onboarding email for a trial or
 
 It is possible to use this with [Expo](https://expo.dev/), although not with [Expo Go](https://expo.dev/client) as native library modules are required.
 
-Note that the minimum OS requirement for iOS is 12.5 and for Android the minimum SDK version is 21 (Android 5.0). You cannot use Approov in apps that need to support OS versions older than this.
+Note that the minimum OS requirement for iOS is 13.4 and for Android the minimum SDK version is 21 (Android 5.0). You cannot use Approov in apps that need to support OS versions older than this.
 
 ## CHECK INTEGRATION COMPATIBILITY
 

@@ -249,7 +249,7 @@ require_relative '../node_modules/@react-native-community/cli-platform-ios/nativ
 
 install! 'cocoapods', :deterministic_uuids => false, :warn_for_unused_master_specs_repo => false
 
-platform :ios, '10.0'
+platform :ios, '13.4'
 
 target 'shapes_axios' do
 

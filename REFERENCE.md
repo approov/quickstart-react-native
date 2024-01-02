@@ -41,6 +41,8 @@ You are recommended to make this call inside the `approovSetup` function called 
 ApproovService.SetDevKey(devKey);
 ```
 
+This function returns a `Promise` that is resolved when the operation is completed.
+
 ## SetSuppressLoggingUnknownURL
 Indicates that logging should be suppressed for requests to domains that have not been added in Approov. These requests would normally cause a `UNKNOWN_URL` (Android) or `unknown URL` (iOS) to be generated. Use this option if you wish to reduce the amount of logging being generated.
 

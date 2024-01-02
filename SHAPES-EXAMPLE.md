@@ -70,7 +70,7 @@ If you wish to run on a physical iOS device then connect it to your host platfor
 You must set up a development team to set up code signing and establish the device provisioning profile. Open the Xcode project as follows:
 
 ```
-open ios/shapes.xcworkspace
+open ios/shapes_fetch.xcworkspace
 ```
 
 and navigate to the `shapes` project and select the `Signing & Capabilities` tab where signing can be configured.

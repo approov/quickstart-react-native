@@ -39,11 +39,7 @@ Then select an example and directory to install into:
 
 The example react-native project is downloaded, npm packages are installed, and, on iOS, pod dependencies are also installed. The above output was elided for brevity.
 
-Depending on your platform, before building your app, you may need to explicitly start the metro packager in the top-level React Native project directory as well as starting an emulator/simulator or connecting a physical device. Ensure you are in the `shapes_fetch` and execute:
-
-```
-yarn run react-native start
-```
+Depending on your platform, before building your app, you may need to explicitly start the metro packager in the top-level React Native project directory as well as starting an emulator/simulator or connecting a physical device.
 
 ### Android
 

@@ -10,15 +10,19 @@
 		</data>
 		<key>Info.plist</key>
 		<data>
-		DSMVnQn1gngsoK9OuDq44mufP1s=
+		MNsEnT0HTgv4/6RbRXedoR1kgmY=
 		</data>
 		<key>Modules/module.modulemap</key>
 		<data>
 		N+uNNNarw/86UNk3OTnktt1SccE=
 		</data>
+		<key>PrivacyInfo.xcprivacy</key>
+		<data>
+		c3Q0YNWM0ZZmJUi37DWFLQxZtkY=
+		</data>
 		<key>cbconfig.plist</key>
 		<data>
-		75YWcVH11bkdcN5q0JBbI5Vxvdo=
+		1bk+lrKLUQ0MBxBw4m2f2HLBPMw=
 		</data>
 	</dict>
 	<key>files2</key>
@@ -37,11 +41,18 @@
 			bag+tTBxPgpEIck5F9lJyaoAHe5QHHPBUeQ/w7bctnE=
 			</data>
 		</dict>
+		<key>PrivacyInfo.xcprivacy</key>
+		<dict>
+			<key>hash2</key>
+			<data>
+			FQkK0XjQxvZKTLwKBBxoFc457sioRGXK4dhzwTDPs1E=
+			</data>
+		</dict>
 		<key>cbconfig.plist</key>
 		<dict>
 			<key>hash2</key>
 			<data>
-			1D5PmF3DpqKalnz4Rx3o2acw1CCdPAM9tK8Ul9zwA2I=
+			UVqC0REeTYjIsxhDofdHrMc4C8FwNHWDGe2EIg46itI=
 			</data>
 		</dict>
 	</dict>

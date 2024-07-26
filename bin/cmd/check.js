@@ -25,15 +25,13 @@ const { Project } = require('../act')
 const command = (new Command())
 
 .name('check')
-.description('Check Approov integration in the current app')
+.description('Check status of the current app')
 
 .action(async (opts) => {
   const project = new Project(process.cwd())
 
   try {
     await project.checkingReactNative()
-    await project.checkingApproovCli()
-    await project.findingApproovApiDomains()
     await project.checkingApproovPackage()
     await project.checkingAndroidProject()
     await project.checkingIosProject()

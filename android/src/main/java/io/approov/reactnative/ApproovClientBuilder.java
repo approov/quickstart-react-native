@@ -21,8 +21,6 @@
 
 package io.approov.reactnative;
 
-import io.approov.service.ApproovService;
-
 import com.facebook.react.modules.network.NetworkingModule.CustomClientBuilder;
 import com.facebook.react.modules.network.ReactCookieJarContainer;
 
@@ -33,51 +31,47 @@ import okhttp3.CertificatePinner;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
 
-public class ApproovClientBuilder implements CustomClientBuilder, ApproovService.Listener {
-    private final String TAG = "ApproovClientBuilder";
+// ApproovClientBuilder is a custom client building for OkHttp to add Approov protection, including dynamic pinning
+public class ApproovClientBuilder implements CustomClientBuilder, ApproovService.PinChangeListener {
+    // underlying ApproovService that is wrapping the SDK
+    private ApproovService approovService;
 
+    // interceptor for adding Approov tokens or substituting headers and/or query parameters
     private Interceptor interceptor;
+
+    // current certificate pinner to be used
     private CertificatePinner pinner;
 
     /**
-     * Creates an Approov client builder.
-     * 
-     * This builder adds an approov interceptor to API requests and sets the initial certificate pins.
-     * The builder updates the certificate pins on any Approov service changes.
+     * Creates an ApproovClientBuilder for OkHttp requests. This adds the interceptor and certificate
+     * pinning, which can be dynamically updated if the pins change during app usage.
      *
-     * @param context the app context.
-     * @param approovService the Approov service.
+     * @param approovService is the ApproovService being used
      */
-    public ApproovClientBuilder(Context context, ApproovService approovService) {
+    public ApproovClientBuilder(ApproovService approovService) {
+        this.approovService = approovService;
+        
         // set initial certificate pinner
         pinner = ApproovCertificatePinner.build(approovService);
 
-        // set interceptor
-        interceptor = new ApproovInterceptor(context, approovService);
+        // set the interceptor
+        interceptor = new ApproovInterceptor(approovService);
 
-        // listen for any service changes
-        approovService.addListener(this);
+        // listen for any future pinning changes
+        approovService.addPinChangeListener(this);
     }
 
     /**
-     * Handles an Approov service change.
-     * 
-     * Certificate pins are updated.
-     * 
-     * @param approovService the Approov service.
+     * Handles a change to the Approov pins by creating a new pinner.
      */
-    public void approovServiceChanged(ApproovService approovService) {
+    public void approovPinsUpdated() {
         pinner = ApproovCertificatePinner.build(approovService);
     }
 
     @Override
     public void apply(OkHttpClient.Builder builder) {
-        if (builder == null) return;
-
-        Log.d(TAG, "Applying Approov custom client builder");
-
-        builder
-            .addInterceptor(interceptor)
-            .certificatePinner(pinner);
+        if (builder != null) {
+            builder.addInterceptor(interceptor).certificatePinner(pinner);
+        }
     }
 }

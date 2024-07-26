@@ -26,124 +26,225 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.Properties;
+import java.util.regex.Pattern;
+import java.util.regex.Matcher;
+import java.util.Map;
 
 import android.content.Context;
 import android.util.Log;
 
-import io.approov.service.ApproovService;
 import okhttp3.Interceptor;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import com.criticalblue.approovsdk.Approov;
+
+// interceptor to add Approov tokens or substitute headers and query parameters
 public class ApproovInterceptor implements Interceptor {
-    private final static String TAG = "ApproovInterceptor";
-
-    private static final String PROPS_NAME = "approov.props";
-
-    private String tokenName;
-    private String tokenPrefix;
-    private boolean shouldBind;
-    private String bindingName;
-
-    // context for handling props
-    private Context appContext;
+    // logging tag
+    private final static String TAG = "ApproovService";
 
     // service wrapping Approov SDK
     private ApproovService approovService;
 
     /**
-     * Adds an Approov token to network requests.
+     * Creates a new ApproovInterceptor for adding Approov protection to requests.
      *
-     * @param context the application context.
-     * @param approovService the Approov service.
+     * @param approovService the Approov service being used
      */
-    public ApproovInterceptor(Context context, ApproovService approovService) {
-        this.appContext = context;
+    public ApproovInterceptor(ApproovService approovService) {
         this.approovService = approovService;
-
-        setProps();
-    }
-
-    private void setProps() {
-        String value;
-
-        // try to load props
-
-        Properties props = new Properties();
-        try {
-            props.load(appContext.getAssets().open(PROPS_NAME));
-            Log.i(TAG, "Approov props read from file " + PROPS_NAME);
-        } catch(Exception e){
-            Log.e(TAG, "Approov props read failed: " +
-                    e.getMessage() + ". Please make sure you have the file " + PROPS_NAME +
-                    " available in your app's android/app/src/main/assets/ directory." +
-                    " Using defaults.");
-        }
-
-        // update props
-
-        value = props.getProperty("token.name");
-        if (value == null) {
-            tokenName = "Approov-Token";
-        } else if (value.length() > 0) {
-            tokenName = value;
-        } else {
-            tokenName = "Approov-Token";
-            Log.e(TAG, "Illegal token.name in " + PROPS_NAME + "; using " + tokenName + " type.");
-        }
-        Log.i(TAG, "token.name: \'" + tokenName + "\'");
-
-        value = props.getProperty("token.prefix");
-        if (value == null || value.length() == 0) {
-            tokenPrefix = "";
-        } else {
-            tokenPrefix = value + " ";
-        }
-        Log.i(TAG, "token.prefix: \'" + tokenPrefix + "\'");
-
-        value = props.getProperty("binding.name");
-        if (value == null || value.length() == 0) {
-            bindingName = "";
-            shouldBind = false;
-        } else {
-            bindingName = value;
-            shouldBind = true;
-        }
-        Log.i(TAG, "binding.name: \'" + bindingName + "\'");
     }
 
     @Override
     public Response intercept(Chain chain) throws IOException {
-        // update the data hash based on any token binding header
+        // if there are any accesses to localhost then they are just passed through
         Request request = chain.request();
+        String url = request.url().toString();
+        String host = request.url().host();
+        if (host.equals("localhost")) {
+            if (!approovService.isSuppressLoggingUnknownURL())
+                Log.d(TAG, "localhost forwarded: " + url);
+            return chain.proceed(request);
+        }
 
-        // bind token if appropriate
-        if (shouldBind) {
-            String data = request.header(bindingName);
-            if (data != null) {
-                Log.i(TAG, "Approov token binding to " + bindingName);
-                if (data.length() >= 0) {
-                    approovService.bindToken(data);
-                } else {
-                    Log.w(TAG, "Approov token not bound: empty " + bindingName + " header value");
+        // if Approov is not initialized then perform any necessary synchronization to avoid a race on any
+        // initial network fetches
+        if (!approovService.isInitialized()) {
+            // mark the earliest network fetch request time prior to initialization - it is only updated
+            // if it is currently unset
+            approovService.setEarliestNetworkRequestTime();
+
+            // wait until any initial fetch time is reached
+            boolean waitForReady = true;
+            while (waitForReady) {
+                long currentTime = System.currentTimeMillis();
+                long earliestTime = approovService.getEarliestNetworkRequestTime();
+                if (currentTime >= earliestTime)
+                    waitForReady = false;
+                else {
+                    // sleep for a short period to block this request thread
+                    Log.d(TAG, "request paused: " + url);
+                    try {
+                        Thread.sleep(100);
+                    }
+                    catch (InterruptedException e) {
+                        Log.d(TAG, "request pause interrupted: " + url);
+                    }
                 }
-            } else {
-                Log.w(TAG, "Approov token not bound: missing " + bindingName + "header");
+            }
+
+            // if Approov is still not initialized then forward the request unchanged
+            if (!approovService.isInitialized()) {
+                Log.d(TAG, "uninitialized forwarded: " + url);
+                return chain.proceed(request);
             }
         }
 
-        // request an Approov token for the domain (may throw IOException)
-        String token = approovService.getToken(request.url().host());
-
-        // if retry, then return status 503 to fetch
-        if ("RETRY".equals(token)) {
-            Response response = chain.proceed(chain.request());
-            return response.newBuilder().code(503).message("Approov service not reached").build();
+        // check if the URL matches one of the exclusion regexs and just proceed without making
+        // changes if so
+        Map<String, Pattern> exclusionURLs = approovService.getExclusionURLRegexs();
+        for (Pattern pattern: exclusionURLs.values()) {
+            Matcher matcher = pattern.matcher(url);
+            if (matcher.find()) {
+                if (!approovService.isSuppressLoggingUnknownURL())
+                    Log.d(TAG, "excluded url: " + url);
+                return chain.proceed(request);
+            }
         }
 
-        // if successful, add Approov token
-        if (token.length() > 0) {
-            request = request.newBuilder().header(tokenName, tokenPrefix + token).build();
+        // update the data hash based on any token binding header (presence is optional)
+        String bindingHeader = approovService.getBindingHeader();
+        if ((bindingHeader != null) && request.headers().names().contains(bindingHeader)) {
+            Approov.setDataHashInToken(request.header(bindingHeader));
+            Log.d(TAG, "setting data hash for binding header " + bindingHeader);
+        }
+
+        // request an Approov token for the domain and log unless suppressed
+        Approov.TokenFetchResult approovResults = Approov.fetchApproovTokenAndWait(host);
+        if (!approovService.isSuppressLoggingUnknownURL() || (approovResults.getStatus() != Approov.TokenFetchStatus.UNKNOWN_URL))
+            Log.d(TAG, "token for " + host + ": " + approovResults.getLoggableToken());
+
+        // force a pinning change if there is any dynamic config update, calling fetchConfig to
+        // clear the update flag
+        if (approovResults.isConfigChanged()) {
+            Log.d(TAG, "dynamic config update received");
+            Approov.fetchConfig();
+            approovService.notifyPinChangeListeners();
+        }
+
+        // we cannot proceed if the pins need to be updated. We notify any certificate pinners that
+        // they need to update. This might occur on first use after initial app install if the
+        // initial network fetch was unable to obtain the dynamic configuration for the account if
+        // there was poor network connectivity at that point.
+        if (approovResults.isForceApplyPins()) {
+            Log.d(TAG, "force apply pins asserted so aborting request");
+            approovService.notifyPinChangeListeners();
+            throw new IOException("Approov pins need to be updated");
+        }
+
+        // check the status of Approov token fetch
+        if (approovResults.getStatus() == Approov.TokenFetchStatus.SUCCESS) {
+            // we successfully obtained a token so add it to the header for the request
+            String header = approovService.getTokenHeader();
+            String prefix = approovService.getTokenPrefix();
+            request = request.newBuilder().header(header, prefix + approovResults.getToken()).build();
+        }
+        else if ((approovResults.getStatus() == Approov.TokenFetchStatus.NO_NETWORK) ||
+                 (approovResults.getStatus() == Approov.TokenFetchStatus.POOR_NETWORK) ||
+                 (approovResults.getStatus() == Approov.TokenFetchStatus.MITM_DETECTED)) {
+            // we are unable to get an Approov token due to network conditions so the request can
+            // be retried by the user later - unless this is overridden
+            if (!approovService.isProceedOnNetworkFail())
+                throw new IOException("Approov token fetch for " + host + ": " + approovResults.getStatus().toString());
+        }
+        else if ((approovResults.getStatus() != Approov.TokenFetchStatus.NO_APPROOV_SERVICE) &&
+                 (approovResults.getStatus() != Approov.TokenFetchStatus.UNKNOWN_URL) &&
+                 (approovResults.getStatus() != Approov.TokenFetchStatus.UNPROTECTED_URL))
+            // we have failed to get an Approov token with a more serious permanent error
+            throw new IOException("Approov token fetch for " + host + ": " + approovResults.getStatus().toString());
+
+        // we only continue additional processing if we had a valid status from Approov, to prevent additional delays
+        // by trying to fetch from Approov again and this also protects against header substitutions in domains not
+        // protected by Approov and therefore potential subject to a MitM
+        if ((approovResults.getStatus() != Approov.TokenFetchStatus.SUCCESS) &&
+            (approovResults.getStatus() != Approov.TokenFetchStatus.UNPROTECTED_URL))
+            return chain.proceed(request);
+
+        // we now deal with any header substitutions, which may require further fetches but these
+        // should be using cached results
+        Map<String, String> subsHeaders = approovService.getSubstitutionHeaders();
+        for (Map.Entry<String, String> entry: subsHeaders.entrySet()) {
+            String header = entry.getKey();
+            String prefix = entry.getValue();
+            String value = request.header(header);
+            if ((value != null) && value.startsWith(prefix) && (value.length() > prefix.length())) {
+                approovResults = Approov.fetchSecureStringAndWait(value.substring(prefix.length()), null);
+                Log.d(TAG, "substituting header: " + header + ", " + approovResults.getStatus().toString());
+                if (approovResults.getStatus() == Approov.TokenFetchStatus.SUCCESS) {
+                    // substitute the header
+                    request = request.newBuilder().header(header, prefix + approovResults.getSecureString()).build();
+                }
+                else if (approovResults.getStatus() == Approov.TokenFetchStatus.REJECTED)
+                    // if the request is rejected then we provide a special exception with additional information
+                    throw new IOException("Header substitution for " + header + ": " +
+                            approovResults.getStatus().toString() + ": " + approovResults.getARC() +
+                            " " + approovResults.getRejectionReasons());
+                else if ((approovResults.getStatus() == Approov.TokenFetchStatus.NO_NETWORK) ||
+                         (approovResults.getStatus() == Approov.TokenFetchStatus.POOR_NETWORK) ||
+                         (approovResults.getStatus() == Approov.TokenFetchStatus.MITM_DETECTED)) {
+                    // we are unable to get the secure string due to network conditions so the request can
+                    // be retried by the user later - unless this is overridden
+                    if (!approovService.isProceedOnNetworkFail())
+                        throw new IOException("Header substitution for " + header + ": " +
+                            approovResults.getStatus().toString());
+                }
+                else if (approovResults.getStatus() != Approov.TokenFetchStatus.UNKNOWN_KEY)
+                    // we have failed to get a secure string with a more serious permanent error
+                    throw new IOException("Header substitution for " + header + ": " +
+                            approovResults.getStatus().toString());
+            }
+        }
+
+        // we now deal with any query parameter substitutions, which may require further fetches but these
+        // should be using cached results
+        String currentURL = request.url().toString();
+        Map<String, Pattern> queryParams = approovService.getSubstitutionQueryParams();
+        for (Map.Entry<String, Pattern> entry: queryParams.entrySet()) {
+            String queryKey = entry.getKey();
+            Pattern pattern = entry.getValue();
+            Matcher matcher = pattern.matcher(currentURL);
+            if (matcher.find()) {
+                // we have found an occurrence of the query parameter to be replaced so we look up the existing
+                // value as a key for a secure string
+                String queryValue = matcher.group(1);
+                approovResults = Approov.fetchSecureStringAndWait(queryValue, null);
+                Log.d(TAG, "substituting query parameter: " + queryKey + ", " + approovResults.getStatus().toString());
+                if (approovResults.getStatus() == Approov.TokenFetchStatus.SUCCESS) {
+                    // substitute the query parameter
+                    currentURL = new StringBuilder(currentURL).replace(matcher.start(1),
+                            matcher.end(1), approovResults.getSecureString()).toString();
+                    request = request.newBuilder().url(currentURL).build();
+                }
+                else if (approovResults.getStatus() == Approov.TokenFetchStatus.REJECTED)
+                    // if the request is rejected then we provide a special exception with additional information
+                    throw new IOException("Query parameter substitution for " + queryKey + ": " +
+                            approovResults.getStatus().toString() + ": " + approovResults.getARC() +
+                            " " + approovResults.getRejectionReasons());
+                else if ((approovResults.getStatus() == Approov.TokenFetchStatus.NO_NETWORK) ||
+                         (approovResults.getStatus() == Approov.TokenFetchStatus.POOR_NETWORK) ||
+                         (approovResults.getStatus() == Approov.TokenFetchStatus.MITM_DETECTED)) {
+                    // we are unable to get the secure string due to network conditions so the request can
+                    // be retried by the user later - unless this is overridden
+                    if (!approovService.isProceedOnNetworkFail())
+                        throw new IOException("Query parameter substitution for " + queryKey + ": " +
+                            approovResults.getStatus().toString());
+                }
+                else if (approovResults.getStatus() != Approov.TokenFetchStatus.UNKNOWN_KEY)
+                    // we have failed to get a secure string with a more serious permanent error
+                    throw new IOException("Query parameter substitution for " + queryKey + ": " +
+                            approovResults.getStatus().toString());
+            }
         }
 
         // proceed with the rest of the chain

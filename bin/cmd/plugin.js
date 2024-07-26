@@ -60,8 +60,7 @@ const deployingIos = async (opts) => {
 
   try {
     await project.checkingReactNative()
-    await project.checkingApproovCli()
-    await project.deployingIosApp(opts.configuration, opts.expireAfter)
+    await project.deployingIosApp(opts.configuration)
   } catch (err) { 
     project.handleError(err)
   }

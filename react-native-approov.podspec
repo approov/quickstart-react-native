@@ -19,12 +19,12 @@ Pod::Spec.new do |s|
   s.source       = { :git => "https://github.com/approov/quickstart-react-native.git", :tag => "#{s.version}" }
 
   s.source_files = "ios/**/*.{h,c,m,swift}"
-  s.exclude_files = "ios/Approov.xfframework/**/*"
+  s.exclude_files = "ios/Approov.xcframework/**/*"
   s.requires_arc = true
   s.resources = "ios/approov.{config,plist}"
 
   s.ios.vendored_frameworks = "ios/Approov.xcframework"
-  s.ios.deployment_target  = '10.0'
+  s.ios.deployment_target  = '13.4'
 
   s.dependency "React"
 end

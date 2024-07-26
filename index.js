@@ -20,9 +20,8 @@
  */
 
 import { NativeModules } from 'react-native'
+const { ApproovService } = NativeModules
+import { ApproovProvider, useApproov } from './approov-provider'
+import { ApproovMonitor } from './approov-monitor'
 
-const { Approov } = NativeModules
-
-// this is just a placeholder; currently, there are no exposed constants or functions in this interface.
-
-export default Approov
+export { ApproovService, ApproovProvider, ApproovMonitor, useApproov }

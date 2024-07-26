@@ -24,7 +24,7 @@
 // Approov-related specs
 const specs = {
   reactNative: {
-    minVersion: '0.60',
+    minVersion: '0.71',
   },
   android: {
     minSdk: '21',
@@ -32,8 +32,7 @@ const specs = {
     defaultVariant: 'debug',
   },
   ios: {
-    minDeployTarget: '10.0',
-    useBitcode: false,
+    minDeployTarget: '13.4',
     defaultConfiguration: 'Debug',
   },
   reg: {
@@ -41,29 +40,26 @@ const specs = {
   }
 }
 
-// Default registration expiration
-
 // reference links
-const readme = 'https://github.com/approov/quickstart-react-native'
+const faq = 'https://github.com/approov/quickstart-react-native/blob/main/FAQ.md'
+const apiProtection = 'https://github.com/approov/quickstart-react-native/blob/main/API-PROTECTION.md'
 const refs = {
-  contactSupport: `${readme}#getting-additional-help`,
-  devEnviron: `${readme}#0-check-that-your-development-environment-is-properly-set-up`,
-  reactNativeApp: `${readme}#1-start-with-a-working-react-native-app`,
-  integrateApproov: `${readme}#2-integrate-approov-into-your-app`,
-  runRegAndroidApp: `${readme}#android-devices`,
-  runRegIosApp: `${readme}#ios-devices`,
-  approovSession: `${readme}#establishing-an-active-approov-session`,
-  apiDomains: `${readme}#checking-and-updating-approov-protected-api-domains`,
-  androidMinSdk: `${readme}#updating-android-minimum-sdk`,
-  androidNetworkPermission: `${readme}#updating-android-network-permissions`,
-  androidEmulator: `${readme}#running-on-an-android-emulator`,
-  iosDeployTarget: `${readme}#changing-your-deployment-target-on-ios`,
-  iosFlipper: `${readme}#disabling-flipper-on-ios`,
-  iosSimulator: `${readme}#running-on-an-ios-simulator`,
-  iosDevice: `${readme}#running-on-an-ios-device`,
-  iosOther: `${readme}#other-ios-considerations`,
-  cmdIntegrate: `${readme}#react-native-approov-integrate`,
-  nodeSnap: `${readme}#integration-may-fail-on-linux-when-node-installed-as-a-snap-package`,
+  contactSupport: `${faq}#getting-additional-help`,
+  devEnviron: `${faq}#check-that-your-development-environment-is-properly-set-up`,
+  reactNativeApp: `${faq}#start-with-a-working-react-native-app`,
+  integrateApproov: `${faq}#integrate-approov-into-your-app`,
+  registeringApps: `${apiProtection}#registering-apps`,
+  approovSession: `${faq}#establishing-an-active-approov-session`,
+  apiDomains: `${faq}#checking-and-updating-approov-protected-api-domains`,
+  androidMinSdk: `${faq}#updating-android-minimum-sdk`,
+  androidNetworkPermission: `${faq}#updating-android-network-permissions`,
+  androidEmulator: `${faq}#running-on-an-android-emulator`,
+  iosDeployTarget: `${faq}#changing-your-deployment-target-on-ios`,
+  iosFlipper: `${faq}#disabling-flipper-on-ios`,
+  iosSimulator: `${faq}#running-on-an-ios-simulator`,
+  iosDevice: `${faq}#running-on-an-ios-device`,
+  iosOther: `${faq}#other-ios-considerations`,
+  nodeSnap: `${faq}#integration-may-fail-on-linux-when-node-installed-as-a-snap-package`,
 }
 
 // error messages

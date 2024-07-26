@@ -3,18 +3,6 @@ You should use this option if you wish to protect app secrets, including API key
 
 These additional steps require access to the [Approov CLI](https://approov.io/docs/latest/approov-cli-tool-reference/), please follow the [Installation](https://approov.io/docs/latest/approov-installation/) instructions.
 
-## ENABLING MANAGED TRUST ROOTS
-Client secrets or API keys also need to be protected in transit. For 3rd party APIs you should not pin against their certificates since you are not in control of when they might be changed. Instead the [Managed Trust Roots](https://approov.io/docs/latest/approov-usage-documentation/#managed-trust-roots) feature can be used to protect TLS.
-
-Ensure managed trust roots are enabled using:
-
-```
-approov pin -setManagedTrustRoots on 
-```
-> Note that this command requires an [admin role](https://approov.io/docs/latest/approov-usage-documentation/#account-access-roles).
-
-This ensures connections may only use official certificates, and blocks the use of self signed certificates that might be used by a Man-in-the-Middle (MitM) attacker.
-
 ## ADDING API DOMAINS
 In order for secrets or API keys to be protected when being transmitted externally by the app, it is necessary to inform Approov about the domains on which they may be sent. Execute the following command:
 
@@ -22,23 +10,16 @@ In order for secrets or API keys to be protected when being transmitted external
 approov api -add your.domain -noApproovToken
 ```
 
-This informs Approov that it should be active for the domain, but does not need to send Approov tokens for it. Adding the domain ensures that the channel will be protected against Man-in-the-Middle (MitM) attacks.
+This informs Approov that it should be active for the domain, but does not need to send Approov tokens for it. Adding the domain uses [Managed Trust Roots](https://approov.io/docs/latest/approov-usage-documentation/#managed-trust-roots) to ensure that the channel will be protected against Man-in-the-Middle (MitM) attacks.
 
 ## MIGRATING THE SECRET INTO APPROOV
-It is assumed that you already have some client secrets and/or API keys in your app that you would like to migrate for protection by Approov. To do this you first need to enable the [Secure Strings](https://approov.io/docs/latest/approov-usage-documentation/#secure-strings) feature:
-
-```
-approov secstrings -setEnabled
-```
-> Note that this command requires an [admin role](https://approov.io/docs/latest/approov-usage-documentation/#account-access-roles).
-
-You must inform Approov what the value of each secret is as follows:
+It is assumed that you already have some client secrets and/or API keys in your app that you would like to migrate for [protection by Approov](https://approov.io/docs/latest/approov-usage-documentation/#secure-strings). You must inform Approov what the value of each secret is as follows:
 
 ```
 approov secstrings -addKey your-secret-name -predefinedValue your-secret-value
 ```
 
-> Note that this command also requires an [admin role](https://approov.io/docs/latest/approov-usage-documentation/#account-access-roles).
+> Note that this command requires an [admin role](https://approov.io/docs/latest/approov-usage-documentation/#account-access-roles).
 
 These values can be changed at any time and will propagate within 5 minutes to all running instances of your apps. Since earlier released versions of the app may have already leaked `your-secret-value`, you may wish to refresh the secret at some later point when any older version of the app is no longer in use. You can of course do this update over-the-air using Approov without any need to modify the app.
 
@@ -140,51 +121,48 @@ approov policy -setRejectionReasons on
 
 You will then be able to get information in `rejectionReasons` in the form of a comma separated list of [device properties](https://approov.io/docs/latest/approov-usage-documentation/#device-properties) responsible for causing the rejection.
 
-## REGISTERING APPS
-In order for Approov to recognize the app as being valid it needs to be registered with the service. Rebuild your app and ensure the current directory is the top level of your app project to follow the instructions below.
-
-> **IMPORTANT:** The registration takes around 30 seconds to propagate across the Approov Cloud Infrastructure, therefore don't try to run the app again before this time has elapsed. During development of your app you can ensure it [always passes](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy) on your device to not have to register the app each time you modify it.
+## ADD YOUR SIGNING CERTIFICATE TO APPROOV
+You should add the signing certificate used to sign apps so that Approov can recognize your app as being official.
 
 ### Android
-The `react-native-approov` package adds a convenient registration command `reg-android` to the normal react native command line interface.
+Add the local certificate used to sign apps in Android Studio. The following assumes it is in PKCS12 format:
 
 ```
-yarn run react-native reg-android
+approov appsigncert -add ~/.android/debug.keystore -storePassword android -autoReg
 ```
 
-By default, the `debug` variant is registered with Approov for one hour, useful for debug and testing.
-
-You can use the `approov` CLI registration command as follows:
-
-```
-approov registration -add /path/to/APK
-```
-
-This makes a permanent registration for the provided `APK`.
-
-[Managing Registrations](https://approov.io/docs/latest/approov-usage-documentation/#managing-registrations) provides more details for app registrations, especially for releases to the Play Store. Note that you may also need to apply specific [Android Obfuscation](https://approov.io/docs/latest/approov-usage-documentation/#android-obfuscation) rules for your app when releasing it.
+See [Android App Signing Certificates](https://approov.io/docs/latest/approov-usage-documentation/#android-app-signing-certificates) if your keystore format is not recognized or if you have any issues adding the certificate. This also provides information about adding certificates for when releasing to the Play Store. Note also that you need to apply specific [Android Obfuscation](https://approov.io/docs/latest/approov-usage-documentation/#android-obfuscation) rules when creating an app release.
 
 ### iOS
-The `react-native-approov` package adds a convenient registration command `reg-ios` to the normal react native command line interface.
+These are available in your Apple development account portal. Go to the initial screen showing program resources:
+
+![Apple Program Resources](assets/program-resources.png)
+
+Click on `Certificates` and you will be presented with the full list of development and distribution certificates for the account. Click on the certificate being used to sign applications from your particular Xcode installation and you will be presented with the following dialog:
+
+![Download Certificate](assets/download-cert.png)
+
+Now click on the `Download` button and a file with a `.cer` extension is downloaded, e.g. `development.cer`. Add it to Approov with:
 
 ```
-yarn run react-native reg-ios
+approov appsigncert -add development.cer -autoReg
 ```
 
-ou can use the `approov` CLI registration command as follows:
+If it is not possible to download the correct certificate from the portal then it is also possible to [add app signing certificates from the app](https://approov.io/docs/latest/approov-usage-documentation/#adding-apple-app-signing-certificates-from-app).
 
-```
-approov registration -add /path/to/IPA -bitcode
-```
-
-This makes a permanent registration for the provided `IPA`. Note, the `-bitcode` option must be used because React Native uses the bitcode variant of the Approov SDK.
-
-If you are building and running on an iOS simulator then there will be no `.ipa` file and you must ensure the app [always passes](https://approov.io/docs/latest/approov-usage-documentation/#adding-a-device-security-policy) on your simulator without needing to perform a registration.
-
-[Managing Registrations](https://approov.io/docs/latest/approov-usage-documentation/#managing-registrations) provides more details for app registrations.
+> **IMPORTANT:** Apps built to run on the iOS simulator are not code signed and thus auto-registration does not work for them. In this case you can consider [forcing a device ID to pass](https://approov.io/docs/latest/approov-usage-documentation/#forcing-a-device-id-to-pass) to get a valid attestation.
 
 ## FURTHER OPTIONS
 See [Exploring Other Approov Features](https://approov.io/docs/latest/approov-usage-documentation/#exploring-other-approov-features) for information about additional Approov features you may wish to try.
+
+### Development Key
+You may wish to [set a development key](https://approov.io/docs/latest/approov-usage-documentation/#using-a-development-key) in order to force an app to be passed, if it may be resigned by a different app signing certificate to which you don't have access. Perform the call:
+
+```Javascript
+ApproovService.setDevKey("uDW9FuLVpL1_4zo1");
+```
+
+See [using a development key](https://approov.io/docs/latest/approov-usage-documentation/#using-a-development-key) to understand how to obtain the development key which is the parameter to the call.
 
 ### Header Prefixes
 In some cases the value to be substituted on a header may be prefixed by some fixed string. A common case is the presence of `Bearer` included in an authorization header to indicate the use of a bearer token. In this case you can specify a prefix as follows:

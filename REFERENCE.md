@@ -34,6 +34,15 @@ Note that this should be used with *CAUTION* because it may allow a connection t
 
 You are recommended to make this call inside the `approovSetup` function called by the `ApproovProvider`, to ensure this is setup prior to Approov initialization.
 
+## SetDevKey
+[Sets a development key](https://approov.io/docs/latest/approov-usage-documentation/#using-a-development-key) in order to force an app to be passed. This can be used if the app has to be resigned in a test environment and would thus fail attestation otherwise.
+
+```Javascript
+ApproovService.SetDevKey(devKey);
+```
+
+This function returns a `Promise` that is resolved when the operation is completed.
+
 ## SetSuppressLoggingUnknownURL
 Indicates that logging should be suppressed for requests to domains that have not been added in Approov. These requests would normally cause a `UNKNOWN_URL` (Android) or `unknown URL` (iOS) to be generated. Use this option if you wish to reduce the amount of logging being generated.
 

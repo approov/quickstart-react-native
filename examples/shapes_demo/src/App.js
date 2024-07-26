@@ -89,7 +89,7 @@ const App = () => {
 
   // define check connection handler
   const checkConnection = () => {
-    setResult({shape: 'none', status: ''});
+    setResult({shape: 'confused', status: 'fetching'});
     fetch(api.checkUrl, {
       method: 'GET',
       headers: headers,
@@ -114,7 +114,7 @@ const App = () => {
 
   // define fetch shape handler
   const fetchShape = () => {
-    setResult({shape: 'none', status: ''});
+    setResult({shape: 'confused', status: 'fetching'});
     fetch(api.fetchUrl, {
       headers: headers,
     })

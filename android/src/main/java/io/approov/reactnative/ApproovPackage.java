@@ -34,9 +34,7 @@ public class ApproovPackage implements ReactPackage {
     @Override
     public List<NativeModule> createNativeModules(ReactApplicationContext reactContext) {
         List<NativeModule> modules = new ArrayList<>();
-
-        modules.add(new ApproovModule(reactContext));
-
+        modules.add(new ApproovService(reactContext));
         return modules;
     }
 

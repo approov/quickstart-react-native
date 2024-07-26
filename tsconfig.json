@@ -1,0 +1,13 @@
+{
+    "version": "1.6.2",
+    "compilerOptions": {
+        "allowJs": true,
+        "module": "commonjs",
+        "declaration": true,
+        "emitDeclarationOnly": true,
+        "outDir": "."
+    },
+    "files": [
+        "./index.js"
+    ]
+}

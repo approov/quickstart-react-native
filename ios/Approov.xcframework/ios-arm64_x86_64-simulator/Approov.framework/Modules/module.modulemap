@@ -1,0 +1,6 @@
+framework module Approov {
+  umbrella header "Approov.h"
+
+  export *
+  module * { export * }
+}

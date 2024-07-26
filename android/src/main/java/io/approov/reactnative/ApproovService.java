@@ -431,6 +431,32 @@ public class ApproovService extends ReactContextBaseJavaModule {
     }
 
     /**
+     * Sets a development key indicating that the app is a development version and it should
+     * pass attestation even if the app is not registered or it is running on an emulator. The
+     * development key value can be rotated at any point in the account if a version of the app
+     * containing the development key is accidentally released. This is primarily
+     * used for situations where the app package must be modified or resigned in
+     * some way as part of the testing process.
+     *
+     * @param devKey is the development key to be used
+     * @param promise to be fulfilled once the development key has been set
+     */
+   @ReactMethod
+   public void setDevKey(String devKey, Promise promise) {
+       try {
+           Approov.setDevKey(devKey);
+           Log.d(TAG, "setDevKey");
+           promise.resolve(null);
+       }
+       catch (IllegalStateException e) {
+           promise.reject("setDevKey", "IllegalState: " + e.getMessage(), getErrorUserInfo(false));
+       }
+       catch (IllegalArgumentException e) {
+           promise.reject("setDevKey", "IllegalArgument: " + e.getMessage(), getErrorUserInfo(false));
+       }
+   }
+
+    /**
      * Indicates that logging for unknown (and excluded) URLs should be suppressed. This prevents excessive
      * logging for fetches not associated with Approov protection.
      */

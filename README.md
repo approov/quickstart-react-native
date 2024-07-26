@@ -2,13 +2,13 @@
 
 This quickstart is written specifically for Android and iOS apps that are implemented using [`React Native`](https://reactnative.dev/) and the [`React Native Networking`](https://reactnative.dev/docs/network), including any networking based on the `XMLHttpRequest API` so including `frisbee` and `axios`. Support is also provided for [rn-fetch-blob](https://github.com/joltup/rn-fetch-blob). If this is not your situation then check if there is a more relevant quickstart guide available.
 
-This quickstart provides the basic steps for integrating Approov into your app. A more detailed step-by-step guide using a [Shapes App Example](https://github.com/approov/quickstart-react-native/blob/main/SHAPES-EXAMPLE.md) is also available.
+This page provides all the steps for integrating Approov into your app. Additionally, a step-by-step tutorial guide using our [Shapes App Example](https://github.com/approov/quickstart-react-native/blob/main/SHAPES-EXAMPLE.md) is also available.
 
 To follow this guide you should have received an onboarding email for a trial or paid Approov account and be using a version of ReactNative of 0.71 or above.
 
 It is possible to use this with [Expo](https://expo.dev/), although not with [Expo Go](https://expo.dev/client) as native library modules are required.
 
-Note that the minimum OS requirement for iOS is 12.5 and for Android the minimum SDK version is 21 (Android 5.0). You cannot use Approov in apps that need to support OS versions older than this.
+Note that the minimum OS requirement for iOS is 13.4 and for Android the minimum SDK version is 21 (Android 5.0). You cannot use Approov in apps that need to support OS versions older than this.
 
 ## CHECK INTEGRATION COMPATIBILITY
 
@@ -31,6 +31,8 @@ Add the Approov package to your existing App with the following command:
 ```
 npm install @approov/react-native-approov
 ```
+
+Note if you experience an error related to peer dependencies, then you can append the `--force` to install with your particular React Native version. The plugin supports version 0.71 or above.
 
 If you are installing into an Expo project then use:
 

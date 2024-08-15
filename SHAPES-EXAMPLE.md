@@ -16,7 +16,7 @@ This quickstart is written specifically for Android and iOS apps that are implem
 
 ## RUNNING THE SHAPES APP WITHOUT APPROOV
 
-Firstly, we need to add the Shapes example itself. Three examples: `shapes_axios`, `shapes_fetch`, and `shapes_frisbee` all work with a publicly available shapes service at `shapes.approov.io`.
+Firstly, we need to add the Shapes example itself. Two examples: `shapes_axios` and `shapes_fetch` all work with a publicly available shapes service at `shapes.approov.io`.
 
 We will use the Approov `shapes_fetch` example to illustrate the remaining steps to integrate Approov into a simple React Native app. To copy a pre-packaged example, start a command-line terminal, run the `react-native-approov example` command:
 

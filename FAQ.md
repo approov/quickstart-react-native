@@ -37,10 +37,10 @@ For Approov, make sure you have installed and can run the `approov` CLI tool (se
 
 ### Start with a working React Native app
 
-You can start with any React Native app using the default runtime and standard react-native networking (fetch, axios, frisbee...).
+You can start with any React Native app using the default runtime and standard react-native networking (fetch or axios ...).
 Start with your own React Native app, or use one of the Approov-provided examples.
 
-Three examples `shapes_axios`, `shapes_fetch`, and `shapes_frisbee` all work with a publicly available shapes service at `shapes.approov.io`.
+Two examples `shapes_axios` and `shapes_fetch` all work with a publicly available shapes service at `shapes.approov.io`.
 We will use the Approov `shapes_fetch` example to illustrate the remaining steps to integrate Approov into a simple React Native app. To copy a pre-packaged example, start a command-line terminal, run the `react-native-approov example` command, and select an example and directory to install into:
 
 ```plaintext
@@ -336,7 +336,7 @@ In addition to the package, the Approov SDKs, base configurations, and property 
 
 ### Which Javascript network libraries are supported?
 
-React Native natively implements the `XMLHttpRequest` (XHR) object. The built in `fetch()` call uses XHR calls as to popular networking libraries such as `axios` and `frisbee`. Any networking calls using XHR route through native React Native and are fully supported by Approov integration.
+React Native natively implements the `XMLHttpRequest` (XHR) object. The built in `fetch()` call uses XHR calls as do popular networking libraries such as `axios`. Any networking calls using XHR route through native React Native and are fully supported by Approov integration.
 
 Support is also provided for [rn-fetch-blob](https://github.com/joltup/rn-fetch-blob) if a special fork of the package must be used, available at [@approov/rn-fetch-blob] (https://www.npmjs.com/package/@approov/rn-fetch-blob).
 

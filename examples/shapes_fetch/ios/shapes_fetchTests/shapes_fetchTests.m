@@ -7,11 +7,11 @@
 #define TIMEOUT_SECONDS 600
 #define TEXT_TO_LOOK_FOR @"Welcome to React"
 
-@interface shapes_axiosTests : XCTestCase
+@interface shapes_fetchTests : XCTestCase
 
 @end
 
-@implementation shapes_axiosTests
+@implementation shapes_fetchTests
 
 - (BOOL)findSubviewInView:(UIView *)view matching:(BOOL (^)(UIView *view))test
 {

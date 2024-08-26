@@ -15,9 +15,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-               BuildableName = "shapes_axios.app"
-               BlueprintName = "shapes_axios"
-               ReferencedContainer = "container:shapes_axios.xcodeproj">
+               BuildableName = "shapes_fetch.app"
+               BlueprintName = "shapes_fetch"
+               ReferencedContainer = "container:shapes_fetch.xcodeproj">
             </BuildableReference>
          </BuildActionEntry>
       </BuildActionEntries>
@@ -33,9 +33,9 @@
             <BuildableReference
                BuildableIdentifier = "primary"
                BlueprintIdentifier = "00E356ED1AD99517003FC87E"
-               BuildableName = "shapes_axiosTests.xctest"
-               BlueprintName = "shapes_axiosTests"
-               ReferencedContainer = "container:shapes_axios.xcodeproj">
+               BuildableName = "shapes_fetchTests.xctest"
+               BlueprintName = "shapes_fetchTests"
+               ReferencedContainer = "container:shapes_fetch.xcodeproj">
             </BuildableReference>
          </TestableReference>
       </Testables>
@@ -55,9 +55,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "shapes_axios.app"
-            BlueprintName = "shapes_axios"
-            ReferencedContainer = "container:shapes_axios.xcodeproj">
+            BuildableName = "shapes_fetch.app"
+            BlueprintName = "shapes_fetch"
+            ReferencedContainer = "container:shapes_fetch.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </LaunchAction>
@@ -72,9 +72,9 @@
          <BuildableReference
             BuildableIdentifier = "primary"
             BlueprintIdentifier = "13B07F861A680F5B00A75B9A"
-            BuildableName = "shapes_axios.app"
-            BlueprintName = "shapes_axios"
-            ReferencedContainer = "container:shapes_axios.xcodeproj">
+            BuildableName = "shapes_fetch.app"
+            BlueprintName = "shapes_fetch"
+            ReferencedContainer = "container:shapes_fetch.xcodeproj">
          </BuildableReference>
       </BuildableProductRunnable>
    </ProfileAction>

@@ -1,4 +1,4 @@
-package com.shapes_axios
+package com.shapes_fetch
 
 import android.app.Application
 import com.facebook.react.PackageList

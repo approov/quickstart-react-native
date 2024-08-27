@@ -32,7 +32,7 @@ class Log {
     if (this.spinner) {
       this.spinner.start(msg || ' ');
     } else {
-      console.error('Spinner is not initialized');
+      //console.error('Spinner is not initialized');
     }
   }
 

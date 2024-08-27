@@ -19,7 +19,7 @@
  * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
  */
 
-const chalk = require('chalk')
+//const chalk = require('chalk')
 const config = require('./config')
 const task = require('./task')
 const { Log, LogError } = require('../util')

@@ -4,11 +4,11 @@ This quickstart is written specifically for Android and iOS apps that are implem
 
 ## WHAT YOU WILL NEED
 * Access to a trial or paid Approov account
-* A recent version of `React Native` (>= 0.73) installed, see [installing react native](https://reactnative.dev/docs/environment-setup).
-* You also need `yarn` classic (1.x), see [installing yarn](https://www.npmjs.com/package/yarn).
+* A recent version of `React Native` (>= 0.73) installed (version 0.74.5 used), see [installing react native](https://reactnative.dev/docs/environment-setup).
+* You also need `yarn` classic (1.x, version 1.2 used in this guide), see [installing yarn](https://www.npmjs.com/package/yarn).
 * The `approov` command line tool [installed](https://approov.io/docs/latest/approov-installation/) with access to your account
-* [Android Studio](https://developer.android.com/studio) installed (version Hedgehog 2023.1 is used in this guide) if you will build the Android app. Note that the `ANDROID_SDK_ROOT` value must be properly defined to allow building.
-* [Xcode](https://developer.apple.com/xcode/) installed (version 15.1 is used in this guide) to build iOS version of application
+* [Android Studio](https://developer.android.com/studio) installed (version Coala 2024.1.1 is used in this guide) if you will build the Android app. Note that the `ANDROID_SDK_ROOT` value must be properly defined to allow building.
+* [Xcode](https://developer.apple.com/xcode/) installed (version 15.4 is used in this guide) to build iOS version of application
 * [Cocoapods](https://cocoapods.org) installed to support iOS building (1.12.1 used in this guide)
 * An iOS device or simulator if you are using the iOS platform (version 13.4 or later)
 * An Android device or emulator if you are using the Android platform

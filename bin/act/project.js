@@ -161,7 +161,7 @@ class Project {
       const minSdk = await task.findingAndroidMinSdk(this.dir)
       if (!minSdk) {
         this.errors++
-        this.log.fail(`Found no Android minimum SDK; >= ${project.android.minMinSdk} required.`, this.ref('androidMinSdk'))
+        this.log.fail(`Found no Android minimum SDK; >= ${this.config.android.minSdk} required.`, this.ref('androidMinSdk'))
       } else if (!task.isAndroidMnSdkSupported(minSdk, minMinSdk)) {
         this.errors++
         this.log.fail(`Found Android minimum SDK ${minSdk}; >= ${minMinSdk} required.`, this.ref('androidMinSdk'))

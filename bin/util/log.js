@@ -1,95 +1,110 @@
-/*
- * MIT License
- *
- * Copyright (c) 2016-present, CriticalBlue Ltd.
- * 
- * Permission is hereby granted, free of charge, to any person obtaining a copy of this software and
- * associated documentation files (the "Software"), to deal in the Software without restriction,
- * including without limitation the rights to use, copy, modify, merge, publish, distribute,
- * sublicense, and/or sell copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in all copies or
- * substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT
- * NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
- * NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM,
- * DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT
- * OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
- */
-
-// command line utilities
-
-const chalk = require('chalk')
-const ora = require('ora')
+const colorette = require('colorette');
+const { blue, red } = colorette;
 
 class LogError extends Error {
   constructor(...params) {
-    // Pass remaining arguments (including vendor specific ones) to parent constructor
-    super(...params)
-
-    // Maintains proper stack trace for where our error was thrown (only available on V8)
+    super(...params);
     if (Error.captureStackTrace) {
-      Error.captureStackTrace(this, LogError)
+      Error.captureStackTrace(this, LogError);
     }
-
-    this.name = 'LogError'
-    // Custom debugging information
-    this.date = new Date()
+    this.name = 'LogError';
+    this.date = new Date();
   }
 }
 
 class Log {
   constructor() {
-    this.spinner = ora()
+    this.spinner = null;
+    this.initSpinner();
+  }
+
+  async initSpinner() {
+    try {
+      const oraModule = await import('ora');
+      this.spinner = oraModule.default();
+    } catch (error) {
+      console.error('Failed to load ora:', error);
+      process.exit(1); // Exit if ora cannot be loaded
+    }
   }
 
   spin(msg) {
-    this.spinner.start(msg||' ')
+    if (this.spinner) {
+      this.spinner.start(msg || ' ');
+    } else {
+      console.error('Spinner is not initialized');
+    }
   }
 
   note(msg) {
-    this.spinner.stopAndPersist({symbol:' ', text:msg||' '})
+    if (this.spinner) {
+      this.spinner.stopAndPersist({ symbol: ' ', text: msg || ' ' });
+    } else {
+      console.log(msg || ' ');
+    }
   }
 
   succeed(msg) {
-    this.spinner.succeed(msg||' ')
+    if (this.spinner) {
+      this.spinner.succeed(msg || ' ');
+    } else {
+      console.log(msg || ' ');
+    }
   }
 
   help(ref) {
-    if (ref) {
-      return this.spinner.info(`See ${chalk.blue(ref)} for more info.`)
+    if (this.spinner) {
+      if (ref) {
+        return this.spinner.info(`See ${blue(ref)} for more info.`);
+      } else {
+        return this.spinner.info(`Contact support for assistance.`);
+      }
     } else {
-      return this.spinner.info(`Contact support for assistance.`)
+      console.log(ref ? `See ${blue(ref)} for more info.` : `Contact support for assistance.`);
     }
   }
 
   info(msg, help) {
-    this.spinner.info(msg||' ')
-    if (help) this.help((help))
+    if (this.spinner) {
+      this.spinner.info(msg || ' ');
+    } else {
+      console.log(msg || ' ');
+    }
+    if (help) this.help(help);
   }
 
   warn(msg, help) {
-    this.spinner.warn(msg||' ')
-    if (help) this.help((help))
+    if (this.spinner) {
+      this.spinner.warn(msg || ' ');
+    } else {
+      console.log(msg || ' ');
+    }
+    if (help) this.help(help);
   }
 
   fail(msg, help = null, fatal = false) {
-    this.spinner.fail(msg||' ')
-    if (help) this.help((help))
+    if (this.spinner) {
+      this.spinner.fail(msg || ' ');
+    } else {
+      console.log(msg || ' ');
+    }
+    if (help) this.help(help);
   }
- 
+
   fatal(msg, help = null) {
-    this.spinner.fail(msg||' ')
-    if (help) this.help((help))
-    throw new LogError(msg)
+    if (this.spinner) {
+      this.spinner.fail(msg || ' ');
+    } else {
+      console.log(msg || ' ');
+    }
+    if (help) this.help(help);
+    throw new LogError(msg);
   }
-  
-  exit(msg, code=1) {
-    this.fail(msg)
-    process.exit(code)
+
+  exit(msg, code = 1) {
+    this.fail(msg);
+    process.exit(code);
   }
 }
 
-module.exports = { Log, LogError }
+module.exports = { Log, LogError };

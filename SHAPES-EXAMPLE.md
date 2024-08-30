@@ -18,10 +18,10 @@ This quickstart is written specifically for Android and iOS apps that are implem
 
 Firstly, we need to add the Shapes example itself. Two examples: `shapes_axios` and `shapes_fetch` all work with a publicly available shapes service at `shapes.approov.io`.
 
-We will use the Approov `shapes_fetch` example to illustrate the remaining steps to integrate Approov into a simple React Native app. To copy a pre-packaged example, start a command-line terminal, run the `react-native-approov example` command:
+We will use the Approov `shapes_fetch` example to illustrate the remaining steps to integrate Approov into a simple React Native app. To copy a pre-packaged example, start a command-line terminal, run the `quickstart-react-native example` command:
 
 ```
-npx @approov/react-native-approov example
+npx @approov/quickstart-react-native example
 ```
 
 Then select an example and directory to install into:
@@ -100,7 +100,7 @@ This endpoint is protected with an API key that is built into the code, and ther
 In a shell terminal in the `shapes_fetch` directory, type the following command to install the Approov dependency:
 
 ```
-npm install @approov/react-native-approov
+yarn install @approov/approov-service-react-native
 ```
 
 Note if you experience an error related to peer dependencies, then you can append the `--force` to install with your particular React Native version. The plugin supports version 0.71 or above.

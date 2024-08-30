@@ -32,7 +32,7 @@ import {
 import axios from 'axios';
 
 // UNCOMMENT IF USING APPROOV
-//import { ApproovProvider, ApproovService } from '@approov/react-native-approov';
+//import { ApproovProvider, ApproovService } from '@approov/approov-service-react-native';
 
 const appTitle = 'Approov Shapes';
 const checkTitle = 'check';

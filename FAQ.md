@@ -3,8 +3,8 @@
     <a href="https://approov.io">
       <img style="margin:0;" src="assets/approov-icon.png" alt=""/>
     </a>
-    <a href="https://www.npmjs.com/package/@approov/react-native-approov">
-      <img alt="npm" src="https://img.shields.io/npm/v/@approov/react-native-approov" />
+    <a href="https://www.npmjs.com/package/@approov/quickstart-react-native">
+      <img alt="npm" src="https://img.shields.io/npm/v/@approov/quickstart-react-native" />
     </a>
     <a href="https://github.com/approov/quickstart-react-native/issues?q=is%3Aopen+is%3Aissue">
       <img alt="GitHub issues" src="https://img.shields.io/github/issues-raw/approov/quickstart-react-native" />
@@ -359,7 +359,7 @@ Approov integration is controlled by the `react-native-approov` command and seve
 The command by-itself lists the available sub-commands:
 
 ```plaintext
-$ npx @approov/react-native-approov
+$ npx @approov/quickstart-react-native
 
 Usage: react-native-approov [options] [command]
 

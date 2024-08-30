@@ -1,6 +1,6 @@
 {
   "name": "@approov/quickstart-react-native",
-  "version": "3.2.7",
+  "version": "3.2.8",
   "publishConfig": {
     "access": "public"
   },

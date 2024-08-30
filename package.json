@@ -1,10 +1,10 @@
 {
-  "name": "@approov/react-native-approov",
-  "version": "3.2.5",
+  "name": "@approov/quickstart-react-native",
+  "version": "3.2.7",
   "publishConfig": {
     "access": "public"
   },
-  "title": "React Native Approov",
+  "title": "React Native Approov Quickstart",
   "description": "Approov Mobile App Protection for ReactNative",
   "repository": {
     "type": "git",
@@ -44,7 +44,6 @@
     "typescript": "^5.5.4"
   },
   "dependencies": {
-    "chalk": "^5.3.0",
     "cliui": "^8.0.1",
     "commander": "^12.1.0",
     "compare-versions": "^6.1.1",

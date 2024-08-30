@@ -15,7 +15,7 @@ Note that the minimum OS requirement for iOS is 13.4 and for Android the minimum
 The Approov npm package provides a special check command to see if the app is ready for integration. Execute this using [npx](https://www.npmjs.com/package/npx) in the top level directory of your app:
 
 ```
-npx @approov/react-native-approov check
+npx @approov/quickstart-react-native check
 ```
 
 > Note, although the `npx` command may ask to install the package it is not permanently added to your app.
@@ -29,7 +29,7 @@ Once all issues are fixed, you should rerun your app to verify it is working as 
 Add the Approov package to your existing App with the following command:
 
 ```
-npm install @approov/react-native-approov
+npm install @approov/quickstart-react-native
 ```
 
 Note if you experience an error related to peer dependencies, then you can append the `--force` to install with your particular React Native version. The plugin supports version 0.71 or above.
@@ -37,7 +37,7 @@ Note if you experience an error related to peer dependencies, then you can appen
 If you are installing into an Expo project then use:
 
 ```
-expo install @approov/react-native-approov
+expo install @approov/quickstart-react-native
 ```
 
 For iOS you must also install [pod](https://cocoapods.org/) dependencies. Change the directory to `ios` and type:
@@ -53,7 +53,7 @@ Note: do not worry if this generates warnings about duplicate UUIDs.
 In order to use Approov you must include it as a component that wraps your application components. This automatically deals with initializing Approov when the app is started. Import using the following:
 
 ```Javascript
-import { ApproovProvider, ApproovService } from '@approov/react-native-approov';
+import { ApproovProvider, ApproovService } from '@approov/approov-service-react-native';
 ```
 
 This defines an `ApproovProvider` component and the `ApproovService` which allows you to make certain calls to Approov from your application.
@@ -92,7 +92,7 @@ The `<enter-your-config-string-here>` is a custom string that configures your Ap
 ## CHECKING IT WORKS
 Once the initialization is called, it is possible for any network requests to have Approov tokens or secret substitutions made. Initially you won't have set which API domains to protect, so the requests will be unchanged. It will have called Approov though and made contact with the Approov cloud service. You will see `ApproovService` logging indicating `UNKNOWN_URL` (Android) or `unknown URL` (iOS).
 
-You may use the `ApproovMonitor` component (also imported from `@approov/react-native-approov`) inside the `ApproovProvider`. This will output console logging on the state of the Approov initialization.
+You may use the `ApproovMonitor` component (also imported from `@approov/approov-service-react-native`) inside the `ApproovProvider`. This will output console logging on the state of the Approov initialization.
 
 On Android, you can see logging using [`logcat`](https://developer.android.com/studio/command-line/logcat) output from the device. You can see the specific Approov output using `adb logcat | grep ApproovService`. On iOS, look at the console output from the device using the [Console](https://support.apple.com/en-gb/guide/console/welcome/mac) app from MacOS. This provides console output for a connected simulator or physical device. Select the device and search for `ApproovService` to obtain specific logging related to Approov.
 

@@ -1,9 +1,0 @@
-{
-    "git.ignoreLimitWarning": true,
-    "files.associations": {
-        "__locale": "cpp",
-        "locale": "cpp",
-        "thread": "cpp",
-        "*.ipp": "cpp"
-    }
-}

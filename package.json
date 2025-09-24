@@ -1,6 +1,6 @@
 {
   "name": "@approov/quickstart-react-native",
-  "version": "3.2.8",
+  "version": "3.2.9",
   "publishConfig": {
     "access": "public"
   },
@@ -35,15 +35,16 @@
     "react-native-approov": "bin/index.js"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-native": "^0.74.5"
+    "react": "19.1.0",
+    "react-native": "0.81.4"
   },
   "devDependencies": {
-    "react": "^18.2.0",
-    "react-native": "^0.74.5",
-    "typescript": "^5.5.4"
+    "react": "19.1.0",
+    "react-native": "0.81.4",
+    "typescript": "^5.8.3"
   },
   "dependencies": {
+    "@approov/approov-service-react-native": "^3.5.1",
     "cliui": "^8.0.1",
     "commander": "^12.1.0",
     "compare-versions": "^6.1.1",

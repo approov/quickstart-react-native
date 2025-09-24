@@ -4,25 +4,12 @@ This quickstart is written specifically for Android and iOS apps that are implem
 
 This page provides all the steps for integrating Approov into your app. Additionally, a step-by-step tutorial guide using our [Shapes App Example](https://github.com/approov/quickstart-react-native/blob/main/SHAPES-EXAMPLE.md) is also available.
 
-To follow this guide you should have received an onboarding email for a trial or paid Approov account and be using a version of ReactNative of 0.71 or above.
+To follow this guide you should have received an onboarding email for a trial or paid Approov account and be using a version of ReactNative of 0.81 or above (React 19.1.0, React Native 0.81.4).
 
 It is possible to use this with [Expo](https://expo.dev/), although not with [Expo Go](https://expo.dev/client) as native library modules are required.
 
 Note that the minimum OS requirement for iOS is 13.4 and for Android the minimum SDK version is 21 (Android 5.0). You cannot use Approov in apps that need to support OS versions older than this.
 
-## CHECK INTEGRATION COMPATIBILITY
-
-The Approov npm package provides a special check command to see if the app is ready for integration. Execute this using [npx](https://www.npmjs.com/package/npx) in the top level directory of your app:
-
-```
-npx @approov/quickstart-react-native check
-```
-
-> Note, although the `npx` command may ask to install the package it is not permanently added to your app.
-
-The output provides a checklist and reports any issues. Fix any errors reported, such as version updates or extra permissions. On Android, for example, the minimum SDK is 21, and the additional `ACCESS_NETWORK_STATE` permission is required. Please [read this](https://approov.io/docs/latest/approov-usage-documentation/#targeting-android-11-and-above) section of the reference documentation if targeting Android 11 (API level 30) or above.
-
-Once all issues are fixed, you should rerun your app to verify it is working as before. You are now ready to add Approov protection.
 
 ## ADDING THE APPROOV PACKAGE
 
@@ -32,7 +19,7 @@ Add the Approov service layer to your existing App with the following command:
 npm install @approov/approov-service-react-native
 ```
 
-Note if you experience an error related to peer dependencies, then you can append the `--force` to install with your particular React Native version. The plugin supports version 0.75 or above.
+Note if you experience an error related to peer dependencies, then you can append the `--force` to install with your particular React Native version. The plugin supports version 0.81 or above.
 
 If you are installing into an Expo project then use:
 

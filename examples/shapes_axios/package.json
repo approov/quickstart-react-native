@@ -15,6 +15,7 @@
     "@react-native/new-app-screen": "0.81.4",
     "react-native-safe-area-context": "^5.5.2",
     "axios": "^1.7.4"
+    ,"@approov/approov-service-react-native": "^3.5.1"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",
